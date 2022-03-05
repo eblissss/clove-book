@@ -1,0 +1,150 @@
+@import url("https://fonts.googleapis.com/css2?family=Overlock:wght@400;700&family=Prociono&family=Sen&display=swap");
+
+#main {
+	background: linear-gradient(
+			90deg,
+			rgba(163, 187, 198, 0.9) 0%,
+			rgba(163, 187, 198, 0) 42.56%
+		),
+		url("../../assets/landing-bg.jpg") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+
+	color: white;
+	position: absolute;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+h1 {
+	position: absolute;
+	width: 693px;
+	height: 127px;
+	left: 59px;
+	top: 10%;
+
+	font-family: "Prociono", serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 104px;
+	line-height: 127px;
+}
+
+#subsplash {
+	position: absolute;
+	width: 523px;
+	height: 97px;
+	left: 59px;
+	top: 33%;
+
+	background: linear-gradient(
+		360deg,
+		#81bf8e 50%,
+		rgba(129, 191, 142, 0) 100%
+	);
+	border-radius: 0px 0px 25px 25px;
+
+	font-family: Sen;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 42px;
+	line-height: 51px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+h4 {
+	position: fixed;
+	width: 250px;
+	height: 0px;
+	right: 20px;
+	bottom: 20px;
+
+	font-family: Prociono;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 24px;
+	line-height: 29px;
+}
+
+#find {
+	position: absolute;
+	width: 400px;
+	height: 190px;
+	left: 94px;
+	top: 60%;
+
+	background: rgba(164, 188, 199, 0.6);
+	border: 7px solid #ffffff;
+	box-sizing: border-box;
+	border-radius: 32px;
+
+	color: white;
+	font-family: Overlock;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 60px;
+	line-height: 88px;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	text-decoration: none;
+}
+
+#find:hover {
+	background: rgba(164, 188, 199, 0.9);
+	transition: background-color 200ms ease;
+}
+
+#topright {
+	position: fixed;
+	width: 380px;
+	height: 87px;
+	right: 0px;
+	top: 0px;
+
+	background: linear-gradient(
+		270deg,
+		rgba(163, 187, 198, 0.6) 0%,
+		rgba(163, 187, 198, 0) 50%
+	);
+}
+
+#signin {
+	position: absolute;
+	width: 176px;
+	height: 57px;
+	right: 14px;
+	top: 14px;
+
+	background-color: #82c08f;
+	border: none;
+	box-sizing: border-box;
+	border-radius: 16px;
+
+	color: white;
+	font-family: Overlock;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	line-height: 44px;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	justify-content: center;
+}
+
+#signin:hover {
+	background-color: #4d995d;
+	transition: background-color 200ms ease;
+}
+
+.links {
+	text-decoration: none;
+	color: white;
+}

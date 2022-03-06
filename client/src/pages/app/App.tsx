@@ -5,8 +5,6 @@ import Login from "../login/Login";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 function App() {
-	console.log("hello");
-
 	return (
 		<BrowserRouter>
 			<div style={{ width: "10%", zIndex: "99", position: "absolute" }}>

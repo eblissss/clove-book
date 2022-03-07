@@ -1,32 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import Scene from "../../components/scene/Scene";
 
 import { useAppDispatch } from "../../app/hooks";
-import { changeToDawn } from "../../components/scene/sceneSlice";
+import { changeToDawn, changeToNoon } from "../../components/scene/sceneSlice";
 
 // This will include both login and signup
 
 export default function Login() {
 	const dispatch = useAppDispatch();
 
+	const [centerDiv, setCenterDiv] = useState("login");
+
 	return (
 		<>
 			<Scene />
-			<div id="loginMain">
+			<div
+				className={
+					"loginDiv " + (centerDiv === "login" ? "" : "centerDiv")
+				}
+			>
 				<button
 					className="but"
-					onClick={() => dispatch(changeToDawn())}
+					onClick={() => {
+						dispatch(changeToDawn());
+						setCenterDiv("signup");
+					}}
 				>
-					DAWN
+					Go To Sign Up
 				</button>
-				<iframe
-					title="vid"
-					id="ytplayer"
-					width="1000"
-					height="180"
-					src="https://www.youtube.com/embed/dNl4-w9ZrBs?autoplay=1"
-				></iframe>
+			</div>
+			<div
+				className={
+					"signupDiv " + (centerDiv === "login" ? "" : "centerDiv")
+				}
+			>
+				<button
+					className="but"
+					role="button"
+					onClick={() => {
+						dispatch(changeToNoon());
+						setCenterDiv("login");
+					}}
+				>
+					Go To Login
+				</button>
 			</div>
 		</>
 	);

@@ -9,9 +9,13 @@ function Example() {
 			<header className="Example-header">
 				<img src={logo} className="Example-logo" alt="logo" />
 				<Counter />
-				<p>
-					Edit <code>src/Example.tsx</code> and save to reload.
-				</p>
+				<iframe
+					title="vid"
+					id="ytplayer"
+					width="1000"
+					height="180"
+					src="https://www.youtube.com/embed/dNl4-w9ZrBs?autoplay=1"
+				></iframe>
 				<span>
 					<span>Learn </span>
 					<a

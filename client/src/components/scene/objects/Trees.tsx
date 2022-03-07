@@ -2,7 +2,7 @@ import { LinearScale, ScatterPlot } from "@material-ui/icons";
 import React, { useState } from "react";
 import Tree from "../meshes/Tree";
 
-const NUM_TREES = 50;
+const NUM_TREES = 150;
 const BACK_TREES = 40;
 
 const trees: JSX.Element[] = new Array<JSX.Element>(NUM_TREES + BACK_TREES);
@@ -10,7 +10,7 @@ const trees: JSX.Element[] = new Array<JSX.Element>(NUM_TREES + BACK_TREES);
 for (let i = 0; i < NUM_TREES; i++) {
 	const xPos = Math.random() * 40 - 20;
 	const zPos = Math.random() * 10 - 16;
-	const scale = Math.random() + 0.5;
+	const scale = (Math.random() + 0.5) / 2;
 	trees[i] = (
 		<Tree position={[xPos, 1, zPos]} scale={[scale, scale, scale]} />
 	);

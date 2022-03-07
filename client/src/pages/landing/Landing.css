@@ -148,3 +148,12 @@ h4 {
 	text-decoration: none;
 	color: white;
 }
+
+#ytplayer {
+	margin: auto;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 200px;
+	border: 0;
+}

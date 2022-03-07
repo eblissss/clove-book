@@ -3,16 +3,17 @@ import React, { useRef, useState, useEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 
-import grassImg from "../../../assets/grass2.jpg";
+import dirtMap from "../../../assets/dirt_04.png";
+import dirtMapN from "../../../assets/dirt_04_nrm.png";
 
 const GROUND_RES = 50;
 
 function Ground(props: JSX.IntrinsicElements["mesh"]) {
 	const ref = useRef<THREE.Mesh>(null!);
 
-	const maps = useTexture({ map: grassImg });
+	const maps = useTexture({ map: dirtMap, normalMap: dirtMapN });
 	maps.map.wrapS = maps.map.wrapT = RepeatWrapping;
-	maps.map.repeat.set(5, 5);
+	maps.map.repeat.set(40, 40);
 	maps.map.needsUpdate = true;
 
 	const {

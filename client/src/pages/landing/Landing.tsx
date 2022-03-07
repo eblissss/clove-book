@@ -6,14 +6,14 @@ export default function Landing() {
 	return (
 		<div id="main">
 			{/* MUI will replace some of this */}
-			<h1>The Cook Book</h1>
-			<div id="subsplash">Make the Extraordinary</div>
+			<h1>Cook Book</h1>
+			<div id="subsplash">Make Food</div>
 			<button id="find">
 				<Link to="/example" className="links">
-					Find Your Recipe
+					Find Recipes
 				</Link>
 			</button>
-			<h4>(c) 2022 yess this group</h4>
+			<h4>(c) 2022 PoopGroup</h4>
 			<div id="topright">
 				<button id="signin">
 					<Link to="/example" className="links">

@@ -16,7 +16,7 @@ export default function Landing() {
 			<h4>(c) 2022 PoopGroup</h4>
 			<div id="topright">
 				<button id="signin">
-					<Link to="/example" className="links">
+					<Link to="/login" className="links">
 						Sign In
 					</Link>
 				</button>

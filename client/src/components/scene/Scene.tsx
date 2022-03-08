@@ -25,9 +25,9 @@ function Scene() {
 						rotation: [0, 0, 0],
 					}}
 				>
-					<axesHelper args={[5]} />
-					<ambientLight intensity={0.5} />
 					<MovingSky time={time} />
+					{/* <axesHelper args={[5]} />
+					<ambientLight intensity={0.5} />
 					<pointLight
 						position={[0, 10, 0]}
 						intensity={0.3}
@@ -35,7 +35,7 @@ function Scene() {
 					<Suspense fallback={<></>}>
 						<Ground />
 					</Suspense>
-					<Trees />
+					<Trees /> */}
 				</Canvas>
 			</div>
 		</Suspense>

@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import Landing from "../landing/Landing";
 import Example from "../example/Example";
@@ -17,7 +18,7 @@ function App() {
 					width: "10%",
 					zIndex: "99",
 					position: "absolute",
-					visibility: "hidden",
+					// visibility: "hidden",
 				}}
 			>
 				<nav>

@@ -26,7 +26,7 @@ function MovingSky(props: SkyProps): JSX.Element {
 		<Sky
 			distance={4000}
 			inclination={inclination}
-			azimuth={0.2}
+			azimuth={3 / 4}
 			turbidity={0.5}
 			rayleigh={rayleigh}
 			mieDirectionalG={0.4}

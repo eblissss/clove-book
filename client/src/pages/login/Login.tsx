@@ -1,50 +1,29 @@
-import React, { useState } from "react";
-import "./Login.css";
-import Scene from "../../components/scene/Scene";
+import React from "react";
+import { useAppSelector } from "../../app/hooks";
 
-import { useAppDispatch } from "../../app/hooks";
-import { changeToDawn, changeToNoon } from "../../components/scene/sceneSlice";
+import Scene from "../../components/scene/Scene";
+import { selectTime } from "../../components/scene/sceneSlice";
+
+import { LoginForm } from "./loginForm/LoginForm";
+import { SignupForm } from "./signupForm/SignupForm";
+
+import "./Login.css";
 
 // This will include both login and signup
 
 export default function Login() {
-	const dispatch = useAppDispatch();
-
-	const [centerDiv, setCenterDiv] = useState("login");
+	const time = useAppSelector(selectTime);
 
 	return (
 		<>
 			<Scene />
-			<div
-				className={
-					"loginDiv " + (centerDiv === "login" ? "" : "centerDiv")
-				}
-			>
-				<button
-					className="but"
-					onClick={() => {
-						dispatch(changeToDawn());
-						setCenterDiv("signup");
-					}}
-				>
-					Go To Sign Up
-				</button>
+			<div className={"loginDiv " + (time === "dawn" ? "centerDiv" : "")}>
+				<LoginForm />
 			</div>
 			<div
-				className={
-					"signupDiv " + (centerDiv === "login" ? "" : "centerDiv")
-				}
+				className={"signupDiv " + (time === "dawn" ? "centerDiv" : "")}
 			>
-				<button
-					className="but"
-					role="button"
-					onClick={() => {
-						dispatch(changeToNoon());
-						setCenterDiv("login");
-					}}
-				>
-					Go To Login
-				</button>
+				<SignupForm />
 			</div>
 		</>
 	);

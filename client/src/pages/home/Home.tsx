@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./Home.css";
+
 import { TabBar } from "../../components/tabBar/TabBar";
 
 function Home() {

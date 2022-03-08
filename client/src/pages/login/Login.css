@@ -7,10 +7,10 @@ body {
 	position: relative;
 	background-color: #8bcece;
 	border: 1px solid #8bcece;
-	width: 100px;
+	width: 200px;
 	height: 50px;
 	top: 200px;
-	left: 100px;
+	left: 50px;
 	border-radius: 4px;
 	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
 	box-sizing: border-box;
@@ -45,11 +45,10 @@ body {
 .signupDiv,
 .loginDiv {
 	position: absolute;
-	background-color: #444;
+	background: none;
 	width: 300px;
 	height: 500px;
 	left: calc(50vw - 150px);
-	border-radius: 15px;
 	transition: transform 1s ease;
 }
 

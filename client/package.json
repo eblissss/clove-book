@@ -3,6 +3,9 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
+		"@emotion/react": "^11.8.1",
+		"@emotion/styled": "^11.8.1",
+		"@mui/material": "^5.5.0",
 		"@react-three/drei": "^8.13.1",
 		"@react-three/fiber": "^7.0.26",
 		"@reduxjs/toolkit": "^1.5.1",

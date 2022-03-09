@@ -42,6 +42,7 @@ body {
 	}
 }
 
+/* THIS IS FOR MOVING THE DIVS, NO THEMING */
 .signupDiv,
 .loginDiv {
 	position: absolute;
@@ -53,11 +54,11 @@ body {
 }
 
 .loginDiv {
-	top: 20vh;
+	top: calc((100vh - 500px) / 2);
 }
 
 .signupDiv {
-	top: -80vh;
+	top: calc((-100vh - 500px) / 2);
 }
 
 .centerDiv {

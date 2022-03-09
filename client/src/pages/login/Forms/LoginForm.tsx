@@ -52,11 +52,7 @@ export function LoginForm() {
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
 						<LockOutlinedIcon />
 					</Avatar>
-					<Typography
-						variant="h5"
-						align="center"
-						sx={{ width: "80%" }}
-					>
+					<Typography variant="h5" align="center">
 						Login
 					</Typography>
 					<Box
@@ -109,23 +105,32 @@ export function LoginForm() {
 							</Grid>
 						</Grid>
 						<Button
-							variant="contained"
+							className="Submit"
 							type="submit"
 							sx={{
 								width: "80%",
 								borderRadius: "100px",
 								mt: "0px",
 								mb: "20px",
+								backgroundColor: "tertiary.main",
+								boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
+								color: "#fff",
+								fontFamily: [
+									"sans-serif",
+									"BlinkMacSystemFont",
+									"-apple-system",
+									"Akzidenz Grotesk BQ Medium",
+								],
+								fontSize: "16px",
+								fontWeight: 400,
+								padding: "10px 25px",
+								transition: "transform 150ms, box-shadow 150ms",
 							}}
 						>
 							Log In
 						</Button>
 						<Grid container justifyContent="center">
-							<Typography
-								variant="body2"
-								align="center"
-								sx={{ width: "80%" }}
-							>
+							<Typography variant="body2" align="center">
 								New? Sign Up Below
 							</Typography>
 							<Button

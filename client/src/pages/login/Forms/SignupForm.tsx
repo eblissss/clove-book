@@ -59,11 +59,7 @@ export function SignupForm(props: signupProps) {
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
 						<LockOutlinedIcon />
 					</Avatar>
-					<Typography
-						variant="h5"
-						align="center"
-						sx={{ width: "80%" }}
-					>
+					<Typography variant="h5" align="center">
 						Sign Up
 					</Typography>
 					<Box
@@ -119,12 +115,25 @@ export function SignupForm(props: signupProps) {
 							</Grid>
 						</Grid>
 						<Button
-							variant="contained"
+							className="Submit"
 							type="submit"
 							sx={{
 								width: "80%",
 								borderRadius: "100px",
 								m: "20px",
+								backgroundColor: "tertiary.main",
+								boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
+								color: "#fff",
+								fontFamily: [
+									"sans-serif",
+									"BlinkMacSystemFont",
+									"-apple-system",
+									"Akzidenz Grotesk BQ Medium",
+								],
+								fontSize: "16px",
+								fontWeight: 400,
+								padding: "10px 25px",
+								transition: "transform 150ms, box-shadow 150ms",
 							}}
 							onClick={() => {
 								dispatch(changeToNoon());

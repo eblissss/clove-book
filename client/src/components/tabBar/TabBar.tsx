@@ -1,68 +1,87 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
-import styles from "./TabBar.module.css";
-import { ReactComponent as TabSvg } from "./tab.svg";
+import { Box, Button, Typography } from "@mui/material";
+import TabIcon from "./TabIcon";
 
 interface tabProps {
 	tab: string;
+	selectedTab?: string;
+}
+
+function OneTab(props: tabProps) {
+	return (
+		<Button
+			component={RouterLink}
+			to={`/${props.tab}`}
+			className={props.selectedTab === props.tab ? "" : "Translucent"}
+			sx={{
+				display: "inline-block",
+				width: "200px",
+				height: "100%",
+				transform: "translateX(40px)",
+				textAlign: "center",
+			}}
+		>
+			<TabIcon />
+			<Typography
+				sx={{
+					position: "relative",
+					top: "25%",
+					color: "primary.contrastText",
+					fontFamily: [
+						"sans-serif",
+						"Trebuchet MS",
+						"Calibri",
+						"Gill Sans MT",
+						"Gill Sans",
+					],
+					fontSize: "1.4rem",
+				}}
+			>
+				{props.tab.toUpperCase()}
+			</Typography>
+		</Button>
+	);
 }
 
 export function TabBar(props: tabProps) {
 	return (
-		<div className={styles.header}>
-			<Link to="/home" className={styles.tabLink}>
-				<button
-					className={
-						styles.tab +
-						" " +
-						(props.tab === "home" ? "" : styles.opacity)
-					}
-				>
-					<span className={styles.tabText}>HOME</span>
-
-					<TabSvg className={styles.tabSvg} />
-				</button>
-			</Link>
-			<Link to="/saved" className={styles.tabLink}>
-				<button
-					className={
-						styles.tab +
-						" " +
-						(props.tab === "saved" ? "" : styles.opacity)
-					}
-				>
-					<span className={styles.tabText}>SAVED</span>
-					<TabSvg className={styles.tabSvg} />
-				</button>
-			</Link>
-			<Link to="/plan" className={styles.tabLink}>
-				<button
-					className={
-						styles.tab +
-						" " +
-						(props.tab === "plan" ? "" : styles.opacity)
-					}
-				>
-					<span className={styles.tabText}>PLAN</span>
-					<TabSvg className={styles.tabSvg} />
-				</button>
-			</Link>
-			<Link to="/create" className={styles.tabLink}>
-				<button
-					className={
-						styles.tab +
-						" " +
-						(props.tab === "create" ? "" : styles.opacity)
-					}
-				>
-					<span className={styles.tabText}>CREATE</span>
-					<TabSvg className={styles.tabSvg} />
-				</button>
-			</Link>
-			<Link to="/" className={styles.tabLink}>
-				<button className={styles.logout}>Logout</button>
-			</Link>
-		</div>
+		<Box
+			component="div"
+			sx={{
+				position: "absolute",
+				top: "0px",
+				width: "100%",
+				height: "59px",
+				backgroundColor: "primary.main",
+				whiteSpace: "nowrap",
+				overflow: "hidden",
+			}}
+		>
+			<OneTab tab="home" selectedTab={props.tab} />
+			<OneTab tab="saved" selectedTab={props.tab} />
+			<OneTab tab="plan" selectedTab={props.tab} />
+			<OneTab tab="create" selectedTab={props.tab} />
+			<Button
+				component={RouterLink}
+				to="/"
+				className="Logout"
+				sx={{
+					position: "absolute",
+					top: "calc((60px - 70%) / 2)",
+					right: "20px",
+					width: "100px",
+					height: "70%",
+					backgroundColor: "secondary.main",
+					borderRadius: "17px",
+					color: "secondary.contrastText",
+					fontSize: "1.1rem",
+					textAlign: "center",
+				}}
+			>
+				Logout
+			</Button>
+		</Box>
 	);
 }

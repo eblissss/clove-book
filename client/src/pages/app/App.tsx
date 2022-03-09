@@ -10,6 +10,13 @@ import Saved from "../saved/Saved";
 import Plan from "../plan/Plan";
 import Create from "../create/Create";
 
+import WebFont from "webfontloader";
+WebFont.load({
+	google: {
+		families: ["Overlock", "Prociono", "Sen"],
+	},
+});
+
 function App() {
 	return (
 		<BrowserRouter>

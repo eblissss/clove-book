@@ -1,5 +1,3 @@
-import { LinearScale, ScatterPlot } from "@material-ui/icons";
-import React, { useState } from "react";
 import Tree from "../meshes/Tree";
 
 const NUM_TREES = 150;

@@ -5,8 +5,6 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectTime } from "./sceneSlice";
 import styles from "./Scene.module.css";
 
-import Trees from "./objects/Trees";
-import Ground from "./objects/Ground";
 import MovingSky from "./objects/MovingSky";
 
 function Scene() {
@@ -26,16 +24,6 @@ function Scene() {
 					}}
 				>
 					<MovingSky time={time} />
-					{/* <axesHelper args={[5]} />
-					<ambientLight intensity={0.5} />
-					<pointLight
-						position={[0, 10, 0]}
-						intensity={0.3}
-					></pointLight>
-					<Suspense fallback={<></>}>
-						<Ground />
-					</Suspense>
-					<Trees /> */}
 				</Canvas>
 			</div>
 		</Suspense>

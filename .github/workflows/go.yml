@@ -34,12 +34,8 @@ jobs:
       - name: Pack Remote Build
         uses: dfreilich/pack-action@v2.0.0
         with:
-          args: "build ${{ env.IMG_NAME }} --builder ${{ env.BUILDER }} --publish"
+          args: "build ${{ env.IMG_NAME }} --path ./server --builder ${{ env.BUILDER }} --publish"
 
-  deploy:
-    name: Deploy Image to Cloud Run
-    runs-on: ubuntu-latest
-    steps:
       - name: Setup GCloud Auth
         id: auth
         uses: google-github-actions/auth@v0.4.0

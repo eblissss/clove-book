@@ -3,8 +3,9 @@ name: Google Cloud Run Deploy (Front-end)
 on:
     push:
         branches:
-            paths:
-                - "client/**"
+            - main
+        paths:
+            - "client/**"
 
 env:
     PROJECT_ID: ${{ secrets.GCR_PROJECT }}

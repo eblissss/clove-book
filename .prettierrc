@@ -3,6 +3,12 @@
 		{
 			"files": ["*.html", "*.css"],
 			"options": {}
+		},
+		{
+			"files": ["*.yml"],
+			"options": {
+				"tabWidth": 2
+			}
 		}
 	],
 	"useTabs": true,

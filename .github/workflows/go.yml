@@ -39,6 +39,8 @@ jobs:
 
   deploy:
     name: Deploy Image to Cloud Run
+    runs-on: ubuntu-latest
+    steps:
       - name: Setup GCloud Auth
         id: auth
         uses: google-github-actions/auth@v0.4.0

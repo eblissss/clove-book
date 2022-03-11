@@ -1,6 +1,8 @@
-name: Go
+name: Push Server to GCR
 
 on:
+  workflow_dispatch:
+    paths: "server/**"
   push:
     branches: [ main ]
     paths: "server/**"

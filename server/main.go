@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"server/routes"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -17,9 +18,12 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(cors.Default())
 
+	// Test
+	router.GET("/test", routes.Test)
+
 	// Recipes
-	router.POST("recipes")
-	router.GET("recipes")
+	router.POST("/recipes")
+	router.GET("/recipes")
 	router.DELETE("/recipes/:cookbookID")
 	router.PUT("/recipes/:cookbookID")
 	router.POST("/users/:username/favorites")

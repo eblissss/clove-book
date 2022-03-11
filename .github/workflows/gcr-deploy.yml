@@ -28,9 +28,8 @@ jobs:
 
             - name: Use cached node_modules
               uses: actions/cache@master
-              working-directory: client
               with:
-                  path: node_modules
+                  path: client/node_modules
                   key: nodeModules-${{ hashFiles('**/yarn.lock') }}
                   restore-keys: |
                       nodeModules-
@@ -47,10 +46,9 @@ jobs:
 
             - name: Archive Production Artifact
               uses: actions/upload-artifact@main
-              working-directory: client
               with:
                   name: build
-                  path: build
+                  path: client/build
 
     deploy-gcr:
         name: Deploy to GCR
@@ -71,7 +69,7 @@ jobs:
               id: auth
               uses: google-github-actions/auth@v0.4.0
               with:
-                  credentials_json: ${{ inputs.GCR_SA_KEY }}
+                  credentials_json: ${{ secrets.GCR_SA_KEY }}
 
             - name: Set up Cloud SDK
               uses: google-github-actions/setup-gcloud@v0.2.1

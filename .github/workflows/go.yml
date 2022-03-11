@@ -5,13 +5,12 @@ on:
     paths: "server/**"
   push:
     branches: [main]
-    paths: "server/**"
 
 env:
   PROJECT_ID: ${{ secrets.GCR_PROJECT }}
   RUN_REGION: us-east1
   USERNAME: "accrazed"
-  IMG_NAME: "CLOVEBOOK_SERVER"
+  IMG_NAME: "clove-book-server"
   REGISTRY: "gcr.io"
   BUILDER: "paketobuildpacks/builder:base"
 

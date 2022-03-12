@@ -19,7 +19,7 @@ jobs:
     name: Build+Upload Go App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set App Name
         run: 'echo "IMG_NAME=$(echo ${REGISTRY})/$(echo ${PROJECT_ID})/$(echo ${SERVICE_NAME}:$(echo ${GITHUB_SHA}))" >> $GITHUB_ENV'
@@ -27,9 +27,8 @@ jobs:
       - id: login
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: _json_key
-          password: ${{ secrets.GCR_SA_KEY }}
+          username: ${{ env.USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Setup GCloud Auth
         id: auth
@@ -37,13 +36,13 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCR_SA_KEY }}
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.2.1
-
       - name: Pack Remote Build
         uses: dfreilich/pack-action@v2.0.0
         with:
-          args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }} --publish ${IMG_NAME}"
+          args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }} --publish"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.1
 
       - name: Deploy Image
         run: |-

@@ -31,11 +31,6 @@ jobs:
           username: _json_key
           password: ${{ secrets.GCR_SA_KEY }}
 
-      - name: Pack Remote Build
-        uses: dfreilich/pack-action@v2.0.0
-        with:
-          args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }} --publish"
-
       - name: Setup GCloud Auth
         id: auth
         uses: google-github-actions/auth@v0.4.0
@@ -44,6 +39,11 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.1
+
+      - name: Pack Remote Build
+        uses: dfreilich/pack-action@v2.0.0
+        with:
+          args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }} --publish"
 
       - name: Deploy Image
         run: |-

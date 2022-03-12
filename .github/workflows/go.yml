@@ -13,6 +13,7 @@ env:
   SERVICE_NAME: "clove-book-server"
   REGISTRY: "gcr.io"
   BUILDER: "paketobuildpacks/builder:base"
+  GCR_SA_KEY_B64: ${ echo ${{ secrets.GCR_SA_KEY }} | base64 }
 
 jobs:
   build:
@@ -41,7 +42,7 @@ jobs:
       - name: Push to GCR
         uses: RafikFarhad/push-to-gcr-github-action@v3.0.2
         with:
-          gcloud_service_key: ${{ secrets.GCR_SA_KEY }}
+          gcloud_service_key: ${ env.GCR_SA_KEY_B64 }
           project_id: ${{ secrets.GCR_PROJECT }}
           image_name: ${SERVICE_NAME}
           image_tag: ${GITHUB_SHA}

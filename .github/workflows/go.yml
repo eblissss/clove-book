@@ -43,7 +43,7 @@ jobs:
       - name: Pack Remote Build
         uses: dfreilich/pack-action@v2.0.0
         with:
-          args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }} --publish"
+          args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }} --publish ${IMG_NAME}"
 
       - name: Deploy Image
         run: |-

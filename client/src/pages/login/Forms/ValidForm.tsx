@@ -39,7 +39,7 @@ export function ValidForm() {
 						align="center"
 						sx={{ width: "80%" }}
 					>
-						Complete Registration
+						Register
 					</Typography>
 					<Typography
 						variant="body2"

@@ -53,7 +53,7 @@ export function LoginForm() {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography variant="h5" align="center">
-						Login
+						Log In
 					</Typography>
 					<Box
 						component="form"

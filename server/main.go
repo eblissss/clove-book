@@ -14,35 +14,35 @@ func main() {
 		port = "8000"
 	}
 
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.Use(cors.Default())
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(cors.Default())
 
 	// Test
-	router.GET("/test", routes.Test)
+	r.GET("/test", routes.Test)
 
 	// Recipes
-	router.POST("/recipes")
-	router.GET("/recipes")
-	router.DELETE("/recipes/:cookbookID")
-	router.PUT("/recipes/:cookbookID")
-	router.POST("/users/:username/favorites")
-	router.GET("/users/:username/favorites")
+	r.POST("/recipes")
+	r.GET("/recipes")
+	r.DELETE("/recipes/:cookbookID", routes.DeleteRecipe)
+	r.PUT("/recipes/:cookbookID")
+	r.POST("/users/:username/favorites")
+	r.GET("/users/:username/favorites")
 
 	// Ingredients
-	router.GET("/users/:username/ingredients")
-	router.POST("/users/:username/ingredients")
-	router.DELETE("/users/:username/ingredients")
-	router.PUT("/users/:username/ingredients")
+	r.GET("/users/:username/ingredients")
+	r.POST("/users/:username/ingredients")
+	r.DELETE("/users/:username/ingredients")
+	r.PUT("/users/:username/ingredients")
 
 	// Users
-	router.POST("/users")
-	router.GET("/users/login")
-	router.GET("/users/logout")
-	router.GET("/users/:username")
-	router.PUT("/users/:username")
-	router.DELETE("/users/:username")
+	r.POST("/users", routes.MakeUser)
+	r.GET("/users/login")
+	r.GET("/users/logout")
+	r.GET("/users/:username")
+	r.PUT("/users/:username")
+	r.DELETE("/users/:username")
 
 	//this runs the server and allows it to listen to requests.
-	router.Run(":" + port)
+	r.Run(":" + port)
 }

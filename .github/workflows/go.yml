@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set App Name
+      - name: Encode Key
         run: 'echo "GCR_SA_KEY_B64=$(echo ${{ secrets.GCR_SA_KEY }}) | base64" >> $GITHUB_ENV'
 
       - id: login

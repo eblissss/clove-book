@@ -61,19 +61,26 @@ func MakeUser(c *gin.Context) {
 }
 
 func LogIn(c *gin.Context) {
+	
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
-	
-	foundUser := userCollection.FindOne(ctx, bson.M{
-		"username": username,
-		"password": password
-	})
-	if foundUser.Err() != nil {
-		err := fmt.Sprintf("Username not found: %s", foundUser.Username)
-		c.JSON(http.StatusConflict, gin.H{"error": err})
+	user := &models.User{}
+	un = c.Params.ByName("username")
+	pw = c.Params.ByName("password")
+
+	err := userCollection.Find(ctx, bson.M{
+		"username": un,
+		"password": pw
+	}).Decode(&user)
+
+	if err.Err() != nil {
+		err := fmt.Sprintf("Username not found: %s", Username)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		fmt.Println(err)
 		return
 	}
 
+	c.JSON(http.StatusOK, responses.UserResponse{Status: http.StatusOK, Message: "success", Data: M.{"data": user}})
 }
+

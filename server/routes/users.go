@@ -15,7 +15,7 @@ import (
 )
 
 var validate = validator.New()
-var userCollection *mongo.Collection = OpenCollection(Client, "orders")
+var userCollection *mongo.Collection = OpenCollection(Client, "users")
 
 func MakeUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
@@ -61,5 +61,19 @@ func MakeUser(c *gin.Context) {
 }
 
 func LogIn(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+
+	
+	foundUser := userCollection.FindOne(ctx, bson.M{
+		"username": username,
+		"password": password
+	})
+	if foundUser.Err() != nil {
+		err := fmt.Sprintf("Username not found: %s", foundUser.Username)
+		c.JSON(http.StatusConflict, gin.H{"error": err})
+		fmt.Println(err)
+		return
+	}
 
 }

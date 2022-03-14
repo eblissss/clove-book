@@ -61,8 +61,8 @@ func MakeUser(c *gin.Context) {
 }
 
 func LogIn(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	// defer cancel()
 
 	// COMMENTED OUT SO I COULD BUILD THANKS
 	// foundUser := userCollection.FindOne(ctx, bson.M{

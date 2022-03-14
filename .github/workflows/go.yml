@@ -44,17 +44,15 @@ jobs:
         with:
           args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }}"
 
-      # - name: Encode Key
-      #   run: 'echo "GCR_SA_KEY_B64=$(echo ${{ secrets.GCR_SA_KEY }}) | base64" >> $GITHUB_ENV'
+      - name: GCloud Docker Authentication
+        run: gcloud auth configure-docker
+
+      - name: Tag Image
+        run: docker tag ${{ env.SERVICE_NAME }} $REGISTRY/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
 
       - name: Push to GCR
-        uses: RafikFarhad/push-to-gcr-github-action@v3.0.2
-        with:
-          gcloud_service_key: ${{ secrets.GCR_SA_KEY }}
-          project_id: ${{ secrets.GCR_PROJECT }}
-          image_name: ${SERVICE_NAME}
-          image_tag: ${GITHUB_SHA}
-          push_only: true
+        run: |-
+          docker push $REGISTRY/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
 
       - name: Deploy Image
         run: |-

@@ -64,16 +64,16 @@ func LogIn(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
-	
-	foundUser := userCollection.FindOne(ctx, bson.M{
-		"username": username,
-		"password": password
-	})
-	if foundUser.Err() != nil {
-		err := fmt.Sprintf("Username not found: %s", foundUser.Username)
-		c.JSON(http.StatusConflict, gin.H{"error": err})
-		fmt.Println(err)
-		return
-	}
+	// COMMENTED OUT SO I COULD BUILD THANKS
+	// foundUser := userCollection.FindOne(ctx, bson.M{
+	// 	"username": username,
+	// 	"password": password
+	// })
+	// if foundUser.Err() != nil {
+	// 	err := fmt.Sprintf("Username not found: %s", foundUser.Username)
+	// 	c.JSON(http.StatusConflict, gin.H{"error": err})
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
 }

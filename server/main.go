@@ -21,27 +21,27 @@ func main() {
 	// Test
 	r.GET("/test", routes.Test)
 
-	// Recipes
-	r.POST("/recipes", routes.MakeRecipe)
-	r.GET("/recipes", routes.SearchRecipes)
-	r.DELETE("/recipes/:cookbookID", routes.DeleteRecipe)
-	r.PUT("/recipes/:cookbookID", routes.UpdateRecipe)
-	r.POST("/users/:username/favorites", routes.SaveFavorite)
-	r.GET("/users/:username/favorites", routes.ViewFavorites)
+	// // Recipes
+	// r.POST("/recipes", routes.MakeRecipe)
+	// r.GET("/recipes", routes.SearchRecipes)
+	// r.DELETE("/recipes/:cookbookID", routes.DeleteRecipe)
+	// r.PUT("/recipes/:cookbookID", routes.UpdateRecipe)
+	// r.POST("/users/:username/favorites", routes.SaveFavorite)
+	// r.GET("/users/:username/favorites", routes.ViewFavorites)
 
-	// Ingredients
-	r.GET("/users/:username/ingredients", routes.ViewIngredients)
-	r.POST("/users/:username/ingredients", routes.AddIngredients)
-	r.DELETE("/users/:username/ingredients", routes.DeleteIngredients)
-	r.PUT("/users/:username/ingredients", routes.UpdateIngredient) // What is the use case of this?
+	// // Ingredients
+	// r.GET("/users/:username/ingredients", routes.ViewIngredients)
+	// r.POST("/users/:username/ingredients", routes.AddIngredients)
+	// r.DELETE("/users/:username/ingredients", routes.DeleteIngredients)
+	// r.PUT("/users/:username/ingredients", routes.UpdateIngredient) // What is the use case of this?
 
-	// Users
-	r.POST("/users", routes.MakeUser)
-	r.GET("/users/login", routes.LogIn)
-	r.GET("/users/logout", routes.LogOut)
-	r.GET("/users/:username", routes.GetUser)
-	r.PUT("/users/:username", routes.UpdateUsername)
-	r.DELETE("/users/:username", routes.DeleteUser)
+	// // Users
+	// r.POST("/users", routes.MakeUser)
+	// r.GET("/users/login", routes.LogIn)
+	// r.GET("/users/logout", routes.LogOut)
+	// r.GET("/users/:username", routes.GetUser)
+	// r.PUT("/users/:username", routes.UpdateUsername)
+	// r.DELETE("/users/:username", routes.DeleteUser)
 
 	//this runs the server and allows it to listen to requests.
 	r.Run(":" + port)

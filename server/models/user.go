@@ -1,6 +1,10 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type User struct {
 	UserID    primitive.ObjectID `json:"userID"`
@@ -11,4 +15,10 @@ type User struct {
 	Password  string             `json:"password"`
 	CreatedAt string             `json:"createdAt"`
 	UpdatedAt string             `json:"updatedAt"`
+}
+
+type AuthUser struct {
+	Username string    `json:"username"`
+	Email    string    `json:"email"`
+	Expires  time.Time `json:"expires"`
 }

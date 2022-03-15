@@ -22,6 +22,7 @@
 		"@types/webfontloader": "^1.6.34",
 		"@typescript-eslint/eslint-plugin": "^5.13.0",
 		"@typescript-eslint/parser": "^5.13.0",
+		"axios": "^0.26.1",
 		"eslint": "^8.10.0",
 		"eslint-plugin-react": "^7.29.3",
 		"react": "^17.0.2",

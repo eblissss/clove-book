@@ -10,15 +10,9 @@ import {
 } from "@mui/material";
 import React from "react";
 
-interface cardProps {
-	name: string;
-	imageURL?: string;
-	tags?: string[];
-	cookTime?: string;
-	boxProps?: any;
-}
+import { SimpleRecipe } from "../../api/models";
 
-export function RecipeCard(props: cardProps) {
+export function RecipeCard(props: SimpleRecipe) {
 	return (
 		<Card
 			sx={{
@@ -28,7 +22,6 @@ export function RecipeCard(props: cardProps) {
 				flexDirection: "column",
 				borderRadius: "20px",
 				backgroundColor: "primary.dark",
-				...props.boxProps,
 			}}
 		>
 			<CardMedia
@@ -44,7 +37,7 @@ export function RecipeCard(props: cardProps) {
 				}
 				alt="food image"
 			/>
-			<CardContent sx={{ flexGrow: 1 }}>
+			<CardContent sx={{ flexGrow: 1, position: "relative" }}>
 				<Typography
 					gutterBottom
 					variant="h5"
@@ -55,6 +48,32 @@ export function RecipeCard(props: cardProps) {
 				>
 					{props.name}
 				</Typography>
+				<Box
+					component="div"
+					sx={{
+						position: "absolute",
+						right: "0px",
+						top: "-30px",
+						backgroundColor: "#ffffffaa",
+						width: "60px",
+						height: "30px",
+						justifyContent: "center",
+					}}
+				>
+					<Typography
+						gutterBottom
+						variant="h5"
+						component="h5"
+						sx={{
+							color: "primary.contrastText",
+							fontSize: "30px",
+							textAlign: "center",
+						}}
+					>
+						{props.readyInMinutes}m
+					</Typography>
+				</Box>
+
 				<Box
 					component="div"
 					sx={{

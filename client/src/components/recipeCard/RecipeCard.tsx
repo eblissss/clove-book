@@ -16,8 +16,6 @@ export function RecipeCard(props: SimpleRecipe) {
 	return (
 		<Card
 			sx={{
-				// height: "300px",
-				width: "240px",
 				display: "flex",
 				flexDirection: "column",
 				borderRadius: "20px",

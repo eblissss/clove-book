@@ -12,7 +12,7 @@ interface searchBarProps {
 export default function SearchBar(props: searchBarProps) {
 	const dispatch = useAppDispatch();
 
-	function onSearch() {
+	function updateSearch() {
 		const searchVal = (
 			document.getElementById("search") as HTMLInputElement
 		).value;
@@ -31,7 +31,6 @@ export default function SearchBar(props: searchBarProps) {
 				p: "2px 4px",
 				display: "flex",
 				alignItems: "center",
-				width: "400px",
 				backgroundColor: "primary.dark",
 				...props.paperProps,
 			}}
@@ -49,15 +48,11 @@ export default function SearchBar(props: searchBarProps) {
 				}}
 				placeholder="a lentil dish with plenty of greens..."
 				inputProps={{ "aria-label": "search recipes" }}
-			/>
-			<IconButton
-				type="button"
-				sx={{ p: "10px" }}
-				aria-label="search"
-				onClick={() => {
-					onSearch();
+				onChange={() => {
+					updateSearch();
 				}}
-			>
+			/>
+			<IconButton type="button" sx={{ p: "10px" }} aria-label="search">
 				<SearchIcon />
 			</IconButton>
 		</Paper>

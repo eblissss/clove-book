@@ -30,6 +30,8 @@ export function LoginForm() {
 			password: data.get("password"),
 		});
 
+		// check with backend
+
 		navigate("/home");
 	};
 
@@ -47,6 +49,8 @@ export function LoginForm() {
 						borderRadius: "22px",
 						textAlign: "center",
 						justifyContent: "center",
+
+						px: "10%",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -71,8 +75,6 @@ export function LoginForm() {
 									name="username"
 									autoComplete="username"
 									sx={{
-										width: "80%",
-										margin: "10px auto",
 										marginTop: "0px",
 									}}
 								/>
@@ -86,10 +88,6 @@ export function LoginForm() {
 									name="password"
 									type="password"
 									autoComplete="new-password"
-									sx={{
-										width: "80%",
-										margin: "10px auto",
-									}}
 								/>
 							</Grid>
 							<Grid item xs={12}>
@@ -104,29 +102,7 @@ export function LoginForm() {
 								/>
 							</Grid>
 						</Grid>
-						<Button
-							className="Submit"
-							type="submit"
-							sx={{
-								width: "80%",
-								borderRadius: "100px",
-								mt: "0px",
-								mb: "20px",
-								backgroundColor: "tertiary.main",
-								boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
-								color: "#fff",
-								fontFamily: [
-									"sans-serif",
-									"BlinkMacSystemFont",
-									"-apple-system",
-									"Akzidenz Grotesk BQ Medium",
-								],
-								fontSize: "16px",
-								fontWeight: 400,
-								padding: "10px 25px",
-								transition: "transform 150ms, box-shadow 150ms",
-							}}
-						>
+						<Button className="Submit" type="submit" fullWidth>
 							Log In
 						</Button>
 						<Grid container justifyContent="center">
@@ -135,8 +111,8 @@ export function LoginForm() {
 							</Typography>
 							<Button
 								variant="contained"
+								fullWidth
 								sx={{
-									width: "80%",
 									borderRadius: "100px",
 									mt: "10px",
 									mb: "20px",

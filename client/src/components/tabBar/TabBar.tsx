@@ -50,7 +50,7 @@ export function TabBar(props: tabProps) {
 		<Box
 			component="div"
 			sx={{
-				position: "absolute",
+				position: "relative",
 				top: "0px",
 				width: "100%",
 				height: "59px",

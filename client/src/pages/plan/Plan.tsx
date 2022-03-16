@@ -1,23 +1,25 @@
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import React from "react";
 
 import { TabBar } from "../../components/tabBar/TabBar";
 
 function Plan() {
 	return (
-		<>
+		<Box
+			component="div"
+			sx={{
+				backgroundColor: "primary.light",
+			}}
+		>
 			<TabBar tab="plan" />
-			<Box
-				component="div"
+			<Container
+				id="BACKGROUND"
 				sx={{
-					position: "relative",
-					minHeight: "calc(100vh - 59px)",
-					width: "100vw",
-					top: "59px",
-					backgroundColor: "primary.light",
+					p: "30px",
+					display: "flex",
 				}}
-			></Box>
-		</>
+			></Container>
+		</Box>
 	);
 }
 

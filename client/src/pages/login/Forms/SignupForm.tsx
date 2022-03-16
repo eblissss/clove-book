@@ -27,33 +27,27 @@ export function SignupForm(props: signupProps) {
 		console.log({
 			email: data.get("email"),
 			password: data.get("password"),
+			usename: data.get("username"),
 		});
 
 		props.setUseValid(true);
+
+		// send to backend
 	};
 
 	return (
 		<>
-			<Container
-				component="main"
-				maxWidth="lg"
-				sx={{
-					alignItems: "center",
-					justifyContent: "center",
-					direction: "column",
-				}}
-			>
+			<Container component="main" maxWidth="lg">
 				<Box
 					component="div"
 					sx={{
 						bgcolor: "primary.light",
-						marginTop: "8px",
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
 						borderRadius: "22px",
 						textAlign: "center",
-						justifyContent: "center",
+						px: "10%",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -77,11 +71,6 @@ export function SignupForm(props: signupProps) {
 									label="Username"
 									name="username"
 									autoComplete="username"
-									sx={{
-										width: "80%",
-										margin: "10px auto",
-										marginTop: "0px",
-									}}
 								/>
 							</Grid>
 							<Grid item xs={12} display="flex">
@@ -92,10 +81,6 @@ export function SignupForm(props: signupProps) {
 									label="Email Address"
 									name="email"
 									autoComplete="email"
-									sx={{
-										width: "80%",
-										m: "0px auto",
-									}}
 								/>
 							</Grid>
 							<Grid item xs={12} display="flex">
@@ -107,34 +92,13 @@ export function SignupForm(props: signupProps) {
 									name="password"
 									type="password"
 									autoComplete="new-password"
-									sx={{
-										width: "80%",
-										margin: "10px auto",
-									}}
 								/>
 							</Grid>
 						</Grid>
 						<Button
 							className="Submit"
 							type="submit"
-							sx={{
-								width: "80%",
-								borderRadius: "100px",
-								m: "20px",
-								backgroundColor: "tertiary.main",
-								boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
-								color: "#fff",
-								fontFamily: [
-									"sans-serif",
-									"BlinkMacSystemFont",
-									"-apple-system",
-									"Akzidenz Grotesk BQ Medium",
-								],
-								fontSize: "16px",
-								fontWeight: 400,
-								padding: "10px 25px",
-								transition: "transform 150ms, box-shadow 150ms",
-							}}
+							fullWidth
 							onClick={() => {
 								dispatch(changeToNoon());
 							}}

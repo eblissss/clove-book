@@ -26,6 +26,7 @@ const palette = {
 	},
 	tertiary: {
 		main: "#8bcece",
+		contrastText: "#fff",
 	},
 	error: {
 		main: red.A400,
@@ -39,6 +40,14 @@ const theme = createTheme({
 		...palette,
 	},
 	components: {
+		MuiTypography: {
+			styleOverrides: {
+				root: {
+					fontFamily: ["Sen"],
+					color: palette.primary.contrastText,
+				},
+			},
+		},
 		MuiButton: {
 			styleOverrides: {
 				root: {
@@ -53,10 +62,24 @@ const theme = createTheme({
 							opacity: "70%",
 						},
 					},
-					"&.Submit:hover": {
+					"&.Submit": {
+						borderRadius: "100px",
+						margin: "20px auto",
 						backgroundColor: palette.tertiary.main,
-						boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
-						transform: "translateY(-2px)",
+						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
+						color: palette.tertiary.contrastText,
+						fontFamily: [
+							"sans-serif",
+							"Akzidenz Grotesk BQ Medium",
+						],
+						fontSize: "16px",
+						padding: "10px 25px",
+						transition: "transform 150ms, box-shadow 150ms",
+						"&:hover": {
+							backgroundColor: palette.tertiary.main,
+							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
+							transform: "translateY(-2px)",
+						},
 					},
 				},
 			},
@@ -64,41 +87,46 @@ const theme = createTheme({
 		MuiTextField: {
 			styleOverrides: {
 				root: {
+					"& .MuiInputBase-multiline": {
+						"&.MuiFilledInput-underline:before": {
+							borderBottom: `0px solid ${palette.primary.main}`,
+						},
+						"&.MuiFilledInput-underline:hover:before": {
+							borderBottom: `0px solid ${palette.primary.dark}`,
+						},
+						"&.MuiFilledInput-underline:after": {
+							borderBottom: `3px solid ${palette.primary.dark}`,
+						},
+						padding: "10px 12px",
+						borderRadius: "15px",
+						backgroundColor: palette.primary.dark,
+						"& .MuiInputBase-inputMultiline": {
+							fontSize: 16,
+							borderRadius: "15px",
+						},
+					},
 					"&.Round": {
 						border: "0px solid",
 						borderColor: "primary.main",
-						// overflow: "hidden",
 						borderRadius: "100px",
 						backgroundColor: "#ffffff",
 						boxSizing: "border-box",
+						margin: "10px auto",
 
-						// "& label": {
-						// 	color: "primary.main",
-						// 	border: "0px",
-						// },
-						// "& label.Mui-focused": {
-						// 	color: "secondary.main",
-						// },
-						// "& .MuiInput-underline:after": {
-						// 	borderBottomColor: "primary.main",
-						// },
 						"& .MuiOutlinedInput-root": {
 							"& fieldset": {
 								color: "#ffffff",
 								border: "none",
-								// borderColor: "primary.main",
 								borderRadius: "100px",
 								paddingLeft: "0.5rem",
 								margin: "-0.05rem",
 							},
 							"&:hover fieldset": {
 								border: "1px solid",
-								// borderColor: "primary.main",
 								borderWidth: "0.15rem",
 							},
 							"&:Mui-focused fieldset": {
 								border: "1px solid",
-								// borderColor: "primary.main",
 							},
 						},
 					},

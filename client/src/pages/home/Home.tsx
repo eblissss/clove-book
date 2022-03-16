@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { Box, Container, Grid, Typography } from "@mui/material";
+import {
+	Box,
+	Container,
+	Divider,
+	Grid,
+	Stack,
+	Typography,
+} from "@mui/material";
 import { TabBar } from "../../components/tabBar/TabBar";
 import { RecipeCard } from "../../components/recipeCard/RecipeCard";
 import SearchBar from "../../components/searchBar/SearchBar";
@@ -8,6 +15,9 @@ import IngredientPanel from "../../components/ingredientPanel/IngredientPanel";
 
 import { Recipe } from "../../api/requests";
 import { SimpleRecipe } from "../../api/models";
+import RecipeGrid, {
+	RecipeStack,
+} from "../../components/recipeGrid/RecipeGrid";
 
 const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
@@ -23,6 +33,7 @@ for (let i = 0; i < 12; i++) {
 }
 
 function Home() {
+	const [searching, setSearching] = useState(false);
 	const [recipes, setRecipes] = useState<SimpleRecipe[]>(fakeJSON);
 
 	useEffect(() => {
@@ -38,72 +49,74 @@ function Home() {
 		*/
 	}, []);
 
+	// should probably cap search to every 200ms or so
+
 	return (
-		<>
+		<Box
+			component="div"
+			sx={{
+				backgroundColor: "primary.light",
+			}}
+		>
 			<TabBar tab="home" />
-			<Box
+			<Container
 				id="BACKGROUND"
-				component="div"
 				sx={{
-					position: "absolute",
-					minHeight: "calc(100vh - 59px)",
-					width: "100vw",
-					top: "59px",
-					backgroundColor: "primary.light",
 					p: "30px",
+					display: "flex",
 				}}
 			>
-				<Typography
-					variant="h2"
-					component="h2"
-					sx={{
-						color: "primary.contrastText",
-						m: "20px",
-						fontFamily: ["Sen"],
-					}}
-				>
-					What are you looking for?
-				</Typography>
-				<SearchBar paperProps={{ m: "20px", width: "50%" }} />
-
-				<Typography
-					variant="h2"
-					component="h2"
-					sx={{
-						color: "primary.contrastText",
-						m: "20px",
-						mt: "40px",
-						fontFamily: ["Sen"],
-					}}
-				>
-					Explore New Recipes
-				</Typography>
-				<Container sx={{ py: 4, float: "left" }} maxWidth="sm">
-					<Grid container spacing={4}>
-						{fakeJSON.map((recipe, i) => (
-							<Grid item key={i} xs={12} sm={8} md={6}>
-								<RecipeCard
-									{...recipe}
-									// boxProps={{ ml: `${50 * i}px`, mt: "50px" }}
-								/>
-							</Grid>
-						))}
-					</Grid>
+				<Container sx={{ flex: "2" }}>
+					<Typography variant="h3" component="h3">
+						What are you looking for?
+					</Typography>
+					<SearchBar
+						paperProps={{ m: "20px", ml: "0", mb: "40px" }}
+					/>
+					{searching ? (
+						// This will be the search results
+						<RecipeGrid recipes={fakeJSON} />
+					) : (
+						<>
+							<Typography variant="h2" component="h2">
+								Explore New Recipes
+							</Typography>
+							<RecipeGrid recipes={fakeJSON} />
+						</>
+					)}
 				</Container>
 				<Container
 					sx={{
-						py: 4,
-						float: "right",
-						width: "300px",
-						position: "relative",
-						bottom: "280px",
-						right: "50px",
+						flex: "1",
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
 					}}
 				>
-					<IngredientPanel boxProps={{ width: "300px" }} />
+					<IngredientPanel />
+					<Container
+						disableGutters
+						maxWidth={false}
+						sx={{
+							mt: "20px",
+							p: "20px",
+							borderRadius: "15px",
+							backgroundColor: "primary.main",
+							maxWidth: "300px",
+						}}
+					>
+						<Typography
+							variant="h4"
+							component="h4"
+							sx={{ my: "20px", textAlign: "center" }}
+						>
+							Popular Dishes
+						</Typography>
+						<RecipeStack recipes={fakeJSON} />
+					</Container>
 				</Container>
-			</Box>
-		</>
+			</Container>
+		</Box>
 	);
 }
 

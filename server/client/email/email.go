@@ -15,6 +15,13 @@ type Client struct {
 	port int
 }
 
+func Must(c *Client, err error) *Client {
+	if err != nil {
+		panic(err)
+	}
+	return c
+}
+
 func New() (*Client, error) {
 	user, ok := os.LookupEnv("SMTP_USERNAME")
 	if !ok {
@@ -45,12 +52,8 @@ func New() (*Client, error) {
 	}, nil
 }
 
-func (c *Client) SendEmail() error {
-	from := "john.doe@example.com"
-
-	to := []string{
-		"roger.roe@example.com",
-	}
+func (c *Client) SendEmail(from, to string) error {
+	email := []string{to}
 
 	msg := []byte("From: john.doe@example.com\r\n" +
 		"To: roger.roe@example.com\r\n" +
@@ -59,7 +62,7 @@ func (c *Client) SendEmail() error {
 
 	auth := smtp.PlainAuth("", c.user, c.pass, c.host)
 
-	err := smtp.SendMail(fmt.Sprintf("%s:%s", c.host, c.port), auth, from, to, msg)
+	err := smtp.SendMail(fmt.Sprintf("%s:%d", c.host, c.port), auth, from, email, msg)
 
 	if err != nil {
 		log.Fatal(err)

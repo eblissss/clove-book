@@ -36,7 +36,8 @@ func main() {
 	// r.PUT("/users/:username/ingredients", routes.UpdateIngredient) // What is the use case of this?
 
 	// // Users
-	// r.POST("/users", routes.MakeUser)
+	r.POST("/users/auth", routes.AuthUser)
+	r.POST("/users", routes.RegisterUser)
 	// r.GET("/users/login", routes.LogIn)
 	// r.GET("/users/logout", routes.LogOut)
 	// r.GET("/users/:username", routes.GetUser)

@@ -3,10 +3,9 @@ package routes
 import (
 	"context"
 	"fmt"
-	"log"
+	"math/rand"
 	"net/http"
-	"net/smtp"
-	"os"
+	"server/client/email"
 	"server/models"
 	"time"
 
@@ -20,6 +19,7 @@ import (
 var validate = validator.New()
 var userCollection *mongo.Collection = OpenCollection(Client, "users")
 var pendingUserCollection *mongo.Collection = OpenCollection(Client, "pending_users")
+var mailClient = email.Must(email.New())
 
 func AuthUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
@@ -41,9 +41,27 @@ func AuthUser(c *gin.Context) {
 	// TODO: check email valid
 	// TODO: check username valid
 
-	
+	rand.Seed(time.Now().UnixNano())
+	user.Code = 1e5 + rand.Intn(1e6-1e5) // [100000,999999]
+	user.Expires = time.Now().Add(15 * time.Minute)
+	// Add AuthUser
+	if _, err := pendingUserCollection.InsertOne(ctx, *user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user was not added to auth base"})
+		fmt.Println(err)
+		return
+	}
+
+	// Send Email
+	if err := mailClient.SendEmail(user.Email, user.Email); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
 
 	fmt.Println("Email sent successfully")
+	c.JSON(http.StatusOK, gin.H{
+		"expires": user.Expires,
+	})
 
 }
 

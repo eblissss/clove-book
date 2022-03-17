@@ -21,5 +21,5 @@ type AuthUser struct {
 	Username string    `json:"username"`
 	Email    string    `json:"email"`
 	Expires  time.Time `json:"expires"`
-	Code     int
+	Code     string    `json:"code"`
 }

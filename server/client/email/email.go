@@ -3,16 +3,19 @@ package email
 import (
 	"fmt"
 	"log"
-	"net/smtp"
-	"os"
-	"strconv"
+
+	sendgrid "github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
+//go:generate faux -i IFace -o ../../fakes/client/email/email.go
+type IFace interface {
+	SendEmail(toEmail, subject, msg string) error
+	SendAuthCode(toEmail, code string) error
+}
+
 type Client struct {
-	user string
-	pass string
-	host string
-	port int
+	sg *sendgrid.Client
 }
 
 func Must(c *Client, err error) *Client {
@@ -22,51 +25,42 @@ func Must(c *Client, err error) *Client {
 	return c
 }
 
-func New() (*Client, error) {
-	user, ok := os.LookupEnv("SMTP_USERNAME")
-	if !ok {
-		return nil, fmt.Errorf("env: SMTP_USERNAME not found")
-	}
-	pass, ok := os.LookupEnv("SMTP_PASSWORD")
-	if !ok {
-		return nil, fmt.Errorf("env: SMTP_PASSWORD not found")
-	}
-	host, ok := os.LookupEnv("SMTP_HOST")
-	if !ok {
-		return nil, fmt.Errorf("env: SMTP_HOST not found")
-	}
-	portStr, ok := os.LookupEnv("SMTP_PORT")
-	if !ok {
-		return nil, fmt.Errorf("env: SMTP_PORT not found")
-	}
-	port, err := strconv.Atoi(portStr)
-	if err != nil {
-		return nil, fmt.Errorf("env: %v", err)
-	}
-
+func New(key string) (*Client, error) {
 	return &Client{
-		user: user,
-		pass: pass,
-		host: host,
-		port: port,
+		sg: sendgrid.NewSendClient(key),
 	}, nil
 }
 
-func (c *Client) SendEmail(from, to string) error {
-	email := []string{to}
-
-	msg := []byte("From: john.doe@example.com\r\n" +
-		"To: roger.roe@example.com\r\n" +
-		"Subject: Test mail\r\n\r\n" +
-		"Email body\r\n")
-
-	auth := smtp.PlainAuth("", c.user, c.pass, c.host)
-
-	err := smtp.SendMail(fmt.Sprintf("%s:%d", c.host, c.port), auth, from, email, msg)
+func (c *Client) SendEmail(toEmail, subject, msg string) error {
+	from := mail.NewEmail("Amelia", "amelia@clovebook.com")
+	to := mail.NewEmail(toEmail, toEmail)
+	message := mail.NewSingleEmail(from, subject, to, "", msg)
+	response, err := c.sg.Send(message)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+	} else {
+		fmt.Println(response.StatusCode)
+		fmt.Println(response.Body)
+		fmt.Println(response.Headers)
+	}
+	return nil
+}
+
+func (c *Client) SendAuthCode(toEmail, code string) error {
+	subject := "Authenticate your account"
+	msg := fmt.Sprintf(
+		`<h1>Hey!</h1>
+		<p>Please verify your email by using the code %s</p>
+		<br/>
+		<p>Amelia</p>`,
+		code)
+	err := c.SendEmail(toEmail, subject, msg)
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
+
+var _ IFace = (*Client)(nil)

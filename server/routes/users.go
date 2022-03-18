@@ -29,46 +29,40 @@ func AuthUser(c *gin.Context) {
 	defer cancel()
 
 	// Unwrap request into AuthUser
-	user := &models.AuthUser{}
-	if err := c.BindJSON(&user); err != nil {
+	authUser := &models.AuthUser{}
+	if err := c.BindJSON(&authUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
-	if err := validate.Struct(user); err != nil {
+	if err := validate.Struct(authUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
 
-	// Validate email
-	if _, err := mail.ParseAddress(user.Email); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		fmt.Println(err)
-		return
-	}
-	// Validate username
-	if err := isValidUsername(ctx, user.Username); err != nil {
+	if err := validateAccount(ctx, authUser.Email, authUser.Username); err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
-	// Delete existing auth codes for user
-	authUserCollection.DeleteMany(ctx, *user)
+	// Delete existing authUser for user
+	authUserCollection.DeleteMany(ctx, bson.M{
+		"username": authUser.Username,
+		"email":    authUser.Email,
+	})
 
-	rand.Seed(time.Now().UnixNano())
-	user.Code = fmt.Sprint(1e5 + rand.Intn(1e6-1e5)) // [100000,999999]
-	user.Expires = time.Now().Add(15 * time.Minute)
+	authUser.Code, authUser.Expires = generateRandomCode()
 
 	// Add AuthUser
-	if _, err := authUserCollection.InsertOne(ctx, *user); err != nil {
+	if _, err := authUserCollection.InsertOne(ctx, *authUser); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user was not added to auth base"})
 		fmt.Println(err)
 		return
 	}
 
 	// Send Email
-	if err := mailClient.SendAuthCode(user.Email, fmt.Sprint(user.Code)); err != nil {
+	if err := mailClient.SendAuthCode(authUser.Email, fmt.Sprint(authUser.Code)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not send auth code"})
 		fmt.Println(err)
 		return
@@ -76,7 +70,7 @@ func AuthUser(c *gin.Context) {
 
 	fmt.Println("Email sent successfully")
 	c.JSON(http.StatusOK, gin.H{
-		"expires": user.Expires,
+		"expires": authUser.Expires,
 	})
 }
 
@@ -98,16 +92,17 @@ func RegisterUser(c *gin.Context) {
 	}
 
 	// Validate username
-	if err := isValidUsername(ctx, user.Username); err != nil {
+	if err := validateUsername(ctx, user.Username); err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
-	// Validate authCode code
+
+	// Validate auth code
 	authUser := &models.AuthUser{}
-	authCode := c.Params.ByName("code")
-	if len(authCode) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "param 'code' not supplied"})
+	authCode, ok := c.GetQuery("code")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query val 'code' not supplied"})
 		return
 	}
 	res := authUserCollection.FindOne(ctx, bson.M{
@@ -119,6 +114,12 @@ func RegisterUser(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
+	// Token expired
+	if time.Now().After(authUser.Expires) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "token expired"})
+		return
+	}
+	// Incorrect code
 	if authUser.Code != authCode {
 		c.JSON(http.StatusConflict, gin.H{"error": "incorrect code"})
 		return
@@ -135,17 +136,12 @@ func RegisterUser(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
-	if _, err = authUserCollection.DeleteOne(ctx, bson.M{
-		"code":     authCode,
-		"email":    user.Email,
+
+	// Delete auth code entry
+	authUserCollection.DeleteMany(ctx, bson.M{
 		"username": user.Username,
-	}); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err,
-		})
-		fmt.Println(err)
-		return
-	}
+		"email":    user.Email,
+	})
 
 	c.JSON(http.StatusOK, gin.H{
 		"userID": result.InsertedID,
@@ -176,12 +172,23 @@ func LogInUser(c *gin.Context) {
 	// 	c.JSON(http.StatusOK, responses.UserResponse{Status: http.StatusOK, Message: "success", Data: gin.H{"data": user}})
 }
 
-func isValidUsername(ctx context.Context, username string) error {
+func validateAccount(ctx context.Context, email, username string) error {
+	if err := validateEmail(ctx, email); err != nil {
+		return err
+	}
+	if err := validateUsername(ctx, username); err != nil {
+		return err
+	}
+	return nil
+}
+
+func validateUsername(ctx context.Context, username string) error {
 	// Username invalid
 	reg := regexp.MustCompile("^[a-zA-Z0-9_]*$")
 	if res := reg.Find([]byte(username)); res == nil {
 		return fmt.Errorf("username %s invalid. username can only contain alphanumeric characters and underscores", username)
 	}
+
 	// Username taken
 	if res := userCollection.FindOne(ctx, bson.M{
 		"username": username,
@@ -190,4 +197,27 @@ func isValidUsername(ctx context.Context, username string) error {
 	}
 
 	return nil
+}
+
+func validateEmail(ctx context.Context, email string) error {
+	// Email invalid
+	if _, err := mail.ParseAddress(email); err != nil {
+		return err
+	}
+
+	// Email taken
+	if res := userCollection.FindOne(ctx, bson.M{
+		"email": email,
+	}); res.Err() == nil {
+		return fmt.Errorf("email taken: %s", email)
+	}
+
+	return nil
+}
+
+func generateRandomCode() (code string, expires time.Time) {
+	rand.Seed(time.Now().UnixNano())
+	code = fmt.Sprint(1e5 + rand.Intn(1e6-1e5)) // [100000,999999]
+	expires = time.Now().Add(15 * time.Minute)
+	return
 }

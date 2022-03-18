@@ -7,19 +7,19 @@ import (
 )
 
 type User struct {
-	UserID    primitive.ObjectID `json:"userID"`
-	Username  string             `json:"username"`
-	FirstName string             `json:"firstName"`
-	LastName  string             `json:"lastName"`
-	Email     string             `json:"email"`
-	Password  string             `json:"password"`
-	CreatedAt string             `json:"createdAt"`
-	UpdatedAt string             `json:"updatedAt"`
+	UserID    primitive.ObjectID `json:"userID" bson:"user_id"`
+	Username  string             `json:"username" bson:"username"`
+	FirstName string             `json:"firstName" bson:"first_name"`
+	LastName  string             `json:"lastName" bson:"last_name"`
+	Email     string             `json:"email" bson:"email"`
+	Password  string             `json:"password" bson:"password"`
+	CreatedAt string             `json:"createdAt" bson:"created_at"`
+	UpdatedAt string             `json:"updatedAt" bson:"updated_at"`
 }
 
 type AuthUser struct {
-	Username string    `json:"username"`
-	Email    string    `json:"email"`
-	Expires  time.Time `json:"expires"`
-	Code     string    `json:"code"`
+	Username string    `json:"username" bson:"username"`
+	Email    string    `json:"email" bson:"email"`
+	Expires  time.Time `json:"expires" bson:"expires"`
+	Code     string    `json:"code" bson:"code"`
 }

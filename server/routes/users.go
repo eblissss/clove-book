@@ -17,6 +17,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+
+	"github.com/golang-jwt/jwt"
 )
 
 var validate = validator.New()
@@ -68,7 +70,6 @@ func AuthUser(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Email sent successfully")
 	c.JSON(http.StatusOK, gin.H{
 		"expires": authUser.Expires,
 	})
@@ -91,8 +92,8 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Validate username
-	if err := validateUsername(ctx, user.Username); err != nil {
+	// Validate email/username
+	if err := validateAccount(ctx, user.Email, user.Username); err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
@@ -148,28 +149,35 @@ func RegisterUser(c *gin.Context) {
 	})
 }
 
-func LogInUser(c *gin.Context) {
+func LoginUser(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 
-	// 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
-	// 	defer cancel()
+	// Find user
+	username, uOk := c.GetQuery("username")
+	password, pOk := c.GetQuery("password")
+	if !uOk || !pOk {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing username or password query"})
+		return
+	}
+	res := userCollection.FindOne(ctx, bson.M{
+		"username": username,
+		"password": password,
+	})
+	if res.Err() != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid username/password"})
+		return
+	}
 
-	// 	user := &models.User{}
-	// 	un := c.Params.ByName("username")
-	// 	pw := c.Params.ByName("password")
+	// Combination successful
+	user := &models.User{}
+	if err := res.Decode(user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	}
 
-	// 	err := userCollection.Find(ctx, bson.M{
-	// 		"username": un,
-	// 		"password": pw,
-	// 	}).Decode(&user)
+	_ = jwt.New(jwt.SigningMethodHS256)
 
-	// 	if err.Err() != nil {
-	// 		err := fmt.Sprintf("Username not found: %s", Username)
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-	// 		fmt.Println(err)
-	// 		return
-	// 	}
-
-	// 	c.JSON(http.StatusOK, responses.UserResponse{Status: http.StatusOK, Message: "success", Data: gin.H{"data": user}})
+	c.JSON(http.StatusOK, user) // TODO: Don't return everything, just return JWT Token
 }
 
 func validateAccount(ctx context.Context, email, username string) error {

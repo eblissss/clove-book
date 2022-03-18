@@ -38,7 +38,7 @@ func main() {
 	// // Users
 	r.POST("/api/users/auth", routes.AuthUser)
 	r.POST("/api/users", routes.RegisterUser)
-	r.GET("/api/users/login", routes.LogInUser)
+	r.GET("/api/users/login", routes.LoginUser)
 	// r.GET("/api/users/logout", routes.LogOut)
 	// r.GET("/api/users/:username", routes.GetUser)
 	// r.PUT("/api/users/:username", routes.UpdateUsername)

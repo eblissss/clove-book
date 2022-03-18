@@ -8,7 +8,7 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-//go:generate faux -i IFace -o ../../fakes/client/email/email.go
+//go:generate faux -i IFace -o ../../mocks/client/email/email.go
 type IFace interface {
 	SendEmail(toEmail, subject, msg string) error
 	SendAuthCode(toEmail, code string) error

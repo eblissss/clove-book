@@ -9,6 +9,7 @@ import (
 	"os"
 	"regexp"
 	"server/client/email"
+	"server/lib/creds"
 	"server/models"
 	"time"
 
@@ -17,8 +18,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-
-	"github.com/golang-jwt/jwt"
 )
 
 var validate = validator.New()
@@ -175,9 +174,16 @@ func LoginUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
 
-	_ = jwt.New(jwt.SigningMethodHS256)
+	// TODO: replace "123456" with secret token (from env)
+	token, err := creds.NewSignedToken(user.Username, "123456")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	}
 
-	c.JSON(http.StatusOK, user) // TODO: Don't return everything, just return JWT Token
+	c.SetCookie("token", token, int(time.Now().Add(2*time.Hour).Unix()), "",
+		"clovebook.com", false, false)
+
+	c.Status(http.StatusOK)
 }
 
 func validateAccount(ctx context.Context, email, username string) error {

@@ -39,3 +39,13 @@ export interface Recipe extends SimpleRecipe {
 	ingredients: Ingredient[];
 	instructions: Instruction[];
 }
+
+export interface Userpass {
+	username: string;
+	password: string;
+}
+
+export interface Useremail {
+	username: string;
+	email: string;
+}

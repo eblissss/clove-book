@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import Landing from "../landing/Landing";
 import Example from "../example/Example";
@@ -20,41 +19,6 @@ WebFont.load({
 function App() {
 	return (
 		<BrowserRouter>
-			<div
-				style={{
-					width: "10%",
-					zIndex: "99",
-					position: "absolute",
-					// visibility: "hidden",
-				}}
-			>
-				<nav>
-					<ul>
-						Test Navbar
-						<li>
-							<Link to="/">Home</Link>
-						</li>
-						<li>
-							<Link to="/example">Example</Link>
-						</li>
-						<li>
-							<Link to="/login">Login</Link>
-						</li>
-						<li>
-							<Link to="/home">Home</Link>
-						</li>
-						<li>
-							<Link to="/saved">Saved</Link>
-						</li>
-						<li>
-							<Link to="/plan">Plan</Link>
-						</li>
-						<li>
-							<Link to="/create">Create</Link>
-						</li>
-					</ul>
-				</nav>
-			</div>
 			{/* A <Routes> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
 			<Routes>

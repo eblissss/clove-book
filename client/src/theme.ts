@@ -40,6 +40,15 @@ const theme = createTheme({
 		...palette,
 	},
 	components: {
+		MuiListItem: {
+			styleOverrides: {
+				root: {
+					"& .MuiListItemButton-root": {
+						padding: "0 0.4rem",
+					},
+				},
+			},
+		},
 		MuiTypography: {
 			styleOverrides: {
 				root: {
@@ -65,9 +74,9 @@ const theme = createTheme({
 					"&.Submit": {
 						borderRadius: "100px",
 						margin: "20px auto",
-						backgroundColor: palette.tertiary.main,
+						backgroundColor: palette.secondary.main,
 						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
-						color: palette.tertiary.contrastText,
+						color: palette.secondary.contrastText,
 						fontFamily: [
 							"sans-serif",
 							"Akzidenz Grotesk BQ Medium",
@@ -76,7 +85,7 @@ const theme = createTheme({
 						padding: "10px 25px",
 						transition: "transform 150ms, box-shadow 150ms",
 						"&:hover": {
-							backgroundColor: palette.tertiary.main,
+							backgroundColor: palette.secondary.main,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
 						},

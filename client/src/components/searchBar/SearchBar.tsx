@@ -4,6 +4,7 @@ import { Menu as MenuIcon, Search as SearchIcon } from "@mui/icons-material";
 
 import { useAppDispatch } from "../../app/hooks";
 import { setSearch } from "./searchSlice";
+import SearchMenu from "./SearchMenu";
 
 interface searchBarProps {
 	paperProps?: any;
@@ -35,9 +36,7 @@ export default function SearchBar(props: searchBarProps) {
 				...props.paperProps,
 			}}
 		>
-			<IconButton sx={{ p: "10px" }} aria-label="menu">
-				<MenuIcon />
-			</IconButton>
+			<SearchMenu />
 			<InputBase
 				id="search"
 				sx={{

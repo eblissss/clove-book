@@ -1,4 +1,5 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import React, { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 
@@ -8,6 +9,8 @@ import { selectTime } from "../../components/scene/sceneSlice";
 import { LoginForm } from "./Forms/LoginForm";
 import { SignupForm } from "./Forms/SignupForm";
 import { ValidForm } from "./Forms/ValidForm";
+import { Link, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 // This will include both login and signup
 
@@ -15,6 +18,8 @@ export default function Login() {
 	const time = useAppSelector(selectTime);
 
 	const [useValid, setUseValid] = useState(false);
+
+	const navigate = useNavigate();
 
 	return (
 		<>
@@ -29,6 +34,19 @@ export default function Login() {
 					overflow: "hidden",
 				}}
 			>
+				<Button
+					component={Link}
+					to="/"
+					sx={{ position: "absolute", right: "0" }}
+				>
+					<CloseIcon
+						sx={{
+							color: "white",
+							fontSize: "50px",
+						}}
+					/>
+				</Button>
+
 				<Box
 					component="div"
 					className={time === "dawn" ? "lower" : ""}

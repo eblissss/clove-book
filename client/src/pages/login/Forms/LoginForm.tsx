@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "../../../app/hooks";
 import { changeToDawn } from "../../../components/scene/sceneSlice";
+import { doLogin } from "../../../api/requests";
 
 import {
 	Avatar,
@@ -26,13 +27,40 @@ export function LoginForm() {
 		e.preventDefault();
 		const data = new FormData(e.currentTarget);
 		console.log({
-			email: data.get("email"),
+			username: data.get("username"),
 			password: data.get("password"),
 		});
 
-		// check with backend
+		// Check if user/pass is empty
 
-		navigate("/home");
+		const res = doLogin({
+			username: data.get("username") as string,
+			password: data.get("password") as string,
+		})
+			.then((data) => {
+				data = {
+					username: "string",
+					firstName: "string",
+					lastName: "string",
+					email: "string",
+					password: "string",
+					userID: 0,
+					createdAt: "string",
+					updatedAt: "string",
+				};
+				// data = { error: "dfighsiog"}
+
+				if (data.hasOwnProperty("error")) {
+					// do something
+				}
+
+				navigate("/home");
+
+				console.log(data);
+			})
+			.catch((err) => console.log(err));
+
+		// check with backend
 	};
 
 	return (
@@ -107,7 +135,7 @@ export function LoginForm() {
 						</Button>
 						<Grid container justifyContent="center">
 							<Typography variant="body2" align="center">
-								New? Sign Up Below
+								No Account? 🥺
 							</Typography>
 							<Button
 								variant="contained"

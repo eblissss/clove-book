@@ -10,7 +10,6 @@ interface RecipeGridProps {
 function RecipeGrid({ recipes }: RecipeGridProps) {
 	return (
 		<Grid
-			maxWidth="md"
 			container
 			spacing={4}
 			sx={{
@@ -18,14 +17,7 @@ function RecipeGrid({ recipes }: RecipeGridProps) {
 			}}
 		>
 			{recipes?.map((recipe, i) => (
-				<Grid
-					item
-					key={i}
-					xs={12}
-					sm={8}
-					md={6}
-					sx={{ maxWidth: "200px" }}
-				>
+				<Grid item key={i}>
 					<RecipeCard {...recipe} />
 				</Grid>
 			))}

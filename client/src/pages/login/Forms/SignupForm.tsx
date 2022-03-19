@@ -13,6 +13,7 @@ import {
 	Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { doRegister } from "../../../api/requests";
 
 interface signupProps {
 	setUseValid: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,9 +31,19 @@ export function SignupForm(props: signupProps) {
 			usename: data.get("username"),
 		});
 
-		props.setUseValid(true);
-
 		// send to backend
+		const res = doRegister({
+			email: data.get("email") as string,
+			username: data.get("username") as string,
+			password: data.get("password") as string,
+			firstName: "jimothy",
+			lastName: "jwtlover",
+		})
+			.then((data) => {
+				console.log(data);
+				props.setUseValid(true);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (
@@ -105,6 +116,25 @@ export function SignupForm(props: signupProps) {
 						>
 							Sign Up
 						</Button>
+						<Grid container justifyContent="center">
+							<Typography variant="body2" align="center">
+								Have a Login?
+							</Typography>
+							<Button
+								variant="contained"
+								fullWidth
+								sx={{
+									borderRadius: "100px",
+									mt: "10px",
+									mb: "20px",
+								}}
+								onClick={() => {
+									dispatch(changeToNoon());
+								}}
+							>
+								Go Back
+							</Button>
+						</Grid>
 					</Box>
 				</Box>
 			</Container>

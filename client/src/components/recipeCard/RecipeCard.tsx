@@ -35,7 +35,7 @@ export function RecipeCard(props: SimpleRecipe) {
 				}
 				alt="food image"
 			/>
-			<CardContent sx={{ flexGrow: 1, position: "relative" }}>
+			<CardContent sx={{ position: "relative" }}>
 				<Typography
 					gutterBottom
 					variant="h5"

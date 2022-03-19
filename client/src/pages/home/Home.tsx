@@ -1,19 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import {
-	Box,
-	Container,
-	Divider,
-	Grid,
-	Stack,
-	Typography,
-} from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { TabBar } from "../../components/tabBar/TabBar";
-import { RecipeCard } from "../../components/recipeCard/RecipeCard";
 import SearchBar from "../../components/searchBar/SearchBar";
 import IngredientPanel from "../../components/ingredientPanel/IngredientPanel";
-
-import { Recipe } from "../../api/requests";
 import { SimpleRecipe } from "../../api/models";
 import RecipeGrid, {
 	RecipeStack,
@@ -64,6 +54,7 @@ function Home() {
 				sx={{
 					p: "30px",
 					display: "flex",
+					minHeight: "calc(100vh - 59px)",
 				}}
 			>
 				<Container sx={{ flex: "2" }}>

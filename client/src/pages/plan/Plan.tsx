@@ -17,6 +17,7 @@ function Plan() {
 				sx={{
 					p: "30px",
 					display: "flex",
+					minHeight: "calc(100vh - 59px)",
 				}}
 			></Container>
 		</Box>

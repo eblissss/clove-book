@@ -11,8 +11,24 @@ import {
 import React from "react";
 
 import { SimpleRecipe } from "../../api/models";
+import { useAppDispatch } from "../../app/hooks";
+import { openModal, setModal } from "../recipeModal/modalSlice";
 
 export function RecipeCard(props: SimpleRecipe) {
+	const dispatch = useAppDispatch();
+
+	function updateSelectedRecipe() {
+		if (props.cbID >= 0) {
+			console.log(props.cbID);
+			dispatch(setModal({ id: props.cbID, isCookbookID: true }));
+		} else {
+			console.log(props.sID);
+			dispatch(setModal({ id: props.sID, isCookbookID: false }));
+		}
+
+		dispatch(openModal());
+	}
+
 	return (
 		<Card
 			sx={{
@@ -21,6 +37,7 @@ export function RecipeCard(props: SimpleRecipe) {
 				borderRadius: "20px",
 				backgroundColor: "primary.dark",
 			}}
+			onClick={updateSelectedRecipe}
 		>
 			<CardMedia
 				component="img"

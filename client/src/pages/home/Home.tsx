@@ -8,6 +8,7 @@ import { SimpleRecipe } from "../../api/models";
 import RecipeGrid, {
 	RecipeStack,
 } from "../../components/recipeGrid/RecipeGrid";
+import RecipeModal from "../../components/recipeModal/RecipeModal";
 
 const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
@@ -25,6 +26,8 @@ for (let i = 0; i < 12; i++) {
 function Home() {
 	const [searching, setSearching] = useState(false);
 	const [recipes, setRecipes] = useState<SimpleRecipe[]>(fakeJSON);
+	const [popularRecipes, setPopularRecipes] =
+		useState<SimpleRecipe[]>(fakeJSON);
 
 	useEffect(() => {
 		/*
@@ -48,6 +51,7 @@ function Home() {
 				backgroundColor: "primary.light",
 			}}
 		>
+			<RecipeModal />
 			<TabBar tab="home" />
 			<Container
 				id="BACKGROUND"

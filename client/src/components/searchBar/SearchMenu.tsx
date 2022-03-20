@@ -9,7 +9,6 @@ import {
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
-	ListSubheader,
 	Paper,
 	Popover,
 	Radio,

@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton, InputBase, Paper } from "@mui/material";
-import { Menu as MenuIcon, Search as SearchIcon } from "@mui/icons-material";
+import { Search as SearchIcon } from "@mui/icons-material";
 
 import { useAppDispatch } from "../../app/hooks";
 import { setSearch } from "./searchSlice";

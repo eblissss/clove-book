@@ -21,8 +21,8 @@ func main() {
 	// Test
 	r.GET("/test", routes.Test)
 
-	// // Recipes
-	// r.POST("/api/recipes", routes.MakeRecipe)
+	// Recipes
+	r.POST("/api/recipes", routes.MakeRecipe)
 	// r.GET("/api/recipes", routes.SearchRecipes)
 	// r.DELETE("/api/recipes/:cookbookID", routes.DeleteRecipe)
 	// r.PUT("/api/recipes/:cookbookID", routes.UpdateRecipe)

@@ -36,6 +36,7 @@ func AuthUser(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
+
 	if err := validate.Struct(authUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -85,6 +86,8 @@ func RegisterUser(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
+
+	// validate
 	if err := validate.Struct(user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)

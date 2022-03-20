@@ -40,7 +40,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.2.1
 
       - name: Pack Remote Build
-        uses: dfreilich/pack-action@v2.0.0
+        uses: dfreilich/pack-action@v2.1.1
         with:
           args: "build ${{ env.SERVICE_NAME }} --path ./server --builder ${{ env.BUILDER }}"
 

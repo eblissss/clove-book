@@ -28,7 +28,7 @@ func New() *Client {
 	userCollection := OpenCollection(mongoClient, "users")
 	authUserCollection := OpenCollection(mongoClient, "auth_users")
 	recipeCollection := OpenCollection(mongoClient, "recipes")
-	stubCollection := OpenCollection(mongoClient, "recipestub")
+	stubCollection := OpenCollection(mongoClient, "stubs")
 	validate := validator.New()
 
 	mailClient := email.Must(email.New(os.Getenv("SENDGRID_KEY")))

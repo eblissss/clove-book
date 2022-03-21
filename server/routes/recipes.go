@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (r *Client) MakeRecipe(c *gin.Context) {
@@ -17,28 +18,34 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 	var recipe models.Recipe
 	var stub models.RecipeStub
 
-	if err := c.BindJSON(&recipe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.ShouldBindJSON(&recipe); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
 		return
 	}
 	c.BindJSON(&stub) //TODO error check
 
 	if err := r.Validator.Struct(recipe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
 		return
 	}
 
-	recipeID, err := r.RecipeCollection.InsertOne(ctx, recipe)
+	res, err := r.RecipeCollection.InsertOne(ctx, recipe)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added"})
 		return
 	}
 
-	stub.RecipeId = insertedId.string()
+	stub.CookbookID = res.InsertedID.(primitive.ObjectID)
+	stub.IsUserRecipe = true
 
-	r.StubCollection.InsertOne(ctx, stub)
+	_, err = r.StubCollection.InsertOne(ctx, stub)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added to stubs"})
+		return
+	}
 
-	c.JSON(http.StatusOK, "yay")
+	c.JSON(http.StatusOK, gin.H{"insertedCID": stub.CookbookID})
+	return
 }
 
 func (r *Client) DeleteRecipe(c *gin.Context) {

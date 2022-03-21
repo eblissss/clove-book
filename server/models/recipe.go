@@ -10,13 +10,12 @@ type Recipe struct {
 	TotalTime    int64    `json:"totalTime"`
 	Tags         []string `json:"tags"`
 	Ingredients  []string `json:"ingredients"`
-	IsUserRecipe bool     `json:"isUserRecipe"`
 }
 
 // Recipestub for both user-created and other recipes
 type RecipeStub struct {
-	CookbookID    primitive.ObjectID `json:"cookbookID" bson:"_id"`
-	SpoonacularID int                `json:"spoonacularID" bson:"_id"`
+	CookbookID    primitive.ObjectID `json:"cookbookID" bson:"cookbookID"`
+	SpoonacularID int                `json:"spoonacularID" bson:"spoonacularID"`
 	RecipeName    string             `json:"name"`
 	IsUserRecipe  bool               `json:"userRecipe"`
 	TotalTime     int64              `json:"totalTime"`

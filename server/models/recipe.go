@@ -8,6 +8,7 @@ type Recipe struct {
 	TotalTime   int64    `json:"totalTime"`
 	Tags        []string `json:"tags"`
 	Ingredients []string `json:"ingredients"`
+	IsUserRecipe bool 	 `json:"isUserRecipe"`
 }
 
 // Recipestub for both user-created and other recipes

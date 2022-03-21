@@ -36,6 +36,7 @@ func AuthUser(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
+
 	if err := validate.Struct(authUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -75,7 +76,7 @@ func AuthUser(c *gin.Context) {
 }
 
 func RegisterUser(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	// Unwrap request into user
@@ -85,6 +86,8 @@ func RegisterUser(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
+
+	// validate
 	if err := validate.Struct(user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -149,7 +152,7 @@ func RegisterUser(c *gin.Context) {
 }
 
 func LoginUser(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// Find user

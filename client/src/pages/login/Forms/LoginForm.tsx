@@ -38,25 +38,10 @@ export function LoginForm() {
 			password: data.get("password") as string,
 		})
 			.then((data) => {
-				data = {
-					username: "string",
-					firstName: "string",
-					lastName: "string",
-					email: "string",
-					password: "string",
-					userID: 0,
-					createdAt: "string",
-					updatedAt: "string",
-				};
-				// data = { error: "dfighsiog"}
-
-				if (data.hasOwnProperty("error")) {
-					// do something
-				}
-
-				navigate("/home");
-
 				console.log(data);
+				if (data !== undefined) {
+					navigate("/home");
+				}
 			})
 			.catch((err) => console.log(err));
 

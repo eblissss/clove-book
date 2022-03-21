@@ -13,13 +13,16 @@ import {
 	Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { doRegister } from "../../../api/requests";
+import { doAuth } from "../../../api/requests";
+
+import { NewUser } from "../../../api/models";
 
 interface signupProps {
+	userInfo: NewUser;
 	setUseValid: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function SignupForm(props: signupProps) {
+export function SignupForm({ userInfo, setUseValid }: signupProps) {
 	const dispatch = useAppDispatch();
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,22 +31,22 @@ export function SignupForm(props: signupProps) {
 		console.log({
 			email: data.get("email"),
 			password: data.get("password"),
-			usename: data.get("username"),
+			username: data.get("username"),
+			firstName: data.get("firstName"),
+			lastName: data.get("lastName"),
 		});
 
-		// send to backend
-		const res = doRegister({
-			email: data.get("email") as string,
-			username: data.get("username") as string,
-			password: data.get("password") as string,
-			firstName: "jimothy",
-			lastName: "jwtlover",
-		})
-			.then((data) => {
-				console.log(data);
-				props.setUseValid(true);
-			})
-			.catch((err) => console.log(err));
+		// VALIDATE HERE
+
+		setUseValid(true);
+
+		userInfo.username = data.get("username") as string;
+		userInfo.email = data.get("email") as string;
+		userInfo.password = data.get("password") as string;
+		userInfo.firstName = data.get("firstName") as string;
+		userInfo.lastName = data.get("lastName") as string;
+
+		doAuth({ username: userInfo.username, email: userInfo.email });
 	};
 
 	return (

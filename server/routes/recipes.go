@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"server/models"
 	"time"
+	"fmt"
 	//"options"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	//"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -50,24 +50,22 @@ func DeleteRecipe(c *gin.Context) {
 
 // Kate wrote this
 func SearchMyRecipes (c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	
-	opts := options.Find().SetSort(bson.M{"score": 1})
-	
 
+	cur, err:= recipeCollection.Find(ctx, bson.M{})
 	foundRecipes := make([]*models.RecipeStub, 0)
-	filter := bson.M{"$text": bson.M{"$search": c.Query("query"), "score": bson.M{"$meta": "textScore" }, "limit": 5}}
 
-	cur, err := recipeCollection.Find(ctx, filter, opts)
-	
-	// TODO check error?
 	if err = cur.All(ctx, &foundRecipes); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	// Should it be an error if no matches found?
+	fmt.Println(foundRecipes)
 	
-	c.JSON(http.StatusOK, gin.H{
-		"cbID": 0,
-	})
+	// opts := options.Find().SetSort(bson.M{"score": 1})
+	// filter := bson.M{"$text": bson.M{"$search": c.Query("query"), "score": bson.M{"$meta": "textScore" }, "limit": 5}}
+
+	// cur, err := recipeCollection.Find(ctx, filter, opts)
+	
+	c.JSON(http.StatusOK, foundRecipes)
+	
 }

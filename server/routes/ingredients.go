@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"server/models"
 	"time"
-
 	"github.com/gin-gonic/gin"
 )
 

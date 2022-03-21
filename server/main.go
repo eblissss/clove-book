@@ -23,7 +23,7 @@ func main() {
 
 	// Recipes
 	r.POST("/api/recipes", routes.MakeRecipe)
-	// r.GET("/api/recipes", routes.SearchRecipes)
+	r.GET("/api/recipes", routes.SearchMyRecipes)
 	// r.DELETE("/api/recipes/:cookbookID", routes.DeleteRecipe)
 	// r.PUT("/api/recipes/:cookbookID", routes.UpdateRecipe)
 	// r.POST("/api/users/:username/favorites", routes.SaveFavorite)

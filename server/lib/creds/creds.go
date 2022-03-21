@@ -11,7 +11,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func NewSignedToken(username, key string) (string, error) {
+func NewSignedToken(username string, key []byte) (string, error) {
 	signed, err := NewToken(username).SignedString(key)
 	if err != nil {
 		return "", err

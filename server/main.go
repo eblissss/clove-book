@@ -14,6 +14,8 @@ func main() {
 		port = "8000"
 	}
 
+	c := routes.New()
+
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(cors.Default())
@@ -22,27 +24,27 @@ func main() {
 	r.GET("/test", routes.Test)
 
 	// // Recipes
-	r.POST("/recipes", routes.MakeRecipe)
-	r.GET("/recipes", routes.SearchMyRecipes)
-	// r.DELETE("/recipes/:cookbookID", routes.DeleteRecipe)
-	// r.PUT("/recipes/:cookbookID", routes.UpdateRecipe)
-	// r.POST("/users/:username/favorites", routes.SaveFavorite)
-	// r.GET("/users/:username/favorites", routes.ViewFavorites)
+	r.POST("/recipes", c.MakeRecipe)
+	r.GET("/recipes", c.SearchMyRecipes)
+	// r.DELETE("/recipes/:cookbookID", c.DeleteRecipe)
+	// r.PUT("/recipes/:cookbookID", c.UpdateRecipe)
+	// r.POST("/users/:username/favorites", c.SaveFavorite)
+	// r.GET("/users/:username/favorites", c.ViewFavorites)
 
 	// // Ingredients
-	// r.GET("/users/:username/ingredients", routes.ViewIngredients)
-	// r.POST("/users/:username/ingredients", routes.AddIngredients)
-	// r.DELETE("/users/:username/ingredients", routes.DeleteIngredients)
-	// r.PUT("/users/:username/ingredients", routes.UpdateIngredient) // What is the use case of this?
+	// r.GET("/users/:username/ingredients", c.ViewIngredients)
+	// r.POST("/users/:username/ingredients", c.AddIngredients)
+	// r.DELETE("/users/:username/ingredients", c.DeleteIngredients)
+	// r.PUT("/users/:username/ingredients", c.UpdateIngredient) // What is the use case of this?
 
 	// // Users
-	r.POST("/users/auth", routes.AuthUser)
-	r.POST("/users", routes.RegisterUser)
-	r.GET("/users/login", routes.LoginUser)
-	// r.GET("/users/logout", routes.LogoutUser)
-	// r.GET("/users/:username", routes.GetUser)
-	// r.PUT("/users/:username", routes.UpdateUsername)
-	// r.DELETE("/users/:username", routes.DeleteUser)
+	r.POST("/users/auth", c.AuthUser)
+	r.POST("/users", c.RegisterUser)
+	r.GET("/users/login", c.LoginUser)
+	// r.GET("/users/logout", c.LogoutUser)
+	// r.GET("/users/:username", c.GetUser)
+	// r.PUT("/users/:username", c.UpdateUsername)
+	// r.DELETE("/users/:username", c.DeleteUser)
 
 	//this runs the server and allows it to listen to requests.
 	r.Run(":" + port)

@@ -9,6 +9,7 @@ import (
 
 	//"options"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	//"go.mongodb.org/mongo-driver/bson/primitive"
@@ -56,7 +57,23 @@ func SearchMyRecipes(c *gin.Context) {
 	defer cancel()
 	fmt.Println("Passed context creation")
 
-	cur, err := recipeCollection.Find(ctx, bson.M{})
+	// GET api.clovebook.com/recipes?query=""&tags=""
+
+	query, exists := c.GetQuery("query")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "'query' required in endpiont"})
+	}
+
+	cur, err := recipeCollection.Find(ctx,
+		bson.M{
+			"$regex": primitive.Regex{
+				Pattern: ".*",
+				Options: "i",
+			},
+		},
+	)
+
+	
 	foundRecipes := make([]*models.RecipeStub, 0)
 	fmt.Println("Passed recipe finding")
 
@@ -64,7 +81,7 @@ func SearchMyRecipes(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	fmt.Printf("Passed recipe unwrapping: %v\n", foundRecipes)
 
 	// opts := options.Find().SetSort(bson.M{"score": 1})

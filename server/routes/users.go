@@ -170,7 +170,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 
 	// TODO: replace "123456" with secret token (from env)
-	token, err := creds.NewSignedToken(user.Username, "123456")
+	token, err := creds.NewSignedToken(user.Username, []byte("123456"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return

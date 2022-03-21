@@ -39,7 +39,7 @@ func main() {
 	r.POST("/users/auth", routes.AuthUser)
 	r.POST("/users", routes.RegisterUser)
 	r.GET("/users/login", routes.LoginUser)
-	r.GET("/users/logout", routes.LogoutUser)
+	// r.GET("/users/logout", routes.LogoutUser)
 	// r.GET("/users/:username", routes.GetUser)
 	// r.PUT("/users/:username", routes.UpdateUsername)
 	// r.DELETE("/users/:username", routes.DeleteUser)

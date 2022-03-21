@@ -177,9 +177,27 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 
 	c.SetCookie("token", token, int(time.Now().Add(2*time.Hour).Unix()), "",
-		"clovebook.com", false, false)
+		"clovebook.com", true, true)
 
 	c.Status(http.StatusOK)
+}
+
+func (r *Client) LogoutUser(c *gin.Context) {
+	// Kill cookie
+	c.SetCookie("token", "", -1, "", "clovebook.com", true, true)
+	c.Status(http.StatusOK)
+}
+
+func (r *Client) GetUser(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
+func (r *Client) UpdateUsername(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
+func (r *Client) DeleteUser(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
 }
 
 func (r *Client) validateAccount(ctx context.Context, email, username string) error {

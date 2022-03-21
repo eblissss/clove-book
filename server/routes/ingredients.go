@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"server/models"
 	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,4 +25,20 @@ func Test(c *gin.Context) {
 	fmt.Println(err)
 
 	c.JSON(http.StatusOK, "hi :)")
+}
+
+func (r *Client) ViewIngredients(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
+func (r *Client) AddIngredients(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
+func (r *Client) DeleteIngredients(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
+func (r *Client) UpdateIngredient(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
 }

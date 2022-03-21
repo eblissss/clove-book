@@ -46,6 +46,18 @@ func (r *Client) DeleteRecipe(c *gin.Context) {
 	c.JSON(http.StatusOK, "hi :)")
 }
 
+func (r *Client) UpdateRecipe(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
+func (r *Client) SaveFavorite(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
+func (r *Client) ViewFavorites(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
 // Kate wrote this
 func (r *Client) SearchMyRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -84,5 +96,4 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 	// cur, err := recipeCollection.Find(ctx, filter, opts)
 
 	c.JSON(http.StatusOK, foundRecipes)
-
 }

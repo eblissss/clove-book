@@ -10,20 +10,29 @@ import {
 	Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { doRegister } from "../../../api/requests";
+import { NewUser } from "../../../api/models";
 
-export function ValidForm() {
+interface validProps {
+	userInfo: NewUser;
+}
+
+export function ValidForm({ userInfo }: validProps) {
 	const navigate = useNavigate();
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const data = new FormData(e.currentTarget);
-		console.log({
-			code: data.get("code"),
-		});
+		const code = data.get("code") as string;
+		console.log(code);
 
 		// validate
-
-		navigate("/home");
+		doRegister(userInfo, code)
+			.then((data) => {
+				console.log(data);
+				navigate("/home");
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (

@@ -5,21 +5,25 @@ import { useAppSelector } from "../../app/hooks";
 
 import Scene from "../../components/scene/Scene";
 import { selectTime } from "../../components/scene/sceneSlice";
+import { NewUser } from "../../api/models";
 
 import { LoginForm } from "./Forms/LoginForm";
 import { SignupForm } from "./Forms/SignupForm";
 import { ValidForm } from "./Forms/ValidForm";
-import { Link, useNavigate } from "react-router-dom";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // This will include both login and signup
+const userInfo: NewUser = {
+	username: "",
+	firstName: "",
+	lastName: "",
+	password: "",
+	email: "",
+};
 
 export default function Login() {
 	const time = useAppSelector(selectTime);
-
 	const [useValid, setUseValid] = useState(false);
-
-	const navigate = useNavigate();
 
 	return (
 		<>
@@ -62,7 +66,11 @@ export default function Login() {
 						top: "calc((100vh - 500px) / 2)",
 					}}
 				>
-					{useValid ? <ValidForm /> : <LoginForm />}
+					{useValid ? (
+						<ValidForm userInfo={userInfo} />
+					) : (
+						<LoginForm />
+					)}
 				</Box>
 				<Box
 					component="div"
@@ -79,7 +87,7 @@ export default function Login() {
 						top: "calc((-100vh - 500px) / 2)",
 					}}
 				>
-					<SignupForm setUseValid={setUseValid} />
+					<SignupForm userInfo={userInfo} setUseValid={setUseValid} />
 				</Box>
 			</Box>
 		</>

@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import * as models from "./models";
 
 const instance = axios.create({
-	baseURL: "http://api.clovebook.com/",
+	baseURL: "https://clove-book-server-d2pzn7emza-ue.a.run.app",
 	timeout: 15000,
 });
 
@@ -94,8 +94,10 @@ export const updateIngredients = (username: string, data: models.Ingredient) =>
 	});
 
 // ==== User Section ====
-export const doRegister = (data: models.NewUser): Promise<models.User> =>
-	requests.post("/users", data);
+export const doRegister = (
+	data: models.NewUser,
+	code: string
+): Promise<models.User> => requests.post("/users", data, { code: code });
 
 export const doAuth = (data: models.Useremail): Promise<{ expires: string }> =>
 	requests.post("/users/auth", data);

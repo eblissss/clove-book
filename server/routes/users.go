@@ -6,26 +6,17 @@ import (
 	"math/rand"
 	"net/http"
 	"net/mail"
-	"os"
 	"regexp"
-	"server/client/email"
 	"server/lib/creds"
 	"server/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var validate = validator.New()
-var userCollection *mongo.Collection = OpenCollection(Client, "users")
-var authUserCollection *mongo.Collection = OpenCollection(Client, "auth_users")
-var mailClient = email.Must(email.New(os.Getenv("SENDGRID_KEY")))
-
-func AuthUser(c *gin.Context) {
+func (r *Client) AuthUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
@@ -37,19 +28,19 @@ func AuthUser(c *gin.Context) {
 		return
 	}
 
-	if err := validate.Struct(authUser); err != nil {
+	if err := r.Validator.Struct(authUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
 
-	if err := validateAccount(ctx, authUser.Email, authUser.Username); err != nil {
+	if err := r.validateAccount(ctx, authUser.Email, authUser.Username); err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
 	// Delete existing authUser for user
-	authUserCollection.DeleteMany(ctx, bson.M{
+	r.AuthUserCollection.DeleteMany(ctx, bson.M{
 		"username": authUser.Username,
 		"email":    authUser.Email,
 	})
@@ -57,14 +48,14 @@ func AuthUser(c *gin.Context) {
 	authUser.Code, authUser.Expires = generateRandomCode()
 
 	// Add AuthUser
-	if _, err := authUserCollection.InsertOne(ctx, *authUser); err != nil {
+	if _, err := r.AuthUserCollection.InsertOne(ctx, *authUser); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user was not added to auth base"})
 		fmt.Println(err)
 		return
 	}
 
 	// Send Email
-	if err := mailClient.SendAuthCode(authUser.Email, fmt.Sprint(authUser.Code)); err != nil {
+	if err := r.MailClient.SendAuthCode(authUser.Email, fmt.Sprint(authUser.Code)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not send auth code"})
 		fmt.Println(err)
 		return
@@ -75,7 +66,7 @@ func AuthUser(c *gin.Context) {
 	})
 }
 
-func RegisterUser(c *gin.Context) {
+func (r *Client) RegisterUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -88,14 +79,14 @@ func RegisterUser(c *gin.Context) {
 	}
 
 	// validate
-	if err := validate.Struct(user); err != nil {
+	if err := r.Validator.Struct(user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
 
 	// Validate email/username
-	if err := validateAccount(ctx, user.Email, user.Username); err != nil {
+	if err := r.validateAccount(ctx, user.Email, user.Username); err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
@@ -108,7 +99,7 @@ func RegisterUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "query val 'code' not supplied"})
 		return
 	}
-	res := authUserCollection.FindOne(ctx, bson.M{
+	res := r.AuthUserCollection.FindOne(ctx, bson.M{
 		"email":    user.Email,
 		"username": user.Username,
 	})
@@ -133,7 +124,7 @@ func RegisterUser(c *gin.Context) {
 	user.UpdatedAt = time.Now().String()
 
 	// Insert user
-	result, err := userCollection.InsertOne(ctx, *user)
+	result, err := r.UserCollection.InsertOne(ctx, *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user was not created"})
 		fmt.Println(err)
@@ -141,7 +132,7 @@ func RegisterUser(c *gin.Context) {
 	}
 
 	// Delete auth code entry
-	authUserCollection.DeleteMany(ctx, bson.M{
+	r.AuthUserCollection.DeleteMany(ctx, bson.M{
 		"username": user.Username,
 		"email":    user.Email,
 	})
@@ -151,7 +142,7 @@ func RegisterUser(c *gin.Context) {
 	})
 }
 
-func LoginUser(c *gin.Context) {
+func (r *Client) LoginUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -162,7 +153,7 @@ func LoginUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "missing username or password query"})
 		return
 	}
-	res := userCollection.FindOne(ctx, bson.M{
+	res := r.UserCollection.FindOne(ctx, bson.M{
 		"username": username,
 		"password": password,
 	})
@@ -191,17 +182,17 @@ func LoginUser(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func validateAccount(ctx context.Context, email, username string) error {
-	if err := validateEmail(ctx, email); err != nil {
+func (r *Client) validateAccount(ctx context.Context, email, username string) error {
+	if err := r.validateEmail(ctx, email); err != nil {
 		return err
 	}
-	if err := validateUsername(ctx, username); err != nil {
+	if err := r.validateUsername(ctx, username); err != nil {
 		return err
 	}
 	return nil
 }
 
-func validateUsername(ctx context.Context, username string) error {
+func (r *Client) validateUsername(ctx context.Context, username string) error {
 	// Username invalid
 	reg := regexp.MustCompile("^[a-zA-Z0-9_]*$")
 	if res := reg.Find([]byte(username)); res == nil {
@@ -209,7 +200,7 @@ func validateUsername(ctx context.Context, username string) error {
 	}
 
 	// Username taken
-	if res := userCollection.FindOne(ctx, bson.M{
+	if res := r.UserCollection.FindOne(ctx, bson.M{
 		"username": username,
 	}); res.Err() == nil {
 		return fmt.Errorf("username taken: %s", username)
@@ -218,14 +209,14 @@ func validateUsername(ctx context.Context, username string) error {
 	return nil
 }
 
-func validateEmail(ctx context.Context, email string) error {
+func (r *Client) validateEmail(ctx context.Context, email string) error {
 	// Email invalid
 	if _, err := mail.ParseAddress(email); err != nil {
 		return err
 	}
 
 	// Email taken
-	if res := userCollection.FindOne(ctx, bson.M{
+	if res := r.UserCollection.FindOne(ctx, bson.M{
 		"email": email,
 	}); res.Err() == nil {
 		return fmt.Errorf("email taken: %s", email)

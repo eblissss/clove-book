@@ -10,15 +10,12 @@ import (
 	//"options"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 
 	//"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-var recipeCollection *mongo.Collection = OpenCollection(Client, "recipes")
-
-func MakeRecipe(c *gin.Context) {
+func (r *Client) MakeRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
@@ -29,12 +26,12 @@ func MakeRecipe(c *gin.Context) {
 		return
 	}
 
-	if err := validate.Struct(recipe); err != nil {
+	if err := r.Validator.Struct(recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if _, err := recipeCollection.InsertOne(ctx, recipe); err != nil {
+	if _, err := r.RecipeCollection.InsertOne(ctx, recipe); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added"})
 		return
 	}
@@ -42,7 +39,7 @@ func MakeRecipe(c *gin.Context) {
 	c.JSON(http.StatusOK, "yay")
 }
 
-func DeleteRecipe(c *gin.Context) {
+func (r *Client) DeleteRecipe(c *gin.Context) {
 	_, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
@@ -52,7 +49,7 @@ func DeleteRecipe(c *gin.Context) {
 }
 
 // Kate wrote this
-func SearchMyRecipes(c *gin.Context) {
+func (r *Client) SearchMyRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	fmt.Println("Passed context creation")
@@ -64,7 +61,7 @@ func SearchMyRecipes(c *gin.Context) {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "'query' required in endpiont"})
 	// }
 
-	cur, err := recipeCollection.Find(ctx,
+	cur, err := r.RecipeCollection.Find(ctx,
 		bson.M{
 			"$regex": primitive.Regex{
 				Pattern: ".*",

@@ -5,12 +5,42 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"server/client/email"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+type Client struct {
+	UserCollection     *mongo.Collection
+	AuthUserCollection *mongo.Collection
+	RecipeCollection   *mongo.Collection
+	MailClient         *email.Client
+	Validator          *validator.Validate
+}
+
+func New() *Client {
+	mongoClient := DBinstance()
+	userCollection := OpenCollection(mongoClient, "users")
+	authUserCollection := OpenCollection(mongoClient, "auth_users")
+	recipeCollection := OpenCollection(mongoClient, "recipes")
+
+	validate := validator.New()
+
+	mailClient := email.Must(email.New(os.Getenv("SENDGRID_KEY")))
+
+	return &Client{
+		UserCollection:     userCollection,
+		AuthUserCollection: authUserCollection,
+		RecipeCollection:   recipeCollection,
+		MailClient:         mailClient,
+		Validator:          validate,
+	}
+
+}
 
 //DBinstance func
 func DBinstance() *mongo.Client {
@@ -38,9 +68,6 @@ func DBinstance() *mongo.Client {
 
 	return client
 }
-
-//Client Database instance
-var Client *mongo.Client = DBinstance()
 
 //OpenCollection is a  function makes a connection with a collection in the database
 func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {

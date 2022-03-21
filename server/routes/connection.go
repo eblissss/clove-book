@@ -18,7 +18,7 @@ type Client struct {
 	UserCollection     *mongo.Collection
 	AuthUserCollection *mongo.Collection
 	RecipeCollection   *mongo.Collection
-	StubCollection   *mongo.Collection
+	StubCollection     *mongo.Collection
 	MailClient         *email.Client
 	Validator          *validator.Validate
 }
@@ -37,11 +37,10 @@ func New() *Client {
 		UserCollection:     userCollection,
 		AuthUserCollection: authUserCollection,
 		RecipeCollection:   recipeCollection,
-		StubCollection:		stubCollection,
+		StubCollection:     stubCollection,
 		MailClient:         mailClient,
 		Validator:          validate,
 	}
-
 }
 
 //DBinstance func

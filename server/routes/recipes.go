@@ -2,13 +2,12 @@ package routes
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"server/models"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (r *Client) MakeRecipe(c *gin.Context) {
@@ -22,7 +21,7 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.BindJSON(&stub); //TODO error check
+	c.BindJSON(&stub) //TODO error check
 
 	if err := r.Validator.Struct(recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -67,43 +66,23 @@ func (r *Client) ViewFavorites(c *gin.Context) {
 func (r *Client) SearchMyRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	fmt.Println("Passed context creation")
-
-	// GET api.clovebook.com/recipes?query=""&tags=""
-
-	// query, exists := c.GetQuery("query")
-	// if !exists {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "'query' required in endpiont"})
-	// }
-
-	//cur, err := r.RecipeCollection.Find(ctx, bson.M{})
-
 
 	cur, err := r.RecipeCollection.Find(ctx,
-	bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}})
-	// // look into this
-	if cur == nil {
+		// bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}},
+		bson.M{},
+	)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	foundRecipes := make([]models.RecipeStub, 0)
-	fmt.Println("Passed recipe finding")
 
-	for cur.Next(ctx) {
-		fmt.Println("Passed curnext")
-        elem := models.RecipeStub{}
-        
-        if err := cur.Decode(&elem); err != nil {
-            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        }
-
-        foundRecipes = append(foundRecipes, elem)
-    }
-
-	fmt.Println("boop")
-	fmt.Printf("Passed recipe unwrapping\n")
-
+	err = cur.All(ctx, &foundRecipes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	// opts := options.Find().SetSort(bson.M{"score": 1})
 	// filter := bson.M{"$text": bson.M{"$search": c.Query("query"), "score": bson.M{"$meta": "textScore" }, "limit": 5}}
 

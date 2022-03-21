@@ -192,7 +192,6 @@ func (r *Client) GetUser(c *gin.Context) {
 	c.Status(http.StatusServiceUnavailable)
 }
 
-
 func (r *Client) UpdateUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -203,12 +202,12 @@ func (r *Client) UpdateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, bson.M{"error": "passwordupdate failed"})
 	}
 
-	un, err := c.GetQuery("username");
+	un, err := c.GetQuery("username")
 	if err {
 		//c.JSON() // TODO add correct error message
 		return
 	}
-	
+
 	r.AuthUserCollection.FindOneAndUpdate(ctx, bson.M{"username": user.Username}, bson.M{"$set": bson.M{"username": un}})
 	c.Status(http.StatusServiceUnavailable)
 }

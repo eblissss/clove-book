@@ -175,12 +175,14 @@ func LoginUser(c *gin.Context) {
 	user := &models.User{}
 	if err := res.Decode(user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
 	}
 
 	// TODO: replace "123456" with secret token (from env)
 	token, err := creds.NewSignedToken(user.Username, "123456")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
 	}
 
 	c.SetCookie("token", token, int(time.Now().Add(2*time.Hour).Unix()), "",

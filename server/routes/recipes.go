@@ -59,10 +59,10 @@ func SearchMyRecipes(c *gin.Context) {
 
 	// GET api.clovebook.com/recipes?query=""&tags=""
 
-	query, exists := c.GetQuery("query")
-	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "'query' required in endpiont"})
-	}
+	// query, exists := c.GetQuery("query")
+	// if !exists {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "'query' required in endpiont"})
+	// }
 
 	cur, err := recipeCollection.Find(ctx,
 		bson.M{
@@ -73,7 +73,6 @@ func SearchMyRecipes(c *gin.Context) {
 		},
 	)
 
-	
 	foundRecipes := make([]*models.RecipeStub, 0)
 	fmt.Println("Passed recipe finding")
 

@@ -2,13 +2,15 @@ package routes
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"server/models"
 	"time"
-	"fmt"
+
 	//"options"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
+
 	//"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -49,23 +51,27 @@ func DeleteRecipe(c *gin.Context) {
 }
 
 // Kate wrote this
-func SearchMyRecipes (c *gin.Context) {
+func SearchMyRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+	fmt.Println("Passed context creation")
 
-	cur, err:= recipeCollection.Find(ctx, bson.M{})
+	cur, err := recipeCollection.Find(ctx, bson.M{})
 	foundRecipes := make([]*models.RecipeStub, 0)
+	fmt.Println("Passed recipe finding")
 
 	if err = cur.All(ctx, &foundRecipes); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	fmt.Println(foundRecipes)
 	
+	fmt.Printf("Passed recipe unwrapping: %v\n", foundRecipes)
+
 	// opts := options.Find().SetSort(bson.M{"score": 1})
 	// filter := bson.M{"$text": bson.M{"$search": c.Query("query"), "score": bson.M{"$meta": "textScore" }, "limit": 5}}
 
 	// cur, err := recipeCollection.Find(ctx, filter, opts)
-	
+
 	c.JSON(http.StatusOK, foundRecipes)
-	
+
 }

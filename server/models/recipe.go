@@ -1,5 +1,7 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type Recipe struct {
 	RecipeName  string   `json:"name"`
 	Author      string   `json:"author"`
@@ -9,14 +11,13 @@ type Recipe struct {
 	Tags        []string `json:"tags"`
 	Ingredients []string `json:"ingredients"`
 	IsUserRecipe bool 	 `json:"isUserRecipe"`
-}
+} 
 
 // Recipestub for both user-created and other recipes
 type RecipeStub struct {
-	RecipeId     int      `json:""`
+	RecipeId     primitive.ObjectID      `json:""`
 	RecipeName   string   `json:"name"`
 	IsUserRecipe bool     `json:"userRecipe"`
-	IsMyRecipe   bool     `json:"myRecipe"`
 	TotalTime    int64    `json:"totalTime"`
 	Tags         []string `json:"tags"`
 	Ingredients  []string `json:"ingredients"` // not sure about inclusion

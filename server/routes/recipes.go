@@ -6,11 +6,9 @@ import (
 	"net/http"
 	"server/models"
 	"time"
-
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (r *Client) MakeRecipe(c *gin.Context) {
@@ -18,21 +16,28 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 	defer cancel()
 
 	var recipe models.Recipe
+	var stub models.RecipeStub
 
 	if err := c.BindJSON(&recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	c.BindJSON(&stub); //TODO error check
 
 	if err := r.Validator.Struct(recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if _, err := r.RecipeCollection.InsertOne(ctx, recipe); err != nil {
+	recipeID, err := r.RecipeCollection.InsertOne(ctx, recipe)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added"})
 		return
 	}
+
+	stub.RecipeId = insertedId.string()
+
+	r.StubCollection.InsertOne(ctx, stub)
 
 	c.JSON(http.StatusOK, "yay")
 }
@@ -43,7 +48,7 @@ func (r *Client) DeleteRecipe(c *gin.Context) {
 
 	_ = c.Params.ByName("cookbookID")
 
-	c.JSON(http.StatusOK, "hi :)")
+	c.JSON(http.StatusOK, "deleteplaceholder")
 }
 
 func (r *Client) UpdateRecipe(c *gin.Context) {
@@ -71,24 +76,33 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "'query' required in endpiont"})
 	// }
 
+	//cur, err := r.RecipeCollection.Find(ctx, bson.M{})
+
+
 	cur, err := r.RecipeCollection.Find(ctx,
-		bson.M{
-			"$regex": primitive.Regex{
-				Pattern: ".*",
-				Options: "i",
-			},
-		},
-	)
-
-	foundRecipes := make([]*models.RecipeStub, 0)
-	fmt.Println("Passed recipe finding")
-
-	if err = cur.All(ctx, &foundRecipes); err != nil {
+	bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}})
+	// // look into this
+	if cur == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	fmt.Printf("Passed recipe unwrapping: %v\n", foundRecipes)
+	foundRecipes := make([]models.RecipeStub, 0)
+	fmt.Println("Passed recipe finding")
+
+	for cur.Next(ctx) {
+		fmt.Println("Passed curnext")
+        elem := models.RecipeStub{}
+        
+        if err := cur.Decode(&elem); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        }
+
+        foundRecipes = append(foundRecipes, elem)
+    }
+
+	fmt.Println("boop")
+	fmt.Printf("Passed recipe unwrapping\n")
 
 	// opts := options.Find().SetSort(bson.M{"score": 1})
 	// filter := bson.M{"$text": bson.M{"$search": c.Query("query"), "score": bson.M{"$meta": "textScore" }, "limit": 5}}

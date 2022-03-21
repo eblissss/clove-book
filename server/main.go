@@ -35,7 +35,7 @@ func main() {
 	r.GET("/users/:username/ingredients", c.ViewIngredients)
 	r.POST("/users/:username/ingredients", c.AddIngredients)
 	r.DELETE("/users/:username/ingredients", c.DeleteIngredients)
-	r.PUT("/users/:username/ingredients", c.UpdateIngredient)
+	r.PUT("/users/:username/ingredients", c.UpdateIngredients)
 
 	// Users
 	r.POST("/users/auth", c.AuthUser)
@@ -43,7 +43,7 @@ func main() {
 	r.GET("/users/login", c.LoginUser)
 	r.GET("/users/logout", c.LogoutUser)
 	r.GET("/users/:username", c.GetUser)
-	r.PUT("/users/:username", c.UpdateUsername)
+	r.PUT("/users/:username", c.UpdateUser)
 	r.DELETE("/users/:username", c.DeleteUser)
 
 	//this runs the server and allows it to listen to requests.

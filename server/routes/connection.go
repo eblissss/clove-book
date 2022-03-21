@@ -18,6 +18,7 @@ type Client struct {
 	UserCollection     *mongo.Collection
 	AuthUserCollection *mongo.Collection
 	RecipeCollection   *mongo.Collection
+	StubCollection   *mongo.Collection
 	MailClient         *email.Client
 	Validator          *validator.Validate
 }
@@ -27,7 +28,7 @@ func New() *Client {
 	userCollection := OpenCollection(mongoClient, "users")
 	authUserCollection := OpenCollection(mongoClient, "auth_users")
 	recipeCollection := OpenCollection(mongoClient, "recipes")
-
+	stubCollection := OpenCollection(mongoClient, "recipestub")
 	validate := validator.New()
 
 	mailClient := email.Must(email.New(os.Getenv("SENDGRID_KEY")))
@@ -36,6 +37,7 @@ func New() *Client {
 		UserCollection:     userCollection,
 		AuthUserCollection: authUserCollection,
 		RecipeCollection:   recipeCollection,
+		StubCollection:		stubCollection,
 		MailClient:         mailClient,
 		Validator:          validate,
 	}

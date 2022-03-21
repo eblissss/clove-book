@@ -192,7 +192,24 @@ func (r *Client) GetUser(c *gin.Context) {
 	c.Status(http.StatusServiceUnavailable)
 }
 
-func (r *Client) UpdateUsername(c *gin.Context) {
+
+func (r *Client) UpdateUser(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	user := &models.User{}
+	// checks if the body fits into the user stuff.
+	if res := c.BindJSON(&user); res != nil {
+		c.JSON(http.StatusInternalServerError, bson.M{"error": "passwordupdate failed"})
+	}
+
+	un, err := c.GetQuery("username");
+	if err {
+		//c.JSON() // TODO add correct error message
+		return
+	}
+	
+	r.AuthUserCollection.FindOneAndUpdate(ctx, bson.M{"username": user.Username}, bson.M{"$set": bson.M{"username": un}})
 	c.Status(http.StatusServiceUnavailable)
 }
 
@@ -201,6 +218,7 @@ func (r *Client) DeleteUser(c *gin.Context) {
 }
 
 func (r *Client) validateAccount(ctx context.Context, email, username string) error {
+
 	if err := r.validateEmail(ctx, email); err != nil {
 		return err
 	}

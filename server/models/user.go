@@ -16,6 +16,7 @@ type User struct {
 	CreatedAt string             `json:"createdAt" bson:"created_at"`
 	UpdatedAt string             `json:"updatedAt" bson:"updated_at"`
 }
+// ingredients table will store.
 
 type AuthUser struct {
 	Username string    `json:"username" bson:"username"`

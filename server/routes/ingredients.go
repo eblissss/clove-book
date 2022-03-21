@@ -11,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// we are doing this client side!
+
+
 func Test(c *gin.Context) {
 	_, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
@@ -28,10 +31,18 @@ func Test(c *gin.Context) {
 }
 
 func (r *Client) ViewIngredients(c *gin.Context) {
+	_, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+
+
 	c.Status(http.StatusServiceUnavailable)
 }
 
 func (r *Client) AddIngredients(c *gin.Context) {
+	_, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
 	c.Status(http.StatusServiceUnavailable)
 }
 
@@ -39,6 +50,21 @@ func (r *Client) DeleteIngredients(c *gin.Context) {
 	c.Status(http.StatusServiceUnavailable)
 }
 
-func (r *Client) UpdateIngredient(c *gin.Context) {
+func (r *Client) UpdateIngredients(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	ings := make([]*string, 0)
+	
+	if err := c.BindJSON(&ings); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if _, err := r.RecipeCollection.InsertOne(ctx, ings); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added"})
+		return
+	}
+
 	c.Status(http.StatusServiceUnavailable)
 }

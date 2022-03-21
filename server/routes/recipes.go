@@ -11,34 +11,34 @@ import (
 )
 
 func (r *Client) MakeRecipe(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	// defer cancel()
 
-	var recipe models.Recipe
-	var stub models.RecipeStub
+	// var recipe models.Recipe
+	// var stub models.RecipeStub
 
-	if err := c.BindJSON(&recipe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	c.BindJSON(&stub) //TODO error check
+	// if err := c.BindJSON(&recipe); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// c.BindJSON(&stub) //TODO error check
 
-	if err := r.Validator.Struct(recipe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// if err := r.Validator.Struct(recipe); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
-	recipeID, err := r.RecipeCollection.InsertOne(ctx, recipe)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added"})
-		return
-	}
+	// recipeID, err := r.RecipeCollection.InsertOne(ctx, recipe)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added"})
+	// 	return
+	// }
 
-	stub.RecipeId = insertedId.string()
+	// stub.RecipeId = insertedId.string()
 
-	r.StubCollection.InsertOne(ctx, stub)
+	// r.StubCollection.InsertOne(ctx, stub)
 
-	c.JSON(http.StatusOK, "yay")
+	// c.JSON(http.StatusOK, "yay")
 }
 
 func (r *Client) DeleteRecipe(c *gin.Context) {

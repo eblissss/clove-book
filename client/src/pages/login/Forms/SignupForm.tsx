@@ -1,7 +1,6 @@
 import React from "react";
-
-import { useAppDispatch } from "../../../app/hooks";
-import { changeToNoon } from "../../../components/scene/sceneSlice";
+import md5 from "md5";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 import {
 	Avatar,
@@ -12,9 +11,11 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { doAuth } from "../../../api/requests";
 
+import { useAppDispatch } from "../../../app/hooks";
+import { changeToNoon } from "../../../components/scene/sceneSlice";
+
+import { doAuth } from "../../../api/requests";
 import { NewUser } from "../../../api/models";
 
 interface signupProps {
@@ -28,13 +29,13 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const data = new FormData(e.currentTarget);
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-			username: data.get("username"),
-			firstName: data.get("firstName"),
-			lastName: data.get("lastName"),
-		});
+		// console.log({
+		// 	email: data.get("email"),
+		// 	password: md5(data.get("password") as string),
+		// 	username: data.get("username"),
+		// 	firstName: data.get("firstName"),
+		// 	lastName: data.get("lastName"),
+		// });
 
 		// VALIDATE HERE
 
@@ -42,7 +43,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 
 		userInfo.username = data.get("username") as string;
 		userInfo.email = data.get("email") as string;
-		userInfo.password = data.get("password") as string;
+		userInfo.password = md5(data.get("password") as string);
 		userInfo.firstName = data.get("firstName") as string;
 		userInfo.lastName = data.get("lastName") as string;
 
@@ -51,7 +52,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 
 	return (
 		<>
-			<Container component="main" maxWidth="lg">
+			<Container component="main" maxWidth="xs">
 				<Box
 					component="div"
 					sx={{
@@ -77,6 +78,22 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 						sx={{ mt: 3 }}
 					>
 						<Grid container spacing={2}>
+							<Grid item xs={12} display="flex">
+								<TextField
+									className="Round"
+									id="firstName"
+									label="First Name"
+									name="firstName"
+									autoComplete="firstName"
+								/>
+								<TextField
+									className="Round"
+									id="lastName"
+									label="Last Name"
+									name="lastName"
+									autoComplete="lastName"
+								/>
+							</Grid>
 							<Grid item xs={12} display="flex">
 								<TextField
 									className="Round"

@@ -4,6 +4,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import TabIcon from "./TabIcon";
 
+import { doLogout } from "../../api/requests";
+
 interface tabProps {
 	tab: string;
 	selectedTab?: string;
@@ -79,6 +81,7 @@ export function TabBar(props: tabProps) {
 					fontSize: "1.1rem",
 					textAlign: "center",
 				}}
+				onClick={doLogout}
 			>
 				Logout
 			</Button>

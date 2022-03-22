@@ -119,7 +119,7 @@ function SearchMenu() {
 					<FormControl>
 						<FormLabel id="sortButtonsLabel">Sort By</FormLabel>
 						<RadioGroup
-							aria-aria-labelledby="sortButtonsLabel"
+							aria-labelledby="sortButtonsLabel"
 							defaultValue="best"
 							name="sortButtonsGroup"
 						>

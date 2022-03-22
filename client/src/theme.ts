@@ -9,6 +9,14 @@ declare module "@mui/material/styles" {
 	interface PaletteOptions {
 		tertiary: PaletteOptions["primary"];
 	}
+
+	interface PaletteColor {
+		darkContrastText?: string;
+	}
+
+	interface SimplePaletteColorOptions {
+		darkContrastText?: string;
+	}
 }
 
 const palette = {
@@ -17,6 +25,7 @@ const palette = {
 		light: "#fbf4ef",
 		dark: "#97918d",
 		contrastText: "#000000",
+		darkContrastText: "#ffffff",
 	},
 	secondary: {
 		main: green[300],
@@ -111,7 +120,6 @@ const theme = createTheme({
 						backgroundColor: palette.primary.dark,
 						"& .MuiInputBase-inputMultiline": {
 							fontSize: 16,
-							borderRadius: "15px",
 						},
 					},
 					"&.Round": {
@@ -120,7 +128,7 @@ const theme = createTheme({
 						borderRadius: "100px",
 						backgroundColor: "#ffffff",
 						boxSizing: "border-box",
-						margin: "10px auto",
+						margin: "5px auto",
 
 						"& .MuiOutlinedInput-root": {
 							"& fieldset": {

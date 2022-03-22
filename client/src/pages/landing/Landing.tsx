@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Button, Container, Typography, useTheme } from "@mui/material";
-import { green } from "@mui/material/colors";
 
 import { Link as RouterLink } from "react-router-dom";
 
@@ -15,7 +14,7 @@ export default function Landing() {
 			sx={{
 				background: `linear-gradient(90deg,	rgba(163, 187, 198, 0.9) 0%, rgba(163, 187, 198, 0) 42.56%), url(${BgImage}) no-repeat center center fixed`,
 				backgroundSize: "cover",
-				width: "100vw",
+				width: "100%",
 				height: "100vh",
 			}}
 		>
@@ -27,6 +26,7 @@ export default function Landing() {
 					flexDirection: "column",
 					left: "16%",
 					top: "16%",
+					width: "50vw",
 				}}
 			>
 				<Typography
@@ -64,7 +64,7 @@ export default function Landing() {
 				</Box>
 				<Button
 					component={RouterLink}
-					to="/example"
+					to="/login"
 					sx={{
 						alignSelf: "flex-start",
 						p: "2rem",

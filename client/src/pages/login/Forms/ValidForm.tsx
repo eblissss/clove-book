@@ -37,7 +37,7 @@ export function ValidForm({ userInfo }: validProps) {
 
 	return (
 		<>
-			<Container component="main" maxWidth="lg">
+			<Container component="main" maxWidth="xs">
 				<Box
 					component="div"
 					sx={{

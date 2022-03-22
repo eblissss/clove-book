@@ -17,6 +17,7 @@ import {
 	Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import md5 from "md5";
 
 export function LoginForm() {
 	const dispatch = useAppDispatch();
@@ -35,7 +36,7 @@ export function LoginForm() {
 
 		const res = doLogin({
 			username: data.get("username") as string,
-			password: data.get("password") as string,
+			password: md5(data.get("password") as string),
 		})
 			.then((data) => {
 				console.log(data);
@@ -50,7 +51,7 @@ export function LoginForm() {
 
 	return (
 		<>
-			<Container component="main" maxWidth="sm">
+			<Container component="main" maxWidth="xs">
 				<Box
 					component="div"
 					sx={{

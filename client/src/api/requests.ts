@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import * as models from "./models";
 
 const instance = axios.create({
-	baseURL: "https://clove-book-server-d2pzn7emza-ue.a.run.app",
+	baseURL: "https://api.clovebook.com",
 	timeout: 15000,
 });
 

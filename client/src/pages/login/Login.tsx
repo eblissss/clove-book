@@ -59,11 +59,11 @@ export default function Login() {
 							transform: "translateY(100vh)",
 						},
 						position: "absolute",
-						width: "400px",
-						height: "500px",
-						left: "calc(50vw - 200px)",
+						width: "100%",
+						height: "100%",
 						transition: "transform 1s ease",
-						top: "calc((100vh - 500px) / 2)",
+						display: "flex",
+						alignItems: "center",
 					}}
 				>
 					{useValid ? (
@@ -80,11 +80,12 @@ export default function Login() {
 							transform: "translateY(100vh)",
 						},
 						position: "absolute",
-						width: "400px",
-						height: "500px",
-						left: "calc(50vw - 200px)",
+						width: "100%",
+						height: "100%",
 						transition: "transform 1s ease",
-						top: "calc((-100vh - 500px) / 2)",
+						display: "flex",
+						alignItems: "center",
+						top: "-100%",
 					}}
 				>
 					<SignupForm userInfo={userInfo} setUseValid={setUseValid} />

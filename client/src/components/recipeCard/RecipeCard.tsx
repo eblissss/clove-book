@@ -29,6 +29,11 @@ export function RecipeCard(props: SimpleRecipe) {
 		dispatch(openModal());
 	}
 
+	const doThis = (e: any) => {
+		console.log(e.target.textContent);
+		e.stopPropagation();
+	};
+
 	return (
 		<Card
 			sx={{
@@ -58,7 +63,7 @@ export function RecipeCard(props: SimpleRecipe) {
 					variant="h5"
 					component="h3"
 					sx={{
-						color: "primary.contrastText",
+						color: "primary.darkContrastText",
 					}}
 				>
 					{props.name}
@@ -108,18 +113,19 @@ export function RecipeCard(props: SimpleRecipe) {
 								borderRadius: "5px",
 								p: "5px",
 								m: "5px",
-								justifyContent: "center",
+								alignItems: "center",
 							}}
+							onClick={doThis}
 						>
 							{tag}
 						</Box>
 					))}
 				</Box>
 			</CardContent>
-			<CardActions>
+			{/* <CardActions>
 				<Button size="small">View</Button>
 				<Button size="small">Edit</Button>
-			</CardActions>
+			</CardActions> */}
 		</Card>
 	);
 }

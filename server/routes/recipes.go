@@ -18,14 +18,12 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 	var recipe models.Recipe
 
 	if err := c.BindJSON(&recipe); err != nil {
-		// c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
 		return
 	}
 
 	if err := r.Validator.Struct(recipe); err != nil {
-		// c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
 		return
 	}
 

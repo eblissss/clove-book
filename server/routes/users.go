@@ -120,8 +120,8 @@ func (r *Client) RegisterUser(c *gin.Context) {
 	}
 
 	user.UserID = primitive.NewObjectID()
-	user.CreatedAt = time.Now().String()
-	user.UpdatedAt = time.Now().String()
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
 
 	// Insert user
 	result, err := r.UserCollection.InsertOne(ctx, *user)
@@ -170,7 +170,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 
 	// TODO: replace "123456" with secret token (from env)
-	token, err := creds.NewSignedToken(user.Username, []byte("123456"))
+	token, err := creds.NewSignedToken(user.Username, creds.InsecureToken)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
@@ -196,20 +196,45 @@ func (r *Client) UpdateUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	// Unwrap request into user
 	user := &models.User{}
-	// checks if the body fits into the user stuff.
-	if res := c.BindJSON(&user); res != nil {
-		c.JSON(http.StatusInternalServerError, bson.M{"error": "passwordupdate failed"})
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, bson.M{"error": err})
 	}
-
-	un, err := c.GetQuery("username")
-	if err {
-		//c.JSON() // TODO add correct error message
+	// validate
+	if err := r.Validator.Struct(user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		fmt.Println(err)
 		return
 	}
 
-	r.AuthUserCollection.FindOneAndUpdate(ctx, bson.M{"username": user.Username}, bson.M{"$set": bson.M{"username": un}})
-	c.Status(http.StatusServiceUnavailable)
+	// Authorize User
+	claims, ok := creds.VerifyToken(c)
+	if !ok {
+		return
+	}
+
+	// Get Param useranme
+	username, ok := c.Params.Get("username")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, bson.M{"error": "username not supplied"})
+		return
+	}
+
+	// Compare user auth to param username
+	if claims.Username != username {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	// Update user
+	user.UpdatedAt = time.Now()
+	if res := r.AuthUserCollection.FindOneAndUpdate(ctx, bson.M{"username": user.Username}, user); res.Err() != nil {
+		c.JSON(http.StatusBadRequest, bson.M{"error": res.Err()})
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
 
 func (r *Client) DeleteUser(c *gin.Context) {

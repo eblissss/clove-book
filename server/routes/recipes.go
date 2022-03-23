@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"server/models"
 	"time"
-	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,16 +16,16 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 	defer cancel()
 
 	var recipe models.Recipe
-	var stub models.RecipeStub
 
-	if err := c.ShouldBindJSON(&recipe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
+	if err := c.BindJSON(&recipe); err != nil {
+		// c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
 
 	if err := r.Validator.Struct(recipe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
+		// c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -35,11 +35,15 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 		return
 	}
 
-	c.ShouldBindJSON(&stub) //TODO error check
-	fmt.Println(stub)
-
-	stub.CookbookID = res.InsertedID.(primitive.ObjectID)
-	stub.IsUserRecipe = true
+	stub := models.RecipeStub{
+		CookbookID:    res.InsertedID.(primitive.ObjectID),
+		SpoonacularID: -1, // TODO: decide what id to assign to user recipes
+		RecipeName:    recipe.RecipeName,
+		IsUserRecipe:  true,
+		TotalTime:     recipe.TotalTime,
+		Tags:          recipe.Tags,
+		Ingredients:   recipe.Ingredients,
+	}
 
 	_, err = r.StubCollection.InsertOne(ctx, stub)
 	if err != nil {
@@ -54,7 +58,7 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 func (r *Client) DeleteRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
-	
+
 	toDelete, qerr := c.GetQuery("cookbookID")
 	//fmt.Println
 	if !qerr {
@@ -89,7 +93,7 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 	defer cancel()
 
 	cur, err := r.StubCollection.Find(ctx,
-		 bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}},
+		bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}},
 	)
 
 	if err != nil {
@@ -104,6 +108,6 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, foundRecipes)
 }

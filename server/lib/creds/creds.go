@@ -1,14 +1,42 @@
 package creds
 
 import (
+	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
 
 type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
+}
+
+var InsecureToken = []byte("123456")
+
+func VerifyToken(c *gin.Context) (claims *Claims, valid bool) {
+	cookie, err := c.Cookie("token")
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return nil, false
+	}
+
+	token, err := jwt.ParseWithClaims(cookie, claims, func(t *jwt.Token) (interface{}, error) { return InsecureToken, nil })
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			c.Status(http.StatusUnauthorized)
+			return nil, false
+		}
+		c.Status(http.StatusBadRequest)
+		return nil, false
+	}
+	if !token.Valid {
+		c.Status(http.StatusUnauthorized)
+		return nil, false
+	}
+
+	return claims, true
 }
 
 func NewSignedToken(username string, key []byte) (string, error) {

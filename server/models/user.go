@@ -13,11 +13,11 @@ type User struct {
 	LastName  string             `json:"lastName" bson:"last_name"`
 	Email     string             `json:"email" bson:"email"`
 	Password  string             `json:"password" bson:"password"`
-	CreatedAt string             `json:"createdAt" bson:"created_at"`
-	UpdatedAt string             `json:"updatedAt" bson:"updated_at"`
+	CreatedAt time.Time          `json:"createdAt" bson:"created_at"`
+	UpdatedAt time.Time          `json:"updatedAt" bson:"updated_at"`
 }
-// ingredients table will store.
 
+// ingredients table will store.
 type AuthUser struct {
 	Username string    `json:"username" bson:"username"`
 	Email    string    `json:"email" bson:"email"`

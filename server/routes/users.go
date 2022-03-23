@@ -249,12 +249,14 @@ func (r *Client) UpdateUser(c *gin.Context) {
 	vNewUser := reflect.ValueOf(newUser).Elem()
 	vUser := reflect.ValueOf(user).Elem()
 	for field := 0; field < vNewUser.NumField(); field++ {
+		// TODO: skip if fields are reserved / not allowed to change (i.e. id, created at)
 		if vNewUser.Field(field).IsZero() {
 			continue
 		}
 		vUser.Field(field).Set(vNewUser.Field(field))
 	}
 	newUser = vUser.Addr().Interface().(*models.User)
+	newUser.UpdatedAt = time.Now()
 
 	// Verify valid username / email
 	if _, err := mail.ParseAddress(newUser.Email); err != nil {

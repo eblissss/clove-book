@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"server/models"
 	"time"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -21,7 +22,7 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
 		return
 	}
-	c.BindJSON(&stub) //TODO error check
+	
 
 	if err := r.Validator.Struct(recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
@@ -34,6 +35,9 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 		return
 	}
 
+	c.ShouldBindJSON(&stub) //TODO error check
+	fmt.Println(stub)
+
 	stub.CookbookID = res.InsertedID.(primitive.ObjectID)
 	stub.IsUserRecipe = true
 
@@ -43,17 +47,28 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"insertedCID": stub.CookbookID})
+	c.JSON(http.StatusOK, gin.H{"insertedCID": stub.CookbookID, "insertedRecipe": recipe, "insertedStub": stub})
 	return
 }
 
 func (r *Client) DeleteRecipe(c *gin.Context) {
-	_, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
+	
+	toDelete, qerr := c.GetQuery("cookbookID")
+	//fmt.Println
+	if !qerr {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Recipe not specified"})
+		return
+	}
 
-	_ = c.Params.ByName("cookbookID")
+	deleted, err := r.RecipeCollection.DeleteOne(ctx, r.RecipeCollection.FindOne(ctx, bson.M{"_id": toDelete}))
+	if deleted.DeletedCount == 0 || err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Recipe to delete does not exist"})
+		return
+	}
 
-	c.JSON(http.StatusOK, "deleteplaceholder")
+	c.JSON(http.StatusOK, bson.M{"deleted": toDelete})
 }
 
 func (r *Client) UpdateRecipe(c *gin.Context) {
@@ -73,10 +88,10 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cur, err := r.RecipeCollection.Find(ctx,
-		// bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}},
-		bson.M{},
+	cur, err := r.StubCollection.Find(ctx,
+		 bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}},
 	)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -89,10 +104,6 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	// opts := options.Find().SetSort(bson.M{"score": 1})
-	// filter := bson.M{"$text": bson.M{"$search": c.Query("query"), "score": bson.M{"$meta": "textScore" }, "limit": 5}}
-
-	// cur, err := recipeCollection.Find(ctx, filter, opts)
-
+	
 	c.JSON(http.StatusOK, foundRecipes)
 }

@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/mail"
+	"reflect"
 	"regexp"
 	"server/lib/creds"
 	"server/models"
@@ -159,20 +160,23 @@ func (r *Client) LoginUser(c *gin.Context) {
 	})
 	if res.Err() != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid username/password"})
+		fmt.Println(res.Err())
 		return
 	}
 
 	// Combination successful
 	user := &models.User{}
 	if err := res.Decode(user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
 		return
 	}
 
-	// TODO: replace "123456" with secret token (from env)
+	fmt.Println(user.Username)
 	token, err := creds.NewSignedToken(user.Username, creds.InsecureToken)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
 		return
 	}
 
@@ -196,13 +200,14 @@ func (r *Client) UpdateUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Unwrap request into user
-	user := &models.User{}
-	if err := c.BindJSON(&user); err != nil {
+	// Unwrap request into newUser
+	newUser := &models.User{}
+	if err := c.BindJSON(&newUser); err != nil {
 		c.JSON(http.StatusInternalServerError, bson.M{"error": err})
+		fmt.Println(err)
 	}
 	// validate
-	if err := r.Validator.Struct(user); err != nil {
+	if err := r.Validator.Struct(newUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
@@ -227,13 +232,48 @@ func (r *Client) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// Update user
-	user.UpdatedAt = time.Now()
-	if res := r.AuthUserCollection.FindOneAndUpdate(ctx, bson.M{"username": user.Username}, user); res.Err() != nil {
-		c.JSON(http.StatusBadRequest, bson.M{"error": res.Err()})
-		return
+	// Get current user
+	res := r.UserCollection.FindOne(ctx, bson.M{"username": username})
+	if res.Err() != nil {
+		fmt.Println(res.Err())
+		c.JSON(http.StatusBadRequest, bson.M{"error": res.Err().Error()})
+	}
+	user := &models.User{}
+	if err := res.Decode(user); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, bson.M{"error": err.Error()})
 	}
 
+	// Black magic :relieved:
+	// Basically only overwrites non-zero fields from request
+	vNewUser := reflect.ValueOf(newUser).Elem()
+	vUser := reflect.ValueOf(user).Elem()
+	for field := 0; field < vNewUser.NumField(); field++ {
+		if vNewUser.Field(field).IsZero() {
+			continue
+		}
+		vUser.Field(field).Set(vNewUser.Field(field))
+	}
+	newUser = vUser.Addr().Interface().(*models.User)
+
+	// Verify valid username / email
+	if _, err := mail.ParseAddress(newUser.Email); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, bson.M{"error": err.Error()})
+	}
+	if ok := usernameValid(newUser.Username); !ok {
+		fmt.Println("invalid username")
+		c.JSON(http.StatusBadRequest, bson.M{"error": fmt.Errorf("username %s invalid. username can only contain alphanumeric characters and underscores", username).Error()})
+	}
+
+	// Update user
+	if _, err := r.UserCollection.ReplaceOne(ctx,
+		bson.M{"username": user.Username},
+		newUser,
+	); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, bson.M{"error": err.Error()})
+	}
 	c.Status(http.StatusOK)
 }
 
@@ -242,7 +282,6 @@ func (r *Client) DeleteUser(c *gin.Context) {
 }
 
 func (r *Client) validateAccount(ctx context.Context, email, username string) error {
-
 	if err := r.validateEmail(ctx, email); err != nil {
 		return err
 	}
@@ -254,8 +293,7 @@ func (r *Client) validateAccount(ctx context.Context, email, username string) er
 
 func (r *Client) validateUsername(ctx context.Context, username string) error {
 	// Username invalid
-	reg := regexp.MustCompile("^[a-zA-Z0-9_]*$")
-	if res := reg.Find([]byte(username)); res == nil {
+	if userValid := usernameValid(username); !userValid {
 		return fmt.Errorf("username %s invalid. username can only contain alphanumeric characters and underscores", username)
 	}
 
@@ -267,6 +305,14 @@ func (r *Client) validateUsername(ctx context.Context, username string) error {
 	}
 
 	return nil
+}
+
+func usernameValid(username string) bool {
+	reg := regexp.MustCompile("^[a-zA-Z0-9_]*$")
+	if res := reg.Find([]byte(username)); res == nil {
+		return false
+	}
+	return true
 }
 
 func (r *Client) validateEmail(ctx context.Context, email string) error {

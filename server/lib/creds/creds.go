@@ -1,6 +1,7 @@
 package creds
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -13,6 +14,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+// TODO: replace "123456" with secret token (from env)
 var InsecureToken = []byte("123456")
 
 func VerifyToken(c *gin.Context) (claims *Claims, valid bool) {
@@ -22,8 +24,10 @@ func VerifyToken(c *gin.Context) (claims *Claims, valid bool) {
 		return nil, false
 	}
 
+	claims = &Claims{}
 	token, err := jwt.ParseWithClaims(cookie, claims, func(t *jwt.Token) (interface{}, error) { return InsecureToken, nil })
 	if err != nil {
+		fmt.Println(err)
 		if err == jwt.ErrSignatureInvalid {
 			c.Status(http.StatusUnauthorized)
 			return nil, false

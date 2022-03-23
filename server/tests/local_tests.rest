@@ -1,0 +1,46 @@
+### Auth User
+
+POST http://localhost:8000/users/auth HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "accrazed",
+  "email": "accrazed@gmail.com"
+}
+
+### Create User
+
+POST http://localhost:8000/users?code=545478 HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "accrazed",
+  "email": "accrazed@gmail.com",
+  "firstName": "Amelia",
+  "lastName": "Castilla",
+  "password": "123456789"
+}
+
+### Login User
+
+GET http://localhost:8000/users/login?username=accrazed&password=123 HTTP/1.1
+
+### Update User
+
+PUT http://localhost:8000/users/accrazed HTTP/1.1
+content-type: application/json
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjY3JhemVkIiwiZXhwIjoxNjQ4MDAyMjYwLCJpYXQiOjE2NDgwMDE5NjB9.hjqZSQxmAKssI1OwLIrdEcygC2tBhM0visOVXS43nQ0; Path=/; Domain=clovebook.com; Max-Age=1648009160; HttpOnly; Secure
+
+{
+    "password": "123456789"
+}
+
+### SAMPLE
+POST localhost:8000/users/login?username=accrazed&password=123456789 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+

@@ -21,22 +21,21 @@ function ErrorPopup() {
 	const open = errorInfo.isOpen;
 
 	return (
-		<Slide in={open} direction="down">
-			<Snackbar
-				open={true}
-				autoHideDuration={3000}
-				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+		<Snackbar
+			open={open}
+			autoHideDuration={3000}
+			anchorOrigin={{ vertical: "top", horizontal: "center" }}
+			onClose={handleClose}
+			TransitionComponent={Slide}
+		>
+			<Alert
 				onClose={handleClose}
+				severity="error"
+				sx={{ width: "100%" }}
 			>
-				<Alert
-					onClose={handleClose}
-					severity="error"
-					sx={{ width: "100%" }}
-				>
-					{errorInfo.error}
-				</Alert>
-			</Snackbar>
-		</Slide>
+				{errorInfo.error}
+			</Alert>
+		</Snackbar>
 	);
 }
 

@@ -28,13 +28,13 @@ const palette = {
 		darkContrastText: "#ffffff",
 	},
 	secondary: {
-		main: green[300],
-		light: green[100],
-		dark: green[500],
+		main: "#AB98C7",
+		light: "#d6cde4",
+		dark: "#6c5095",
 		contrastText: "#ffffff",
 	},
 	tertiary: {
-		main: "#8bcece",
+		main: "#5C6573",
 		contrastText: "#fff",
 	},
 	error: {

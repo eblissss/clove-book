@@ -18,12 +18,14 @@ export function RecipeCard(props: SimpleRecipe) {
 	const dispatch = useAppDispatch();
 
 	function updateSelectedRecipe() {
-		if (props.cbID >= 0) {
-			console.log(props.cbID);
-			dispatch(setModal({ id: props.cbID, isCookbookID: true }));
+		if (props.cookbookID >= 0) {
+			console.log(props.cookbookID);
+			dispatch(setModal({ id: props.cookbookID, isCookbookID: true }));
 		} else {
-			console.log(props.sID);
-			dispatch(setModal({ id: props.sID, isCookbookID: false }));
+			console.log(props.spoonacularID);
+			dispatch(
+				setModal({ id: props.spoonacularID, isCookbookID: false })
+			);
 		}
 
 		dispatch(openModal());

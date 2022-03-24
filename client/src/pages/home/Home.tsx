@@ -13,8 +13,8 @@ import RecipeModal from "../../components/recipeModal/RecipeModal";
 const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
 	fakeJSON.push({
-		sID: 0,
-		cbID: 0,
+		spoonacularID: 0,
+		cookbookID: 0,
 		name: "Vegan Cheesecake",
 		imageURL: "https://source.unsplash.com/random",
 		readyInMinutes: 10,

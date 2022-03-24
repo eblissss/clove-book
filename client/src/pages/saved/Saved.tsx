@@ -2,15 +2,17 @@ import { Box, Container, Typography } from "@mui/material";
 import React from "react";
 import { SimpleRecipe } from "../../api/models";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
+import RecipeModal from "../../components/recipeModal/RecipeModal";
 import SearchBar from "../../components/searchBar/SearchBar";
 
 import { TabBar } from "../../components/tabBar/TabBar";
+import MenuSelector from "./menuSelector";
 
 const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
 	fakeJSON.push({
-		sID: 0,
-		cbID: 0,
+		spoonacularID: 0,
+		cookbookID: 0,
 		name: "Vegan Cheesecake",
 		imageURL: "https://source.unsplash.com/random",
 		readyInMinutes: 10,
@@ -27,6 +29,7 @@ function Saved() {
 				backgroundColor: "primary.light",
 			}}
 		>
+			<RecipeModal />
 			<TabBar tab="saved" />
 			<Container
 				id="BACKGROUND"
@@ -44,13 +47,7 @@ function Saved() {
 							justifyContent: "space-between",
 						}}
 					>
-						<Typography
-							variant="h3"
-							component="h3"
-							sx={{ flex: "1" }}
-						>
-							My Recipes
-						</Typography>
+						<MenuSelector props={{ flex: "1" }} />
 						<SearchBar paperProps={{ flex: "2" }} />
 					</Container>
 					<RecipeGrid recipes={fakeJSON} />

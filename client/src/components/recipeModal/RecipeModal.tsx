@@ -265,8 +265,8 @@ function RecipeModalContent({ recipe }: contentProps) {
 }
 
 const dataA: Recipe = {
-	cbID: 0,
-	sID: 0,
+	cookbookID: 0,
+	spoonacularID: 0,
 	ingredients: [
 		{ name: "Spinach", amount: 1, unit: "cup" },
 		{ name: "Grass", amount: 2, unit: "oz" },
@@ -275,10 +275,15 @@ const dataA: Recipe = {
 	instructions: [],
 	name: "Chicken Paella",
 	savedAt: "5:04 PM, Friday 14th 2021",
-	username: "jo",
+	author: "jo",
+	authorID: "1231",
 	imageURL: "https://source.unsplash.com/random",
 	readyInMinutes: 15,
 	tags: ["chicken", "mars", "vegan"],
+	cookTime: 5,
+	prepTime: 10,
+	totalTime: 15,
+	createdAt: "5:04 PM, Friday 14th 2021",
 };
 
 function RecipeModal() {

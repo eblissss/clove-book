@@ -4,6 +4,7 @@ import { Box, Button, Container, Typography, useTheme } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 import BgImage from "../../assets/landing-bg.jpg";
+import cloveImg from "../../assets/cloveB.png";
 
 export default function Landing() {
 	const theme = useTheme();
@@ -25,21 +26,11 @@ export default function Landing() {
 					display: "flex",
 					flexDirection: "column",
 					left: "16%",
-					top: "16%",
+					top: "10%",
 					width: "50vw",
 				}}
 			>
-				<Typography
-					component="h1"
-					variant="h1"
-					sx={{
-						fontFamily: ["serif", "Prociono"],
-						color: "secondary.contrastText",
-						alignSelf: "flex-start",
-					}}
-				>
-					Cook Book
-				</Typography>
+				<img src={cloveImg} width="80%" />
 				<Box
 					component="div"
 					sx={{
@@ -68,7 +59,7 @@ export default function Landing() {
 					sx={{
 						alignSelf: "flex-start",
 						p: "2rem",
-						mt: "10rem",
+						mt: "8rem",
 
 						backgroundColor: "secondary.dark",
 						border: "7px solid #ffffff",

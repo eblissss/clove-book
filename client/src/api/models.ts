@@ -25,8 +25,8 @@ interface Instruction {
 }
 
 export interface SimpleRecipe {
-	sID: number;
-	cbID: number;
+	spoonacularID: number;
+	cookbookID: number;
 	name: string;
 	imageURL?: string;
 	readyInMinutes?: number;
@@ -35,9 +35,14 @@ export interface SimpleRecipe {
 }
 
 export interface Recipe extends SimpleRecipe {
-	username: string;
+	author: string;
+	authorID: string;
+	cookTime: number;
+	prepTime: number;
+	totalTime: number;
 	ingredients: Ingredient[];
 	instructions: Instruction[];
+	createdAt: string;
 }
 
 export interface Userpass {

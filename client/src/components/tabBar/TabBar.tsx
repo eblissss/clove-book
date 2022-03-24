@@ -6,6 +6,8 @@ import TabIcon from "./TabIcon";
 
 import { doLogout } from "../../api/requests";
 
+import cloveImg from "../../assets/cloveB.png";
+
 interface tabProps {
 	tab: string;
 	selectedTab?: string;
@@ -21,7 +23,7 @@ function OneTab(props: tabProps) {
 				display: "inline-block",
 				width: "200px",
 				height: "100%",
-				transform: "translateX(40px)",
+				bottom: "25px",
 				textAlign: "center",
 			}}
 		>
@@ -61,9 +63,9 @@ export function TabBar(props: tabProps) {
 				overflow: "hidden",
 			}}
 		>
+			<img src={cloveImg} height="59px" />
 			<OneTab tab="home" selectedTab={props.tab} />
 			<OneTab tab="saved" selectedTab={props.tab} />
-			<OneTab tab="plan" selectedTab={props.tab} />
 			<OneTab tab="create" selectedTab={props.tab} />
 			<Button
 				component={RouterLink}

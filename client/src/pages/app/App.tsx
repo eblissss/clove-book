@@ -6,7 +6,6 @@ import Example from "../example/Example";
 import Login from "../login/Login";
 import Home from "../home/Home";
 import Saved from "../saved/Saved";
-import Plan from "../plan/Plan";
 import Create from "../create/Create";
 
 import WebFont from "webfontloader";
@@ -28,7 +27,6 @@ function App() {
 				<Route path="/login" element={<Login />} />
 				<Route path="/home" element={<Home />} />
 				<Route path="/saved" element={<Saved />} />
-				<Route path="/plan" element={<Plan />} />
 				<Route path="/create" element={<Create />} />
 				<Route path="/" element={<Landing />} />
 			</Routes>

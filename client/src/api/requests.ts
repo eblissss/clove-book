@@ -54,17 +54,18 @@ const requests = {
 			.catch(handleError),
 };
 
-// All requests are add*, update*, delete*, get*, or do*
-
 // ==== Recipe Section ====
-export const addFavorite = (
+export const setFavorite = (
 	username: string,
-	useCookbook: boolean,
-	id: number
+	set: boolean,
+	spoonacularID?: string,
+	cookbookID?: string
 ) => {
-	if (useCookbook)
-		requests.post(`/users/${username}/favorites`, { cookbookID: id });
-	else requests.post(`/users/${username}/favorites`, { spoonacularID: id });
+	requests.put(
+		`/users/${username}/favorites`,
+		{},
+		{ set: set, spoonacularID: spoonacularID, cookbookID: cookbookID }
+	);
 };
 
 export const getFavorites = (username: string, query: string) => {
@@ -111,8 +112,14 @@ export const doRegister = (
 export const doAuth = (data: models.Useremail): Promise<{ expires: string }> =>
 	requests.post("/users/auth", data);
 
-export const doLogin = (data: models.Userpass): Promise<models.User> =>
-	requests.get("/users/login", data);
+export const doRefresh = (
+	refreshToken: string
+): Promise<{ refreshToken: string }> =>
+	requests.get("/users/refresh", { refreshToken: refreshToken });
+
+export const doLogin = (
+	data: models.Userpass
+): Promise<{ refreshToken: string }> => requests.get("/users/login", data);
 
 export const doLogout = () => requests.get("/users/logout");
 

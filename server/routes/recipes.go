@@ -107,6 +107,7 @@ func (r *Client) UpdateRecipe(c *gin.Context) {
 		return
 	}
 
+	// left out properties that shouldn't be changed
 	update := bson.M{
 		"name":         recipe.RecipeName,
 		"imageURL":     recipe.ImageURL,
@@ -129,7 +130,22 @@ func (r *Client) UpdateRecipe(c *gin.Context) {
 		return
 	}
 
-	// TODO: Also update stub
+	update = bson.M{
+		"imageURL":    recipe.ImageURL,
+		"name":        recipe.RecipeName,
+		"totalTime":   recipe.TotalTime,
+		"tags":        recipe.Tags,
+		"ingredients": recipe.Ingredients,
+	}
+	result, err = r.StubCollection.UpdateOne(ctx, bson.M{"cookbookID": cookbookID}, bson.M{"$set": update})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Stub could not be updated"})
+		return
+	}
+	if result.MatchedCount == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Stub to be updated not found"})
+		return
+	}
 
 	c.JSON(http.StatusOK, bson.M{"updated": cookbookID})
 }

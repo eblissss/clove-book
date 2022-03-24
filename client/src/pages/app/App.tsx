@@ -10,6 +10,7 @@ import Plan from "../plan/Plan";
 import Create from "../create/Create";
 
 import WebFont from "webfontloader";
+import ErrorPopup from "../../components/errorPopup/ErrorPopup";
 WebFont.load({
 	google: {
 		families: ["Overlock", "Prociono", "Sen"],
@@ -19,6 +20,7 @@ WebFont.load({
 function App() {
 	return (
 		<BrowserRouter>
+			<ErrorPopup />
 			{/* A <Routes> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
 			<Routes>

@@ -1,6 +1,8 @@
-# Cook Book
+# Clove Book
 
-## Find new recipes
+## Find and share new recipes
+
+### Also check out our React Native [Mobile Component](https://github.com/jcode94/clovebook-mobile)
 
 <img src="https://repository-images.githubusercontent.com/463989961/1517858f-84b7-423e-9c3a-95c6637df24e" alt="site" height="250"/>
 
@@ -28,7 +30,6 @@
 ### Technologies and Tools:
 
 -   MongoDB
--   Express
 -   React
--   Node
+-   Go
 -   ?????

@@ -1,5 +1,7 @@
 import axios, { AxiosResponse } from "axios";
+import { openError, setError } from "../components/errorPopup/errorSlice";
 import * as models from "./models";
+import { store } from "../app/store";
 
 const instance = axios.create({
 	baseURL: "https://api.clovebook.com",
@@ -22,6 +24,13 @@ const handleError = (err: any) => {
 		console.log(err.message);
 	}
 	console.log(err.config);
+
+	store.dispatch(
+		setError({
+			error: `${err.response.status} ${err.response.statusText}: ${err.response.data.error}`,
+		})
+	);
+	store.dispatch(openError());
 };
 
 // May need to send auth

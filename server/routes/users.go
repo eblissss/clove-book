@@ -67,6 +67,54 @@ func (r *Client) AuthUser(c *gin.Context) {
 	})
 }
 
+func (r *Client) RefreshToken(c *gin.Context) {
+	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// If we're before 30 seconds of expire time, exit
+	accessToken, err := c.Cookie("token")
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+	accessClaims, _ := creds.VerifyToken(c, accessToken)
+	if time.Now().Before(time.Unix(accessClaims.ExpiresAt, 0).Add(-30 * time.Second)) {
+		c.Status(http.StatusTooEarly)
+		return
+	}
+
+	refreshToken, ok := c.GetQuery("refreshToken")
+	if !ok {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+	refreshClaims, ok := creds.VerifyToken(c, refreshToken)
+	if !ok {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	newAccessToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 5*time.Minute)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+	c.SetCookie("token", newAccessToken, int(time.Now().Add(2*time.Hour).Unix()), "",
+		"clovebook.com", true, true)
+
+	newRefreshToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 24*time.Hour)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"refreshToken": newRefreshToken,
+	})
+}
+
 func (r *Client) RegisterUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -173,17 +221,25 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 
 	fmt.Println(user.Username)
-	token, err := creds.NewSignedToken(user.Username, creds.InsecureToken)
+	accessToken, err := creds.NewSignedToken(user.Username, creds.InsecureToken, 5*time.Minute)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+	c.SetCookie("token", accessToken, int(time.Now().Add(2*time.Hour).Unix()), "",
+		"clovebook.com", true, true)
+
+	refreshToken, err := creds.NewSignedToken(user.Username, creds.InsecureToken, 24*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
 
-	c.SetCookie("token", token, int(time.Now().Add(2*time.Hour).Unix()), "",
-		"clovebook.com", true, true)
-
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{
+		"refreshToken": refreshToken,
+	})
 }
 
 func (r *Client) LogoutUser(c *gin.Context) {
@@ -214,7 +270,12 @@ func (r *Client) UpdateUser(c *gin.Context) {
 	}
 
 	// Authorize User
-	claims, ok := creds.VerifyToken(c)
+	cookie, err := c.Cookie("token")
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+	claims, ok := creds.VerifyToken(c, cookie)
 	if !ok {
 		return
 	}

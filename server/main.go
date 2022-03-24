@@ -39,6 +39,7 @@ func main() {
 
 	// Users
 	r.POST("/users/auth", c.AuthUser)
+	r.GET("/users/refresh", c.RefreshToken)
 	r.POST("/users", c.RegisterUser)
 	r.GET("/users/login", c.LoginUser)
 	r.GET("/users/logout", c.LogoutUser)

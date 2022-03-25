@@ -78,7 +78,7 @@ func (r *Client) RefreshToken(c *gin.Context) {
 		return
 	}
 	accessClaims, _ := creds.VerifyToken(c, accessToken)
-	if time.Now().Before(time.Unix(accessClaims.ExpiresAt, 0).Add(-30 * time.Second)) {
+	if time.Now().Before(time.Unix(accessClaims.ExpiresAt, 0).Add(-24 * time.Hour)) {
 		c.Status(http.StatusTooEarly)
 		return
 	}
@@ -94,16 +94,16 @@ func (r *Client) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	newAccessToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 5*time.Minute)
+	newAccessToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 24*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
-	c.SetCookie("token", newAccessToken, int(time.Now().Add(2*time.Hour).Unix()), "",
+	c.SetCookie("token", newAccessToken, int(time.Now().Add(24*time.Hour).Unix()), "",
 		"clovebook.com", true, true)
 
-	newRefreshToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 24*time.Hour)
+	newRefreshToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 48*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)

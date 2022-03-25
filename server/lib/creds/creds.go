@@ -11,6 +11,7 @@ import (
 
 type Claims struct {
 	Username string `json:"username"`
+	UserID   string `json:"userID"`
 	jwt.StandardClaims
 }
 
@@ -37,19 +38,20 @@ func VerifyToken(c *gin.Context, jwtToken string) (claims *Claims, valid bool) {
 	return claims, true
 }
 
-func NewSignedToken(username string, key []byte, duration time.Duration) (string, error) {
-	signed, err := NewToken(username, duration).SignedString(key)
+func NewSignedToken(username, userID string, key []byte, duration time.Duration) (string, error) {
+	signed, err := NewToken(username, userID, duration).SignedString(key)
 	if err != nil {
 		return "", err
 	}
 	return signed, nil
 }
 
-func NewToken(username string, duration time.Duration) *jwt.Token {
+func NewToken(username, userID string, duration time.Duration) *jwt.Token {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		&Claims{
 			Username: username,
+			UserID:   userID,
 			StandardClaims: jwt.StandardClaims{
 				ExpiresAt: time.Now().UTC().Add(duration).Unix(),
 				IssuedAt:  time.Now().UTC().Unix(),

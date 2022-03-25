@@ -94,7 +94,8 @@ func (r *Client) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	newAccessToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 24*time.Hour)
+	newAccessToken, err := creds.NewSignedToken(
+		refreshClaims.Username, refreshClaims.UserID, creds.InsecureToken, 24*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -103,7 +104,8 @@ func (r *Client) RefreshToken(c *gin.Context) {
 	c.SetCookie("token", newAccessToken, int(time.Now().Add(24*time.Hour).Unix()), "",
 		"clovebook.com", true, true)
 
-	newRefreshToken, err := creds.NewSignedToken(refreshClaims.Username, creds.InsecureToken, 48*time.Hour)
+	newRefreshToken, err := creds.NewSignedToken(
+		refreshClaims.Username, refreshClaims.UserID, creds.InsecureToken, 48*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -221,7 +223,8 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 
 	fmt.Println(user.Username)
-	accessToken, err := creds.NewSignedToken(user.Username, creds.InsecureToken, 5*time.Minute)
+	accessToken, err := creds.NewSignedToken(
+		user.Username, user.UserID.String(), creds.InsecureToken, 5*time.Minute)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -230,7 +233,8 @@ func (r *Client) LoginUser(c *gin.Context) {
 	c.SetCookie("token", accessToken, int(time.Now().Add(2*time.Hour).Unix()), "",
 		"clovebook.com", true, true)
 
-	refreshToken, err := creds.NewSignedToken(user.Username, creds.InsecureToken, 24*time.Hour)
+	refreshToken, err := creds.NewSignedToken(
+		user.Username, user.UserID.String(), creds.InsecureToken, 24*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -326,7 +330,9 @@ func (r *Client) UpdateUser(c *gin.Context) {
 	}
 	if ok := usernameValid(newUser.Username); !ok {
 		fmt.Println("invalid username")
-		c.JSON(http.StatusBadRequest, bson.M{"error": fmt.Errorf("username %s invalid. username can only contain alphanumeric characters and underscores", username).Error()})
+		c.JSON(http.StatusBadRequest, bson.M{"error": fmt.Errorf(
+			"username %s invalid. username can only contain alphanumeric characters and underscores",
+			username).Error()})
 	}
 
 	// Update user
@@ -357,7 +363,9 @@ func (r *Client) validateAccount(ctx context.Context, email, username string) er
 func (r *Client) validateUsername(ctx context.Context, username string) error {
 	// Username invalid
 	if userValid := usernameValid(username); !userValid {
-		return fmt.Errorf("username %s invalid. username can only contain alphanumeric characters and underscores", username)
+		return fmt.Errorf(
+			"username %s invalid. username can only contain alphanumeric characters and underscores",
+			username)
 	}
 
 	// Username taken

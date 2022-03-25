@@ -7,6 +7,7 @@ import Login from "../login/Login";
 import Home from "../home/Home";
 import Saved from "../saved/Saved";
 import Create from "../create/Create";
+import User from "../user/User";
 
 import WebFont from "webfontloader";
 import ErrorPopup from "../../components/errorPopup/ErrorPopup";
@@ -28,6 +29,7 @@ function App() {
 				<Route path="/home" element={<Home />} />
 				<Route path="/saved" element={<Saved />} />
 				<Route path="/create" element={<Create />} />
+				<Route path="/user" element={<User />} />
 				<Route path="/" element={<Landing />} />
 			</Routes>
 		</BrowserRouter>

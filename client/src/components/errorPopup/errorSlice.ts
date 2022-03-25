@@ -16,8 +16,8 @@ export const errorSlice = createSlice({
 	initialState,
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
-		setError: (state, action: PayloadAction<{ error: string }>) => {
-			state.error = action.payload.error;
+		setError: (state, action: PayloadAction<string>) => {
+			state.error = action.payload;
 		},
 		openError: (state) => {
 			state.isOpen = true;

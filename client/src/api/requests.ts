@@ -26,9 +26,9 @@ const handleError = (err: any) => {
 	console.log(err.config);
 
 	store.dispatch(
-		setError({
-			error: `${err.response.status} ${err.response.statusText}: ${err.response.data.error}`,
-		})
+		setError(
+			`${err.response.status} ${err.response.statusText}: ${err.response.data.error}`
+		)
 	);
 	store.dispatch(openError());
 };
@@ -88,21 +88,6 @@ export const deleteRecipe = (cookbookID: number) =>
 export const updateRecipe = (cookbookID: number, data: models.Recipe) =>
 	requests.put(`/recipes/${cookbookID}`, data);
 
-// ==== Ingredient Section ====
-export const getIngredients = (username: string): Promise<models.Ingredient> =>
-	requests.get(`/users/${username}/ingredients`);
-
-export const addIngredients = (username: string, data: models.Ingredient[]) =>
-	requests.post(`/users/${username}/ingredients`, data);
-
-export const deleteIngredients = (username: string, ingredients: string) =>
-	requests.delete(`/users/${username}/ingredients`, ingredients);
-
-export const updateIngredients = (username: string, data: models.Ingredient) =>
-	requests.put(`/users/${username}/ingredients`, data, {
-		ingredient: data.name,
-	});
-
 // ==== User Section ====
 export const doRegister = (
 	data: models.NewUser,
@@ -123,11 +108,11 @@ export const doLogin = (
 
 export const doLogout = () => requests.get("/users/logout");
 
-export const getUser = (username: string): Promise<models.User> =>
-	requests.get(`/users/${username}`);
+export const getUser = (userID: string): Promise<models.User> =>
+	requests.get(`/users/${userID}`);
 
-export const updateUser = (username: string, data: models.User) =>
-	requests.put(`/users/${username}`, data);
+export const updateUser = (userID: string, data: models.User) =>
+	requests.put(`/users/${userID}`, data);
 
-export const deleteUser = (username: string) =>
-	requests.delete(`/users/${username}`);
+export const deleteUser = (userID: string) =>
+	requests.delete(`/users/${userID}`);

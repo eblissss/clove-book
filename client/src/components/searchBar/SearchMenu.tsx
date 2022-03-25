@@ -16,11 +16,17 @@ import {
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import React, { useState } from "react";
+import { setSearchFilters, setSearchSort, setSearchTags } from "./searchSlice";
+import { useAppDispatch } from "../../app/hooks";
 
 function FilterList() {
+	const dispatch = useAppDispatch();
+
 	const [checked, setChecked] = React.useState([""]);
 
 	const handleToggle = (value: string) => () => {
+		dispatch(setSearchFilters([...checked]));
+
 		const currentIndex = checked.indexOf(value);
 		const newChecked = [...checked];
 
@@ -72,6 +78,8 @@ function FilterList() {
 }
 
 function SearchMenu() {
+	const dispatch = useAppDispatch();
+
 	// anchor element
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -82,6 +90,13 @@ function SearchMenu() {
 
 	const handleClose = () => {
 		setAnchorEl(null);
+	};
+
+	const radioSelect = (
+		event: React.ChangeEvent<HTMLInputElement>,
+		value: string
+	) => {
+		dispatch(setSearchSort(value));
 	};
 
 	return (
@@ -122,6 +137,7 @@ function SearchMenu() {
 							aria-labelledby="sortButtonsLabel"
 							defaultValue="best"
 							name="sortButtonsGroup"
+							onChange={radioSelect}
 						>
 							<FormControlLabel
 								value="best"

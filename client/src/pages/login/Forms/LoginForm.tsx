@@ -18,6 +18,12 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import md5 from "md5";
+import { setUserID } from "../../user/userSlice";
+import { decodeToken } from "react-jwt";
+
+interface cbJWT {
+	userID: string;
+}
 
 export function LoginForm() {
 	const dispatch = useAppDispatch();
@@ -41,6 +47,13 @@ export function LoginForm() {
 			.then((data) => {
 				console.log(data);
 				if (data !== undefined) {
+					const decoded = decodeToken(data.refreshToken);
+					const userID: string = (decoded as cbJWT)!.userID;
+					console.log(decoded);
+					console.log(userID);
+
+					dispatch(setUserID(userID));
+
 					navigate("/home");
 				}
 			})

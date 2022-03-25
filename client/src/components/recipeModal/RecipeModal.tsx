@@ -15,6 +15,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { closeModal, selectModal } from "./modalSlice";
 
 import { Recipe } from "../../api/models";
+import Tag from "../tag/Tag";
 
 // import { getRecipe } from "../../api/requests"
 
@@ -74,23 +75,8 @@ function RecipeModalContent({ recipe }: contentProps) {
 						width: "80%",
 					}}
 				>
-					{recipe.tags?.map((tag) => (
-						<Box
-							key="tag"
-							component="div"
-							sx={{
-								display: "flex",
-								color: "white",
-								backgroundColor: "green",
-								height: "30px",
-								borderRadius: "5px",
-								p: "5px",
-								m: "5px",
-								alignItems: "center",
-							}}
-						>
-							{tag}
-						</Box>
+					{recipe.tags?.map((tag, i) => (
+						<Tag name={tag} key={tag + i} />
 					))}
 				</Container>
 				{/* TITLE AND SUBTITLE */}
@@ -302,7 +288,6 @@ function RecipeModal() {
 
 	return (
 		<div>
-			{console.log(open ? "we are open" : "we are closed")}
 			<Modal
 				aria-labelledby="recipeModal"
 				aria-describedby="recipeModalDesc"

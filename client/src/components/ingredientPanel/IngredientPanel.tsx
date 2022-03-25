@@ -1,12 +1,22 @@
-import { Box, TextField, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import React from "react";
 
 interface PanelProps {
+	searchFunc: any;
 	boxProps?: any;
 }
 
-function IngredientPanel(props: PanelProps) {
+function IngredientPanel({ searchFunc, boxProps }: PanelProps) {
+	const useFunc: React.MouseEventHandler<HTMLButtonElement> = () => {
+		const text = (
+			document.getElementById("ingredientField") as HTMLInputElement
+		).value;
+		// split on newline (both unix and windows)
+		const ingredients = text.split(/\r?\n/);
+
+		searchFunc(ingredients);
+	};
+
 	return (
 		<Box
 			component="div"
@@ -16,7 +26,7 @@ function IngredientPanel(props: PanelProps) {
 				textAlign: "center",
 				p: "20px",
 				maxWidth: "300px",
-				...props.boxProps,
+				...boxProps,
 			}}
 		>
 			<Typography
@@ -31,9 +41,29 @@ function IngredientPanel(props: PanelProps) {
 			<TextField
 				multiline
 				minRows={12}
+				id="ingredientField"
 				placeholder="lentils"
 				variant="filled"
 			></TextField>
+			<Button
+				fullWidth
+				onClick={useFunc}
+				sx={{
+					backgroundColor: "secondary.main",
+					borderRadius: "17px",
+					color: "secondary.contrastText",
+					fontSize: "1.2rem",
+					textAlign: "center",
+					mt: "1rem",
+					transition: "transform 300ms ease",
+					"&:hover": {
+						backgroundColor: "secondary.dark",
+						transform: "translateY(-3px)",
+					},
+				}}
+			>
+				Find Dishes
+			</Button>
 		</Box>
 	);
 }

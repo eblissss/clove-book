@@ -7,7 +7,7 @@ export interface NewUser {
 }
 
 export interface User extends NewUser {
-	userID: number;
+	userID: string;
 	createdAt: string;
 	updatedAt: string;
 }

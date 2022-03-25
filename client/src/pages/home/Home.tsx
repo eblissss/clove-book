@@ -43,6 +43,17 @@ function Home() {
 	}, []);
 
 	// should probably cap search to every 200ms or so
+	function search() {
+		const searchVal = (
+			document.getElementById("search") as HTMLInputElement
+		).value;
+
+		console.log(searchVal);
+	}
+
+	function ingredientSearch(ingredients: string[]) {
+		console.log(ingredients);
+	}
 
 	return (
 		<Box
@@ -66,6 +77,7 @@ function Home() {
 						What are you looking for?
 					</Typography>
 					<SearchBar
+						searchFunc={search}
 						paperProps={{ m: "20px", ml: "0", mb: "40px" }}
 					/>
 					{searching ? (
@@ -88,7 +100,7 @@ function Home() {
 						alignItems: "center",
 					}}
 				>
-					<IngredientPanel />
+					<IngredientPanel searchFunc={ingredientSearch} />
 					<Container
 						disableGutters
 						maxWidth={false}

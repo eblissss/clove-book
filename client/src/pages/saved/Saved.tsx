@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { SimpleRecipe } from "../../api/models";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
@@ -22,6 +22,21 @@ for (let i = 0; i < 12; i++) {
 }
 
 function Saved() {
+	const [collection, setCollection] = useState("My Recipes");
+
+	function updateCollection(collection: string) {
+		setCollection(collection);
+		console.log(collection);
+	}
+
+	function search() {
+		const searchVal = (
+			document.getElementById("search") as HTMLInputElement
+		).value;
+
+		console.log(searchVal);
+	}
+
 	return (
 		<Box
 			component="div"
@@ -47,8 +62,14 @@ function Saved() {
 							justifyContent: "space-between",
 						}}
 					>
-						<MenuSelector props={{ flex: "1" }} />
-						<SearchBar paperProps={{ flex: "2" }} />
+						<MenuSelector
+							getCollection={updateCollection}
+							props={{ flex: "1" }}
+						/>
+						<SearchBar
+							searchFunc={search}
+							paperProps={{ flex: "2" }}
+						/>
 					</Container>
 					<RecipeGrid recipes={fakeJSON} />
 				</Container>

@@ -20,21 +20,16 @@ import {
 	Close as CloseIcon,
 	Check as CheckIcon,
 } from "@mui/icons-material";
-import React, { useState } from "react";
-import { User } from "../../api/models";
+import React, { useEffect, useState } from "react";
 import { TabBar } from "../../components/tabBar/TabBar";
-import { getUser } from "../../api/requests";
+import { deleteUser, getUser, updateUser } from "../../api/requests";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectUser, setUser } from "./userSlice";
+import { User } from "../../api/models";
+import md5 from "md5";
+import { useNavigate } from "react-router-dom";
 
-const initialUser: User = {
-	userID: 0,
-	username: "Fire",
-	firstName: "John",
-	lastName: "Dover",
-	email: "flame@gmail.com",
-	createdAt: "00:00 idk format",
-	updatedAt: "00:00 idk format",
-	password: "passhash",
-};
+const titles = ["First Name", "Last Name", "Username", "Email"];
 
 function InfoBlob({
 	title,
@@ -58,7 +53,7 @@ function InfoBlob({
 					id={title}
 					label={title}
 					variant="filled"
-					value={info}
+					defaultValue={info}
 				/>
 			) : (
 				<Typography
@@ -76,23 +71,55 @@ function InfoBlob({
 }
 
 function UserPage() {
-	const [user, setUser] = useState(initialUser);
+	const navigate = useNavigate();
+
+	const dispatch = useAppDispatch();
+	const user = useAppSelector(selectUser);
+
 	const [editing, setEditing] = useState(false);
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 	const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
-	const setUserInfo = async (user: string) => {
-		const userInfo = await getUser(user);
-		setUser(userInfo);
-	};
-
-	// setUserInfo("pocoyo");
+	useEffect(() => {
+		const setUserInfo = async (userID: string) => {
+			const userInfo = await getUser(userID);
+			dispatch(setUser(userInfo));
+		};
+		console.log("Getting info for: ", user.userID);
+		setUserInfo(user.userID);
+	}, []);
 
 	const edit = () => {
 		setEditing(true);
 	};
 
 	const confirmEdit = () => {
+		const firstName = (
+			document.getElementById(titles[0]) as HTMLInputElement
+		).value;
+		const lastName = (
+			document.getElementById(titles[1]) as HTMLInputElement
+		).value;
+		const username = (
+			document.getElementById(titles[0]) as HTMLInputElement
+		).value;
+		const email = (document.getElementById(titles[0]) as HTMLInputElement)
+			.value;
+		const time = new Date().toUTCString();
+
+		const newUser: User = {
+			...user,
+			firstName: firstName,
+			lastName: lastName,
+			username: username,
+			email: email,
+			updatedAt: time,
+		};
+		dispatch(setUser(newUser));
+
+		// API call
+		updateUser(user.userID, newUser);
+
 		setEditing(false);
 	};
 
@@ -113,7 +140,41 @@ function UserPage() {
 		setPasswordDialogOpen(true);
 	};
 
-	const resetPassword = () => {};
+	const resetPassword = () => {
+		const passA = md5(
+			(document.getElementById("oldPasswordA") as HTMLInputElement).value
+		);
+		const passB = md5(
+			(document.getElementById("oldPasswordB") as HTMLInputElement).value
+		);
+
+		if (passA !== passB || passA !== user.password) {
+			setEditing(false);
+			return;
+		}
+
+		const password = md5(
+			(document.getElementById("newPassword") as HTMLInputElement).value
+		);
+		const time = new Date().toUTCString();
+
+		const newUser: User = { ...user, password: password, updatedAt: time };
+		dispatch(setUser(newUser));
+
+		// API call
+		updateUser(user.userID, newUser);
+
+		setEditing(false);
+	};
+
+	const deleteAccount = () => {
+		const username = (
+			document.getElementById("usernameConfirm") as HTMLInputElement
+		).value;
+
+		deleteUser(user.userID);
+		navigate("/");
+	};
 
 	return (
 		<Box
@@ -158,10 +219,10 @@ function UserPage() {
 									<SpeedDialIcon
 										icon={<CheckIcon />}
 										openIcon={<CheckIcon />}
+										onClick={confirmEdit}
 									/>
 								}
 								sx={{ pl: "2rem" }}
-								onClick={confirmEdit}
 								direction="right"
 							>
 								<SpeedDialAction
@@ -171,6 +232,7 @@ function UserPage() {
 										bgcolor: "primary.main",
 									}}
 									onClick={cancelEdit}
+									open={true}
 								/>
 							</SpeedDial>
 						) : (
@@ -180,10 +242,10 @@ function UserPage() {
 									<SpeedDialIcon
 										icon={<MenuIcon />}
 										openIcon={<EditIcon />}
+										onClick={edit}
 									/>
 								}
 								sx={{ pl: "2rem" }}
-								onClick={edit}
 								direction="right"
 							>
 								<SpeedDialAction
@@ -210,22 +272,22 @@ function UserPage() {
 						}}
 					>
 						<InfoBlob
-							title="First Name"
+							title={titles[0]}
 							info={user.firstName}
 							edit={editing}
 						/>
 						<InfoBlob
-							title="Last Name"
+							title={titles[1]}
 							info={user.lastName}
 							edit={editing}
 						/>
 						<InfoBlob
-							title="Username"
+							title={titles[2]}
 							info={user.username}
 							edit={editing}
 						/>
 						<InfoBlob
-							title="Email"
+							title={titles[3]}
 							info={user.email}
 							edit={editing}
 						/>
@@ -257,7 +319,7 @@ function UserPage() {
 					<TextField
 						autoFocus
 						margin="dense"
-						id="username"
+						id="usernameConfirm"
 						label="Username"
 						type="username"
 						fullWidth

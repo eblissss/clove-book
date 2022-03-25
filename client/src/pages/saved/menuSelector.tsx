@@ -9,12 +9,13 @@ import { KeyboardArrowDown as DownIcon } from "@mui/icons-material";
 import React, { useState } from "react";
 
 interface SelectorProps {
+	getCollection: Function;
 	props: any;
 }
 
 const textOptions = ["My Recipes", "Favorites"];
 
-function menuSelector({ props }: SelectorProps) {
+function menuSelector({ getCollection, props }: SelectorProps) {
 	const [text, setText] = useState(0);
 
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -29,8 +30,10 @@ function menuSelector({ props }: SelectorProps) {
 	};
 
 	const handleCloseItem = () => {
-		setAnchorEl(null);
 		setText(1 - text);
+		getCollection(textOptions[text]);
+
+		setAnchorEl(null);
 	};
 
 	return (
@@ -48,6 +51,7 @@ function menuSelector({ props }: SelectorProps) {
 			<Typography
 				variant="h3"
 				component="h3"
+				id="collectionTitle"
 				sx={{ whiteSpace: "nowrap", mr: "1rem" }}
 			>
 				{textOptions[text]}
@@ -69,7 +73,9 @@ function menuSelector({ props }: SelectorProps) {
 				}}
 			>
 				<MenuItem onClick={handleCloseItem}>
-					{textOptions[1 - text]}
+					<Typography variant="h4" component="h4">
+						{textOptions[1 - text]}
+					</Typography>
 				</MenuItem>
 			</Menu>
 		</Container>

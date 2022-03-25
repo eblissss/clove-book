@@ -2,28 +2,33 @@ import React from "react";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
-import { useAppDispatch } from "../../app/hooks";
-import { setSearch } from "./searchSlice";
 import SearchMenu from "./SearchMenu";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectSearch, setSearchTags } from "./searchSlice";
+import Tag from "../tag/Tag";
 
 interface searchBarProps {
+	searchFunc: React.ChangeEventHandler<
+		HTMLInputElement | HTMLTextAreaElement
+	>;
 	paperProps?: any;
 }
 
-export default function SearchBar(props: searchBarProps) {
+export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 	const dispatch = useAppDispatch();
 
-	function updateSearch() {
-		const searchVal = (
-			document.getElementById("search") as HTMLInputElement
-		).value;
+	// TESTING
+	// dispatch(setSearchTags(["green", "wing", "grass"]));
 
-		console.log(searchVal);
+	const searchOpts = useAppSelector(selectSearch);
+	const tags = searchOpts.searchTags;
 
-		dispatch(setSearch(searchVal));
-
-		return searchVal;
-	}
+	const removeTag = (e: any) => {
+		dispatch(
+			setSearchTags(tags.filter((tag) => tag !== e.target.textContent))
+		);
+		console.log(e);
+	};
 
 	return (
 		<Paper
@@ -33,10 +38,13 @@ export default function SearchBar(props: searchBarProps) {
 				display: "flex",
 				alignItems: "center",
 				backgroundColor: "primary.dark",
-				...props.paperProps,
+				...paperProps,
 			}}
 		>
 			<SearchMenu />
+			{tags?.map((tag, i) => (
+				<Tag name={tag} onClick={removeTag} key={tag + i} />
+			))}
 			<InputBase
 				id="search"
 				sx={{
@@ -47,9 +55,7 @@ export default function SearchBar(props: searchBarProps) {
 				}}
 				placeholder="a lentil dish with plenty of greens..."
 				inputProps={{ "aria-label": "search recipes" }}
-				onChange={() => {
-					updateSearch();
-				}}
+				onChange={searchFunc}
 			/>
 			<IconButton type="button" sx={{ p: "10px" }} aria-label="search">
 				<SearchIcon />

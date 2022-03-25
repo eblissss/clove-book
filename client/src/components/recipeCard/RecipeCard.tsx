@@ -1,25 +1,18 @@
-import {
-	Box,
-	Button,
-	Card,
-	CardActions,
-	CardContent,
-	CardMedia,
-	Grid,
-	Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
 
 import { SimpleRecipe } from "../../api/models";
 import { useAppDispatch } from "../../app/hooks";
 import { openModal, setModal } from "../recipeModal/modalSlice";
+import { addSearchTag } from "../searchBar/searchSlice";
+import Tag from "../tag/Tag";
 
 export function RecipeCard(props: SimpleRecipe) {
 	const dispatch = useAppDispatch();
 
 	function updateSelectedRecipe() {
 		if (props.cookbookID >= 0) {
-			console.log(props.cookbookID);
+			console.log("cookbookID: ", props.cookbookID);
 			dispatch(setModal({ id: props.cookbookID, isCookbookID: true }));
 		} else {
 			console.log(props.spoonacularID);
@@ -31,9 +24,11 @@ export function RecipeCard(props: SimpleRecipe) {
 		dispatch(openModal());
 	}
 
-	const doThis = (e: any) => {
+	const cardTagClick = (e: any) => {
 		console.log(e.target.textContent);
 		e.stopPropagation();
+
+		dispatch(addSearchTag(e.target.textContent));
 	};
 
 	return (
@@ -103,31 +98,11 @@ export function RecipeCard(props: SimpleRecipe) {
 						flexWrap: "wrap",
 					}}
 				>
-					{props.tags?.map((tag) => (
-						<Box
-							key="tag"
-							component="div"
-							sx={{
-								display: "flex",
-								color: "white",
-								backgroundColor: "green",
-								height: "30px",
-								borderRadius: "5px",
-								p: "5px",
-								m: "5px",
-								alignItems: "center",
-							}}
-							onClick={doThis}
-						>
-							{tag}
-						</Box>
+					{props.tags?.map((tag, i) => (
+						<Tag name={tag} onClick={cardTagClick} key={tag + i} />
 					))}
 				</Box>
 			</CardContent>
-			{/* <CardActions>
-				<Button size="small">View</Button>
-				<Button size="small">Edit</Button>
-			</CardActions> */}
 		</Card>
 	);
 }

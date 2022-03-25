@@ -49,12 +49,17 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 
 	_, err = r.StubCollection.InsertOne(ctx, stub)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added to stubs"})
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"error": "Recipe could not be added to stubs"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"insertedCID": stub.CookbookID, "insertedRecipe": recipe, "insertedStub": stub})
-	return
+	c.JSON(http.StatusOK,
+		gin.H{
+			"insertedCID":    stub.CookbookID,
+			"insertedRecipe": recipe,
+			"insertedStub":   stub,
+		})
 }
 
 // Kate wrote this

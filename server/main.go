@@ -20,9 +20,6 @@ func main() {
 	r.Use(gin.Logger())
 	r.Use(cors.Default())
 
-	// Test
-	r.GET("/test", routes.Test)
-
 	// Recipes
 	r.POST("/recipes", c.MakeRecipe)
 	r.GET("/recipes", c.SearchMyRecipes)
@@ -30,12 +27,6 @@ func main() {
 	r.DELETE("/recipes/:cookbookID", c.DeleteRecipe)
 	r.PUT("/users/:username/favorites", c.SaveFavorite)
 	r.GET("/users/:username/favorites", c.ViewFavorites)
-
-	// Ingredients
-	r.GET("/users/:username/ingredients", c.ViewIngredients)
-	r.POST("/users/:username/ingredients", c.AddIngredients)
-	r.DELETE("/users/:username/ingredients", c.DeleteIngredients)
-	r.PUT("/users/:username/ingredients", c.UpdateIngredients)
 
 	// Users
 	r.POST("/users/auth", c.AuthUser)
@@ -46,6 +37,9 @@ func main() {
 	r.GET("/users/:username", c.GetUser)
 	r.PUT("/users/:username", c.UpdateUser)
 	r.DELETE("/users/:username", c.DeleteUser)
+
+	// Test
+	r.GET("/test", routes.Test)
 
 	//this runs the server and allows it to listen to requests.
 	r.Run(":" + port)

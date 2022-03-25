@@ -224,7 +224,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 
 	fmt.Println(user.Username)
 	accessToken, err := creds.NewSignedToken(
-		user.Username, user.UserID.String(), creds.InsecureToken, 5*time.Minute)
+		user.Username, user.UserID.Hex(), creds.InsecureToken, 5*time.Minute)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -234,7 +234,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 		"clovebook.com", true, true)
 
 	refreshToken, err := creds.NewSignedToken(
-		user.Username, user.UserID.String(), creds.InsecureToken, 24*time.Hour)
+		user.Username, user.UserID.Hex(), creds.InsecureToken, 24*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -253,7 +253,26 @@ func (r *Client) LogoutUser(c *gin.Context) {
 }
 
 func (r *Client) GetUser(c *gin.Context) {
-	c.Status(http.StatusServiceUnavailable)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	userID, ok := r.verifyUser(c)
+	if !ok {
+		return
+	}
+
+	res := r.UserCollection.FindOne(ctx, bson.M{
+		"_id": userID,
+	})
+	if res.Err() != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	user := &models.User{}
+	res.Decode(user)
+
+	c.JSON(http.StatusOK, user)
 }
 
 func (r *Client) UpdateUser(c *gin.Context) {
@@ -273,32 +292,13 @@ func (r *Client) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// Authorize User
-	cookie, err := c.Cookie("token")
-	if err != nil {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-	claims, ok := creds.VerifyToken(c, cookie)
+	userID, ok := r.verifyUser(c)
 	if !ok {
-		return
-	}
-
-	// Get Param useranme
-	username, ok := c.Params.Get("username")
-	if !ok {
-		c.JSON(http.StatusInternalServerError, bson.M{"error": "username not supplied"})
-		return
-	}
-
-	// Compare user auth to param username
-	if claims.Username != username {
-		c.Status(http.StatusUnauthorized)
 		return
 	}
 
 	// Get current user
-	res := r.UserCollection.FindOne(ctx, bson.M{"username": username})
+	res := r.UserCollection.FindOne(ctx, bson.M{"_id": userID})
 	if res.Err() != nil {
 		fmt.Println(res.Err())
 		c.JSON(http.StatusBadRequest, bson.M{"error": res.Err().Error()})
@@ -332,12 +332,12 @@ func (r *Client) UpdateUser(c *gin.Context) {
 		fmt.Println("invalid username")
 		c.JSON(http.StatusBadRequest, bson.M{"error": fmt.Errorf(
 			"username %s invalid. username can only contain alphanumeric characters and underscores",
-			username).Error()})
+			userID).Error()})
 	}
 
 	// Update user
 	if _, err := r.UserCollection.ReplaceOne(ctx,
-		bson.M{"username": user.Username},
+		bson.M{"_id": user.UserID},
 		newUser,
 	); err != nil {
 		fmt.Println(err)
@@ -347,7 +347,68 @@ func (r *Client) UpdateUser(c *gin.Context) {
 }
 
 func (r *Client) DeleteUser(c *gin.Context) {
-	c.Status(http.StatusServiceUnavailable)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	userID, ok := r.verifyUser(c)
+	if !ok {
+		return
+	}
+
+	// Delete user recipes
+	_, err := r.RecipeCollection.DeleteMany(ctx, bson.M{
+		"authorID": userID,
+	})
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	// Delete user stubs
+	_, err = r.StubCollection.DeleteMany(ctx, bson.M{
+		"authorID": userID,
+	})
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	userRes := r.UserCollection.FindOneAndDelete(ctx, bson.M{
+		"_id": userID,
+	})
+	if userRes.Err() != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (r *Client) verifyUser(c *gin.Context) (userID string, valid bool) {
+	// Authorize User
+	cookie, err := c.Cookie("token")
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return "", false
+	}
+	claims, ok := creds.VerifyToken(c, cookie)
+	if !ok {
+		return "", false
+	}
+
+	// Get Param user ID
+	userID, ok = c.Params.Get("userID")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, bson.M{"error": "user ID not supplied"})
+		return "", false
+	}
+
+	// Compare user auth to param username
+	if claims.UserID != userID {
+		c.Status(http.StatusUnauthorized)
+		return "", false
+	}
+
+	return userID, true
 }
 
 func (r *Client) validateAccount(ctx context.Context, email, username string) error {

@@ -6,6 +6,7 @@ import { store } from "../app/store";
 const instance = axios.create({
 	baseURL: "https://api.clovebook.com",
 	timeout: 15000,
+	withCredentials: true,
 });
 
 const resBody = (res: AxiosResponse) => res.data;

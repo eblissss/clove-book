@@ -3,15 +3,21 @@ import { RootState } from "../../app/store";
 
 import { User } from "../../api/models";
 
-const initialState: User = {
-	userID: "0",
-	username: "Fire",
-	firstName: "John",
-	lastName: "Dover",
-	email: "flame@gmail.com",
-	createdAt: "00:00 idk format",
-	updatedAt: "00:00 idk format",
-	password: "passhash",
+interface userinblock {
+	user: User;
+}
+
+const initialState: userinblock = {
+	user: {
+		userID: "0",
+		username: "Fire",
+		firstName: "John",
+		lastName: "Dover",
+		email: "flame@gmail.com",
+		createdAt: "2022-03-25T20:33:43.421Z",
+		updatedAt: "2022-03-25T20:33:43.421Z",
+		password: "passhash",
+	},
 };
 
 export const userSlice = createSlice({
@@ -20,16 +26,17 @@ export const userSlice = createSlice({
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
 		setUserID: (state, action: PayloadAction<string>) => {
-			state.userID = action.payload;
+			state.user.userID = action.payload;
 		},
 		setUser: (state, action: PayloadAction<User>) => {
-			state = action.payload;
+			state.user = action.payload;
+			console.log(state.user);
 		},
 	},
 });
 
 export const { setUserID, setUser } = userSlice.actions;
 
-export const selectUser = (state: RootState) => state.user;
+export const selectUser = (state: RootState) => state.user.user;
 
 export default userSlice.reducer;

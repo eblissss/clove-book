@@ -82,10 +82,14 @@ function UserPage() {
 
 	useEffect(() => {
 		const setUserInfo = async (userID: string) => {
+			console.log("Getting info for: ", user.userID);
 			const userInfo = await getUser(userID);
-			dispatch(setUser(userInfo));
+			console.log("user", userInfo);
+			if (userInfo) {
+				dispatch(setUser(userInfo));
+			}
 		};
-		console.log("Getting info for: ", user.userID);
+
 		setUserInfo(user.userID);
 	}, []);
 
@@ -101,11 +105,11 @@ function UserPage() {
 			document.getElementById(titles[1]) as HTMLInputElement
 		).value;
 		const username = (
-			document.getElementById(titles[0]) as HTMLInputElement
+			document.getElementById(titles[2]) as HTMLInputElement
 		).value;
-		const email = (document.getElementById(titles[0]) as HTMLInputElement)
+		const email = (document.getElementById(titles[3]) as HTMLInputElement)
 			.value;
-		const time = new Date().toUTCString();
+		const time = new Date().toISOString();
 
 		const newUser: User = {
 			...user,
@@ -115,6 +119,7 @@ function UserPage() {
 			email: email,
 			updatedAt: time,
 		};
+		console.log("newUser", newUser);
 		dispatch(setUser(newUser));
 
 		// API call
@@ -156,7 +161,7 @@ function UserPage() {
 		const password = md5(
 			(document.getElementById("newPassword") as HTMLInputElement).value
 		);
-		const time = new Date().toUTCString();
+		const time = new Date().toISOString();
 
 		const newUser: User = { ...user, password: password, updatedAt: time };
 		dispatch(setUser(newUser));
@@ -164,6 +169,7 @@ function UserPage() {
 		// API call
 		updateUser(user.userID, newUser);
 
+		setPasswordDialogOpen(false);
 		setEditing(false);
 	};
 
@@ -171,6 +177,10 @@ function UserPage() {
 		const username = (
 			document.getElementById("usernameConfirm") as HTMLInputElement
 		).value;
+
+		if (username !== user.username) {
+			return;
+		}
 
 		deleteUser(user.userID);
 		navigate("/");
@@ -329,7 +339,7 @@ function UserPage() {
 				<DialogActions>
 					<Button onClick={handleClose}>Cancel</Button>
 					<Button
-						onClick={handleClose}
+						onClick={deleteAccount}
 						variant="outlined"
 						color="error"
 					>
@@ -373,7 +383,7 @@ function UserPage() {
 				<DialogActions>
 					<Button onClick={handleClose}>Cancel</Button>
 					<Button
-						onClick={handleClose}
+						onClick={resetPassword}
 						variant="outlined"
 						color="secondary"
 					>

@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (r *Client) AuthUser(c *gin.Context) {
@@ -224,7 +225,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 
 	fmt.Println(user.Username)
 	accessToken, err := creds.NewSignedToken(
-		user.Username, user.UserID.Hex(), creds.InsecureToken, 5*time.Minute)
+		user.Username, user.UserID.Hex(), creds.InsecureToken, 24*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -234,7 +235,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 		"clovebook.com", true, true)
 
 	refreshToken, err := creds.NewSignedToken(
-		user.Username, user.UserID.Hex(), creds.InsecureToken, 24*time.Hour)
+		user.Username, user.UserID.Hex(), creds.InsecureToken, 48*time.Hour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
@@ -256,15 +257,20 @@ func (r *Client) GetUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	userID, ok := r.verifyUser(c)
+	id, ok := r.verifyUser(c)
 	if !ok {
 		return
 	}
 
 	res := r.UserCollection.FindOne(ctx, bson.M{
-		"_id": userID,
+		"user_id": id,
 	})
 	if res.Err() != nil {
+		if res.Err() == mongo.ErrNoDocuments {
+			fmt.Println(res.Err().Error())
+			c.Status(http.StatusNotFound)
+			return
+		}
 		c.Status(http.StatusInternalServerError)
 		return
 	}
@@ -298,7 +304,7 @@ func (r *Client) UpdateUser(c *gin.Context) {
 	}
 
 	// Get current user
-	res := r.UserCollection.FindOne(ctx, bson.M{"_id": userID})
+	res := r.UserCollection.FindOne(ctx, bson.M{"user_id": userID})
 	if res.Err() != nil {
 		fmt.Println(res.Err())
 		c.JSON(http.StatusBadRequest, bson.M{"error": res.Err().Error()})
@@ -337,7 +343,7 @@ func (r *Client) UpdateUser(c *gin.Context) {
 
 	// Update user
 	if _, err := r.UserCollection.ReplaceOne(ctx,
-		bson.M{"_id": user.UserID},
+		bson.M{"user_id": user.UserID},
 		newUser,
 	); err != nil {
 		fmt.Println(err)
@@ -373,7 +379,7 @@ func (r *Client) DeleteUser(c *gin.Context) {
 		return
 	}
 	userRes := r.UserCollection.FindOneAndDelete(ctx, bson.M{
-		"_id": userID,
+		"user_id": userID,
 	})
 	if userRes.Err() != nil {
 		c.Status(http.StatusInternalServerError)
@@ -383,32 +389,38 @@ func (r *Client) DeleteUser(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (r *Client) verifyUser(c *gin.Context) (userID string, valid bool) {
+func (r *Client) verifyUser(c *gin.Context) (*primitive.ObjectID, bool) {
 	// Authorize User
 	cookie, err := c.Cookie("token")
 	if err != nil {
 		c.Status(http.StatusUnauthorized)
-		return "", false
+		return nil, false
 	}
 	claims, ok := creds.VerifyToken(c, cookie)
 	if !ok {
-		return "", false
+		return nil, false
 	}
 
 	// Get Param user ID
-	userID, ok = c.Params.Get("userID")
+	userID, ok := c.Params.Get("userID")
 	if !ok {
 		c.JSON(http.StatusInternalServerError, bson.M{"error": "user ID not supplied"})
-		return "", false
+		return nil, false
 	}
 
 	// Compare user auth to param username
 	if claims.UserID != userID {
 		c.Status(http.StatusUnauthorized)
-		return "", false
+		return nil, false
 	}
 
-	return userID, true
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return nil, false
+	}
+
+	return &id, true
 }
 
 func (r *Client) validateAccount(ctx context.Context, email, username string) error {

@@ -23,17 +23,28 @@ Content-Type: application/json
 
 ### Login User
 
-GET http://localhost:8000/users/login?username=accrazed&password=123 HTTP/1.1
+GET http://localhost:8000/users/login?username=accrazed&password=123456789 HTTP/1.1
 
 ### Update User
 
-PUT http://localhost:8000/users/accrazed HTTP/1.1
+PUT http://localhost:8000/users/623a813ba3fee576cd09155e HTTP/1.1
 content-type: application/json
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjY3JhemVkIiwiZXhwIjoxNjQ4MDAyMjYwLCJpYXQiOjE2NDgwMDE5NjB9.hjqZSQxmAKssI1OwLIrdEcygC2tBhM0visOVXS43nQ0; Path=/; Domain=clovebook.com; Max-Age=1648009160; HttpOnly; Secure
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjY3JhemVkIiwidXNlcklEIjoiNjIzYTgxM2JhM2ZlZTU3NmNkMDkxNTVlIiwiZXhwIjoxNjQ4MzEyMTA2LCJpYXQiOjE2NDgzMTE4MDZ9.5WxAszXEEyC9AH02Cn9D5kFKgGBeH8tRgiMuL4LXGz8; Path=/; Domain=clovebook.com; Max-Age=1648319006; HttpOnly; Secure
 
 {
     "password": "123456789"
 }
+
+### Get User
+
+GET http://localhost:8000/users/623a813ba3fee576cd09155e HTTP/1.1
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjY3JhemVkIiwidXNlcklEIjoiNjIzYTgxM2JhM2ZlZTU3NmNkMDkxNTVlIiwiZXhwIjoxNjQ4MzEyMTA2LCJpYXQiOjE2NDgzMTE4MDZ9.5WxAszXEEyC9AH02Cn9D5kFKgGBeH8tRgiMuL4LXGz8; Path=/; Domain=clovebook.com; Max-Age=1648319006; HttpOnly; Secure
+
+### Delete User
+
+DELETE http://localhost:8000/users/623a813ba3fee576cd09155e HTTP/1.1
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjY3JhemVkIiwidXNlcklEIjoiNjIzYTgxM2JhM2ZlZTU3NmNkMDkxNTVlIiwiZXhwIjoxNjQ4MzEyMTA2LCJpYXQiOjE2NDgzMTE4MDZ9.5WxAszXEEyC9AH02Cn9D5kFKgGBeH8tRgiMuL4LXGz8; Path=/; Domain=clovebook.com; Max-Age=1648319006; HttpOnly; Secure
+
 
 ### SAMPLE
 POST localhost:8000/users/login?username=accrazed&password=123456789 HTTP/1.1

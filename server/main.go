@@ -25,8 +25,8 @@ func main() {
 	r.GET("/recipes", c.SearchMyRecipes)
 	r.PUT("/recipes/:cookbookID", c.UpdateRecipe)
 	r.DELETE("/recipes/:cookbookID", c.DeleteRecipe)
-	r.PUT("/users/:username/favorites", c.SaveFavorite)
-	r.GET("/users/:username/favorites", c.ViewFavorites)
+	r.PUT("/users/:userID/favorites", c.SaveFavorite)
+	r.GET("/users/:userID/favorites", c.ViewFavorites)
 
 	// Users
 	r.POST("/users/auth", c.AuthUser)
@@ -34,9 +34,9 @@ func main() {
 	r.POST("/users", c.RegisterUser)
 	r.GET("/users/login", c.LoginUser)
 	r.GET("/users/logout", c.LogoutUser)
-	r.GET("/users/:username", c.GetUser)
-	r.PUT("/users/:username", c.UpdateUser)
-	r.DELETE("/users/:username", c.DeleteUser)
+	r.GET("/users/:userID", c.GetUser)
+	r.PUT("/users/:userID", c.UpdateUser)
+	r.DELETE("/users/:userID", c.DeleteUser)
 
 	// Test
 	r.GET("/test", routes.Test)

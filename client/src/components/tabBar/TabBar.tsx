@@ -33,13 +33,13 @@ function OneTab(props: tabProps) {
 					position: "relative",
 					top: "25%",
 					color: "primary.contrastText",
-					fontFamily: [
-						"sans-serif",
-						"Trebuchet MS",
-						"Calibri",
-						"Gill Sans MT",
-						"Gill Sans",
-					],
+					// fontFamily: [
+					// 	"sans-serif",
+					// 	"Trebuchet MS",
+					// 	"Calibri",
+					// 	"Gill Sans MT",
+					// 	"Gill Sans",
+					// ],
 					fontSize: "1.4rem",
 				}}
 			>

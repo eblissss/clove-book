@@ -28,14 +28,14 @@ declare module "@mui/material/styles" {
 
 const palette = {
 	primary: {
-		main: "#c8c1bd",
-		light: "#fbf4ef",
-		dark: "#97918d",
+		main: "#6CA8C6",
+		light: "#D2DADA",
+		dark: "#254E70",
 		contrastText: "#000000",
-		darkContrastText: "#ffffff",
+		darkContrastText: "#C33C54",
 	},
 	secondary: {
-		main: "#AB98C7",
+		main: "#FFBF46",
 		light: "#d6cde4",
 		dark: "#6c5095",
 		contrastText: "#ffffff",
@@ -69,8 +69,9 @@ const theme = createTheme({
 			styleOverrides: {
 				root: {
 					fontFamily: [
+						'sans-serif',
 						'Sen',
-					  ].join(','),
+					  ],
 					color: palette.primary.contrastText,
 				},
 			},
@@ -108,11 +109,11 @@ const theme = createTheme({
 						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
 						color: palette.secondary.contrastText,
 						fontFamily: [
-							'Sen',
 							"-apple-system",
 							'"Segoe UI"',
 							"Akzidenz Grotesk BQ Medium",
 							"sans-serif",
+							'Sen',
 						],
 						fontSize: "16px",
 						padding: "10px 25px",

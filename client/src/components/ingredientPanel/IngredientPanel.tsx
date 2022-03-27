@@ -48,18 +48,9 @@ function IngredientPanel({ searchFunc, boxProps }: PanelProps) {
 			<Button
 				fullWidth
 				onClick={useFunc}
+				className="Classic"
 				sx={{
-					backgroundColor: "secondary.main",
-					borderRadius: "17px",
-					color: "secondary.contrastText",
-					fontSize: "1.2rem",
-					textAlign: "center",
 					mt: "1rem",
-					transition: "transform 300ms ease",
-					"&:hover": {
-						backgroundColor: "secondary.dark",
-						transform: "translateY(-3px)",
-					},
 				}}
 			>
 				Find Dishes

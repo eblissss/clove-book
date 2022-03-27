@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import React, { useState } from "react";
-import { setSearchFilters, setSearchSort, setSearchTags } from "./searchSlice";
+import { setSearchFilters, setSearchSort } from "./searchSlice";
 import { useAppDispatch } from "../../app/hooks";
 
 function FilterList() {

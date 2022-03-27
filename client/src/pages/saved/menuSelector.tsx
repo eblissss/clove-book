@@ -68,7 +68,6 @@ function menuSelector({ getCollection, props }: SelectorProps) {
 				PaperProps={{
 					sx: {
 						backgroundColor: "primary.main",
-						width: "20%",
 					},
 				}}
 			>

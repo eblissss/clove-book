@@ -17,9 +17,6 @@ interface searchBarProps {
 export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 	const dispatch = useAppDispatch();
 
-	// TESTING
-	// dispatch(setSearchTags(["green", "wing", "grass"]));
-
 	const searchOpts = useAppSelector(selectSearch);
 	const tags = searchOpts.searchTags;
 
@@ -27,7 +24,6 @@ export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 		dispatch(
 			setSearchTags(tags.filter((tag) => tag !== e.target.textContent))
 		);
-		console.log(e);
 	};
 
 	return (

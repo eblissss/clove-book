@@ -7,20 +7,14 @@ import (
 )
 
 type Recipe struct {
-	RecipeName    string             `json:"name" bson:"name"`
-	Author        string             `json:"author" bson:"author"`
-	AuthorID      primitive.ObjectID `json:"authorID" bson:"authorID"`
-	SpoonacularID int64              `json:"spoonacularID" bson:"spoonacularID"`
-	CookbookID    primitive.ObjectID `json:"cookbookID" bson:"cookbookID"`
-	ImageURL      string             `json:"imageURL" bson:"imageURL"`
-	CookTime      int64              `json:"cookTime" bson:"cookTime"`
-	PrepTime      int64              `json:"prepTime" bson:"prepTime"`
-	TotalTime     int64              `json:"totalTime" bson:"totalTime"`
-	Tags          []string           `json:"tags" bson:"tags"`
-	Ingredients   []Ingredient       `json:"ingredients" bson:"ingredients"`
-	Instructions  []Instruction      `json:"instructions" bson:"instructions"`
-	CreatedAt     time.Time          `json:"createdAt" bson:"createdAt"`
-	UpdatedAt     time.Time          `json:"updatedAt" bson:"updatedAt"`
+	RecipeStub
+	Author       string             `json:"author" bson:"author"`
+	AuthorID     primitive.ObjectID `json:"authorID" bson:"authorID"`
+	CookTime     int64              `json:"cookTime" bson:"cookTime"`
+	PrepTime     int64              `json:"prepTime" bson:"prepTime"`
+	Instructions []Instruction      `json:"instructions" bson:"instructions"`
+	CreatedAt    time.Time          `json:"createdAt" bson:"createdAt"`
+	UpdatedAt    time.Time          `json:"updatedAt" bson:"updatedAt"`
 }
 
 // Recipestub for both user-created and other recipes

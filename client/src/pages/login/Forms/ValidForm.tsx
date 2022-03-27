@@ -58,18 +58,18 @@ export function ValidForm({ userInfo }: validProps) {
 						Register
 					</Typography>
 					<Typography variant="body2" align="center">
-						A confirmation email has been sent to your inbox.
+						Check your inbox for a confirmation email with the verification code.
 					</Typography>
 
 					<Typography variant="body2" align="center">
-						After confirming, you will be able to login.
+						After confirming your email, you will be able to log in.
 					</Typography>
 					<Typography
 						variant="body1"
 						align="center"
 						sx={{ mt: "20px" }}
 					>
-						Please enter the code receieved.
+						Please enter the code here.
 					</Typography>
 					<Box component="form" noValidate onSubmit={handleSubmit}>
 						<TextField

@@ -76,15 +76,14 @@ export function LoginForm() {
 						borderRadius: "22px",
 						textAlign: "center",
 						justifyContent: "center",
-
 						px: "10%",
 					}}
 				>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+					<Avatar sx={{ m: 1, bgcolor: "secondary.main", margin: "10px"}}>
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography variant="h5" align="center">
-						Log In
+						Log in to Clove
 					</Typography>
 					<Box
 						component="form"
@@ -125,7 +124,7 @@ export function LoginForm() {
 											color="primary"
 										/>
 									}
-									label="Stay Logged In"
+									label="Keep me logged in"
 								/>
 							</Grid>
 						</Grid>
@@ -148,7 +147,7 @@ export function LoginForm() {
 									dispatch(changeToDawn());
 								}}
 							>
-								Goto Signup
+								Sign up
 							</Button>
 						</Grid>
 					</Box>

@@ -61,7 +61,9 @@ const theme = createTheme({
 		MuiTypography: {
 			styleOverrides: {
 				root: {
-					fontFamily: ["Sen"],
+					fontFamily: [
+						'Sen',
+					  ].join(','),
 					color: palette.primary.contrastText,
 				},
 			},
@@ -75,20 +77,23 @@ const theme = createTheme({
 						},
 					},
 					"&.Translucent": {
-						opacity: "50%",
+						opacity: "70%",
 						"&:hover": {
 							opacity: "70%",
 						},
 					},
 					"&.Submit": {
-						borderRadius: "100px",
+						borderRadius: "50px",
 						margin: "20px auto",
 						backgroundColor: palette.secondary.main,
 						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
 						color: palette.secondary.contrastText,
 						fontFamily: [
-							"sans-serif",
+							'Sen',
+							"-apple-system",
+							'"Segoe UI"',
 							"Akzidenz Grotesk BQ Medium",
+							"sans-serif",
 						],
 						fontSize: "16px",
 						padding: "10px 25px",

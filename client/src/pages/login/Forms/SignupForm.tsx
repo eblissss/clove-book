@@ -114,7 +114,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 									autoComplete="email"
 								/>
 							</Grid>
-							<Grid item xs={12} display="flex">
+							<Grid item xs={12} display="flex" margin="10px">
 								<TextField
 									className="Round"
 									fullWidth
@@ -138,7 +138,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 						</Button>
 						<Grid container justifyContent="center">
 							<Typography variant="body2" align="center">
-								Have a Login?
+								Have a Account?
 							</Typography>
 							<Button
 								variant="contained"
@@ -152,7 +152,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 									dispatch(changeToNoon());
 								}}
 							>
-								Go Back
+								Back
 							</Button>
 						</Grid>
 					</Box>

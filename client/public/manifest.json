@@ -8,12 +8,12 @@
 			"type": "image/x-icon"
 		},
 		{
-			"src": "logo192.png",
+			"src": "clove_icon@2x.png",
 			"type": "image/png",
-			"sizes": "192x192"
+			"sizes": "314x283"
 		},
 		{
-			"src": "logo512.png",
+			"src": "clove.png",
 			"type": "image/png",
 			"sizes": "512x512"
 		}

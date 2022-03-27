@@ -8,6 +8,7 @@ import (
 
 type Recipe struct {
 	RecipeStub
+	Nutrients    *RecipeNutrients
 	Author       string             `json:"author" bson:"author"`
 	AuthorID     primitive.ObjectID `json:"authorID" bson:"authorID"`
 	CookTime     int64              `json:"cookTime" bson:"cookTime"`

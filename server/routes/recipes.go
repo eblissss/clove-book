@@ -3,15 +3,18 @@ package routes
 import (
 	"context"
 	"net/http"
+	"server/lib/creds"
 	"server/models"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (r *Client) MakeRecipe(c *gin.Context) {
+func (r *Client) CreateRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
@@ -63,7 +66,7 @@ func (r *Client) MakeRecipe(c *gin.Context) {
 }
 
 // Kate wrote this
-func (r *Client) SearchMyRecipes(c *gin.Context) {
+func (r *Client) SearchRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -88,7 +91,54 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 }
 
 func (r *Client) GetRecipe(c *gin.Context) {
-	c.Status(http.StatusServiceUnavailable)
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+
+	id := c.Params.ByName("id")
+
+	// Verify user is logged in
+	cookie, err := c.Cookie("token")
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+	if _, ok := creds.VerifyToken(c, cookie); !ok {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	// successful parse means it's a spoonacular id
+	if _, err := strconv.ParseInt(id, 10, 32); err == nil {
+		r.getSpoonacularRecipe(ctx, c, id)
+		return
+	}
+
+	r.getCookbookRecipe(ctx, c, id)
+}
+
+func (r *Client) getSpoonacularRecipe(ctx context.Context, c *gin.Context, id string) {}
+
+func (r *Client) getCookbookRecipe(ctx context.Context, c *gin.Context, id string) {
+	res := r.RecipeCollection.FindOne(ctx, bson.M{
+		"cookbookID": id,
+	})
+	if res.Err() != nil {
+		if res.Err() == mongo.ErrNoDocuments {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	recipe := &models.Recipe{}
+	err := res.Decode(recipe)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, recipe)
 }
 
 func (r *Client) UpdateRecipe(c *gin.Context) {
@@ -104,7 +154,6 @@ func (r *Client) UpdateRecipe(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
 		return
 	}
-
 	if err := r.Validator.Struct(recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
 		return

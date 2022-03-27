@@ -65,6 +65,7 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 					component="div"
 					sx={{
 						bgcolor: "primary.light",
+						marginTop: "8px",
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
@@ -72,6 +73,8 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 						textAlign: "center",
 						justifyContent: "center",
 						px: "10%",
+						pb: "10%",
+						pt: "5%",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

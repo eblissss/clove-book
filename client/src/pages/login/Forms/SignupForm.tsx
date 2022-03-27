@@ -57,13 +57,16 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 					component="div"
 					sx={{
 						bgcolor: "primary.light",
+						marginTop: "8px",
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
 						borderRadius: "22px",
 						textAlign: "center",
+						justifyContent: "center",
 						px: "10%",
 						pb: "10%",
+						pt: "5%",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

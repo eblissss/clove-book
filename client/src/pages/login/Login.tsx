@@ -21,9 +21,19 @@ const userInfo: NewUser = {
 	email: "",
 };
 
+const immediateValidate = localStorage.getItem("immediateValidate") !== null;
+
+if (immediateValidate) {
+	userInfo.username = localStorage.getItem("userInfo-username") as string;
+	userInfo.email = localStorage.getItem("userInfo-email") as string;
+	userInfo.password = localStorage.getItem("userInfo-password") as string;
+	userInfo.firstName = localStorage.getItem("userInfo-firstName") as string;
+	userInfo.lastName = localStorage.getItem("userInfo-lastName") as string;
+}
+
 export default function Login() {
 	const time = useAppSelector(selectTime);
-	const [useValid, setUseValid] = useState(false);
+	const [useValid, setUseValid] = useState(immediateValidate);
 
 	return (
 		<>
@@ -38,19 +48,6 @@ export default function Login() {
 					overflow: "hidden",
 				}}
 			>
-				<Button
-					component={Link}
-					to="/"
-					sx={{ position: "absolute", right: "0" }}
-				>
-					<CloseIcon
-						sx={{
-							color: "white",
-							fontSize: "50px",
-						}}
-					/>
-				</Button>
-
 				<Box
 					component="div"
 					className={time === "dawn" ? "lower" : ""}
@@ -67,7 +64,10 @@ export default function Login() {
 					}}
 				>
 					{useValid ? (
-						<ValidForm userInfo={userInfo} />
+						<ValidForm
+							userInfo={userInfo}
+							setUseValid={setUseValid}
+						/>
 					) : (
 						<LoginForm />
 					)}
@@ -90,6 +90,18 @@ export default function Login() {
 				>
 					<SignupForm userInfo={userInfo} setUseValid={setUseValid} />
 				</Box>
+				<Button
+					component={Link}
+					to="/"
+					sx={{ position: "absolute", right: "0" }}
+				>
+					<CloseIcon
+						sx={{
+							color: "white",
+							fontSize: "50px",
+						}}
+					/>
+				</Button>
 			</Box>
 		</>
 	);

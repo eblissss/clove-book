@@ -30,8 +30,9 @@ func main() {
 	// Recipes
 	r.POST("/recipes", c.MakeRecipe)
 	r.GET("/recipes", c.SearchMyRecipes)
-	r.PUT("/recipes/:cookbookID", c.UpdateRecipe)
-	r.DELETE("/recipes/:cookbookID", c.DeleteRecipe)
+	r.GET("/recipes/:id", c.GetRecipe)
+	r.PUT("/recipes/:id", c.UpdateRecipe)
+	r.DELETE("/recipes/:id", c.DeleteRecipe)
 	r.PUT("/users/:userID/favorites", c.SaveFavorite)
 	r.GET("/users/:userID/favorites", c.ViewFavorites)
 

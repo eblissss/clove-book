@@ -87,6 +87,10 @@ func (r *Client) SearchMyRecipes(c *gin.Context) {
 	c.JSON(http.StatusOK, foundRecipes)
 }
 
+func (r *Client) GetRecipe(c *gin.Context) {
+	c.Status(http.StatusServiceUnavailable)
+}
+
 func (r *Client) UpdateRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()

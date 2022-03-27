@@ -63,6 +63,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 						borderRadius: "22px",
 						textAlign: "center",
 						px: "10%",
+						pb: "10%",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

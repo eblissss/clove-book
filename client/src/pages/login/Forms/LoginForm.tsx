@@ -77,6 +77,8 @@ export function LoginForm() {
 						textAlign: "center",
 						justifyContent: "center",
 						px: "10%",
+						pb: "10%",
+						pt: "5%",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main", margin: "10px"}}>
@@ -136,13 +138,9 @@ export function LoginForm() {
 								No Account? 🥺
 							</Typography>
 							<Button
+								className="OnLight"
 								variant="contained"
 								fullWidth
-								sx={{
-									borderRadius: "100px",
-									mt: "10px",
-									mb: "20px",
-								}}
 								onClick={() => {
 									dispatch(changeToDawn());
 								}}

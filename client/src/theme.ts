@@ -28,17 +28,18 @@ declare module "@mui/material/styles" {
 
 const palette = {
 	primary: {
-		main: "#6CA8C6",
-		light: "#D2DADA",
-		dark: "#254E70",
-		contrastText: "#000000",
-		darkContrastText: "#C33C54",
+		main: "#AAADB1",
+		light: "#DDE3E3",
+		dark: "#575761",
+		// On light backgrounds, use lightContrastText, otherwise use contrastText
+		lightContrastText: "#000000",
+		contrastText: "#ffffff",
 	},
 	secondary: {
-		main: "#FFBF46",
-		light: "#d6cde4",
-		dark: "#6c5095",
-		contrastText: "#ffffff",
+		main: "#A4DA87", // Green
+		light: "#E4FDE1", 
+		dark: "#5E8076",
+		contrastText: "#000000",
 	},
 	tertiary: {
 		main: "#5C6573",
@@ -72,7 +73,7 @@ const theme = createTheme({
 						'sans-serif',
 						'Sen',
 					  ],
-					color: palette.primary.contrastText,
+					color: palette.primary.lightContrastText,
 				},
 			},
 		},
@@ -82,6 +83,19 @@ const theme = createTheme({
 					"&.Logout": {
 						"&:hover": {
 							backgroundColor: palette.secondary.dark,
+						},
+					},
+					"&.OnLight": {
+						backgroundColor: palette.primary.main,
+						color: palette.primary.contrastText,
+						textAlign: "center",
+						borderRadius: "100px",
+						margin: "10px auto",
+
+						"&:hover": {
+							backgroundColor: palette.primary.dark,
+							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
+							transform: "translateY(-2px)",
 						},
 					},
 					"&.Translucent": {
@@ -99,12 +113,14 @@ const theme = createTheme({
 						transition: "transform 300ms ease",
 						"&:hover": {
 							backgroundColor: palette.secondary.dark,
-							transform: "translateY(-3px)",
+							
+							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
+							transform: "translateY(-2px)",
 						},
 					},
 					"&.Submit": {
 						borderRadius: "50px",
-						margin: "20px auto",
+						margin: "10px auto",
 						backgroundColor: palette.secondary.main,
 						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
 						color: palette.secondary.contrastText,
@@ -119,7 +135,8 @@ const theme = createTheme({
 						padding: "10px 25px",
 						transition: "transform 150ms, box-shadow 150ms",
 						"&:hover": {
-							backgroundColor: palette.secondary.main,
+							backgroundColor: palette.secondary.dark,
+							color: palette.secondary.light,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
 						},
@@ -155,14 +172,14 @@ const theme = createTheme({
 						margin: "5px auto",
 						"& .MuiInputBase-root": {
 							"& input": {
-								color: palette.primary.darkContrastText,
+								color: palette.primary.contrastText,
 								height: "0px",
 								fontFamily: ["Sen"],
 								fontSize: "18px",
 								fontWeight: 700,
 							},
 							"& textarea": {
-								color: palette.primary.darkContrastText,
+								color: palette.primary.contrastText,
 								height: "0px",
 								fontFamily: ["Sen"],
 								fontSize: "18px",

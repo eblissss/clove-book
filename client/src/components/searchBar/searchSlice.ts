@@ -19,7 +19,9 @@ export const searchSlice = createSlice({
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
 		addSearchTag: (state, action: PayloadAction<string>) => {
-			state.searchTags.push(action.payload);
+			if (!state.searchTags.includes(action.payload)) {
+				state.searchTags.push(action.payload);
+			}
 		},
 		setSearchTags: (state, action: PayloadAction<string[]>) => {
 			state.searchTags = action.payload;

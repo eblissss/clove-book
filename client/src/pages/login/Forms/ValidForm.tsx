@@ -12,12 +12,25 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { doRegister } from "../../../api/requests";
 import { NewUser } from "../../../api/models";
+import { setUserID } from "../../user/userSlice";
+import { useDispatch } from "react-redux";
 
 interface validProps {
 	userInfo: NewUser;
+	setUseValid: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function ValidForm({ userInfo }: validProps) {
+const removeStorage = () => {
+	localStorage.removeItem("userInfo-username");
+	localStorage.removeItem("userInfo-email");
+	localStorage.removeItem("userInfo-password");
+	localStorage.removeItem("userInfo-firstName");
+	localStorage.removeItem("userInfo-lastName");
+	localStorage.removeItem("immediateValidate");
+};
+
+export function ValidForm({ userInfo, setUseValid }: validProps) {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -30,9 +43,19 @@ export function ValidForm({ userInfo }: validProps) {
 		doRegister(userInfo, code)
 			.then((data) => {
 				console.log(data);
+				removeStorage();
+
+				dispatch(setUserID("" + data.userID));
+
 				navigate("/home");
 			})
 			.catch((err) => console.log(err));
+	};
+
+	const stopRegister = () => {
+		removeStorage();
+		setUseValid(false);
+		navigate("/");
 	};
 
 	return (
@@ -58,7 +81,8 @@ export function ValidForm({ userInfo }: validProps) {
 						Register
 					</Typography>
 					<Typography variant="body2" align="center">
-						Check your inbox for a confirmation email with the verification code.
+						Check your inbox for a confirmation email with the
+						verification code.
 					</Typography>
 
 					<Typography variant="body2" align="center">
@@ -89,7 +113,18 @@ export function ValidForm({ userInfo }: validProps) {
 							Submit
 						</Button>
 					</Box>
-
+					<Button
+						variant="contained"
+						type="button"
+						fullWidth
+						sx={{
+							borderRadius: "100px",
+							my: "20px",
+						}}
+						onClick={stopRegister}
+					>
+						Cancel Registration
+					</Button>
 					<Button
 						variant="contained"
 						type="button"

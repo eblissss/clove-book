@@ -29,13 +29,6 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const data = new FormData(e.currentTarget);
-		// console.log({
-		// 	email: data.get("email"),
-		// 	password: md5(data.get("password") as string),
-		// 	username: data.get("username"),
-		// 	firstName: data.get("firstName"),
-		// 	lastName: data.get("lastName"),
-		// });
 
 		// VALIDATE HERE
 
@@ -46,6 +39,13 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 		userInfo.password = md5(data.get("password") as string);
 		userInfo.firstName = data.get("firstName") as string;
 		userInfo.lastName = data.get("lastName") as string;
+
+		localStorage.setItem("userInfo-username", userInfo.username);
+		localStorage.setItem("userInfo-email", userInfo.email);
+		localStorage.setItem("userInfo-password", userInfo.password);
+		localStorage.setItem("userInfo-firstName", userInfo.firstName);
+		localStorage.setItem("userInfo-lastName", userInfo.lastName);
+		localStorage.setItem("immediateValidate", "true");
 
 		doAuth({ username: userInfo.username, email: userInfo.email });
 	};

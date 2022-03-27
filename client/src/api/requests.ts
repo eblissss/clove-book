@@ -93,7 +93,7 @@ export const updateRecipe = (cookbookID: number, data: models.Recipe) =>
 export const doRegister = (
 	data: models.NewUser,
 	code: string
-): Promise<models.User> => requests.post("/users", data, { code: code });
+): Promise<{ userID: number }> => requests.post("/users", data, { code: code });
 
 export const doAuth = (data: models.Useremail): Promise<{ expires: string }> =>
 	requests.post("/users/auth", data);

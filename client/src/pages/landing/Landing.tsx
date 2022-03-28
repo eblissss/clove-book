@@ -25,18 +25,21 @@ export default function Landing() {
 					position: "absolute",
 					display: "flex",
 					flexDirection: "column",
+					align: "center",
 					left: "16%",
 					top: "10%",
 					width: "50vw",
 				}}
 			>
-				<img src={cloveImg} width="80%" />
+				<img src={cloveImg} width="100%" />
 				<Box
 					component="div"
 					sx={{
 						background: `linear-gradient(0deg, ${theme.palette.secondary.main} 50%, #00000000 100%)`,
 						borderRadius: "0px 0px 25px 25px",
 						alignSelf: "flex-start",
+						width: "100%",
+						textAlign: "center",
 						px: "3rem",
 						py: "1rem",
 						mt: "1rem",
@@ -50,30 +53,33 @@ export default function Landing() {
 							color: "secondary.contrastText",
 						}}
 					>
-						Make Food
+						Dish It Out
 					</Typography>
 				</Box>
 				<Button
+					className="Submit"
 					component={RouterLink}
 					to="/login"
 					sx={{
 						alignSelf: "flex-start",
+						width: "100%",
 						p: "2rem",
 						mt: "8rem",
 
-						backgroundColor: "secondary.dark",
-						border: "7px solid #ffffff",
-						borderRadius: "32px",
-						opacity: "0.7",
+					// 	backgroundColor: "secondary.dark",
+					// 	border: "7px solid #ffffff",
+					// 	borderRadius: "32px",
+					// 	opacity: "0.7",
 
-						transition: "opacity 400ms ease",
-						"&:hover": {
-							backgroundColor: "secondary.dark",
-							opacity: "0.9",
-						},
+					// 	transition: "opacity 400ms ease",
+					// 	"&:hover": {
+					// 		backgroundColor: "secondary.dark",
+					// 		opacity: "0.9",
+					// 	},
 					}}
 				>
 					<Typography
+
 						component="h3"
 						variant="h3"
 						sx={{

@@ -102,9 +102,6 @@ export function LoginForm() {
 									label="Username"
 									name="username"
 									autoComplete="username"
-									sx={{
-										marginTop: "0px",
-									}}
 								/>
 							</Grid>
 							<Grid item xs={12} display="flex">

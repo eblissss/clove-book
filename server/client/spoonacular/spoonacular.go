@@ -12,5 +12,5 @@ func New() *Client {
 		Key:    "APIKEY",
 		Prefix: "Bearer", // Omit if not necessary.
 	})
-	r, err := client.Service.Operation(auth, args)
+	r, err := Client.Service.Operation(auth, args)
 }

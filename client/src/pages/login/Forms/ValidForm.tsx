@@ -117,6 +117,7 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 						</Button>
 					</Box>
 					<Button
+						className="OnLight"
 						variant="contained"
 						type="button"
 						fullWidth
@@ -129,6 +130,7 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 						Cancel Registration
 					</Button>
 					<Button
+						className="OnLight"
 						variant="contained"
 						type="button"
 						fullWidth

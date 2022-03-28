@@ -73,7 +73,7 @@ const theme = createTheme({
 						'sans-serif',
 						'Sen',
 					  ],
-					color: palette.primary.lightContrastText,
+					// color: palette.primary.contrastText,
 				},
 			},
 		},
@@ -91,6 +91,7 @@ const theme = createTheme({
 						textAlign: "center",
 						borderRadius: "100px",
 						margin: "10px auto",
+						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
 
 						"&:hover": {
 							backgroundColor: palette.primary.dark,
@@ -169,7 +170,8 @@ const theme = createTheme({
 						borderRadius: "8px",
 						backgroundColor: palette.primary.dark,
 						boxSizing: "border-box",
-						margin: "5px auto",
+						margin: "5px",
+						mx: "5px",
 						"& .MuiInputBase-root": {
 							"& input": {
 								color: palette.primary.contrastText,
@@ -204,10 +206,11 @@ const theme = createTheme({
 					"&.Round": {
 						border: "0px solid",
 						borderColor: palette.primary.main,
-						borderRadius: "100px",
+						borderRadius: "10px",
 						backgroundColor: "#ffffff",
 						boxSizing: "border-box",
-						margin: "5px auto",
+						margin: "5px",
+						mx: "5px",
 
 						"& .MuiOutlinedInput-root": {
 							"& fieldset": {
@@ -215,7 +218,7 @@ const theme = createTheme({
 								border: "none",
 								borderRadius: "100px",
 								paddingLeft: "0.5rem",
-								margin: "-0.05rem",
+								margin: "10px",
 							},
 							"&:hover fieldset": {
 								border: "1px solid",

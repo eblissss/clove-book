@@ -81,16 +81,13 @@ function Home() {
 						paperProps={{ m: "20px", ml: "0", mb: "40px" }}
 					/>
 					{searching ? (
-						// This will be the search results
-						<RecipeGrid recipes={fakeJSON} />
+						<></>
 					) : (
-						<>
-							<Typography variant="h2" component="h2">
-								Explore New Recipes
-							</Typography>
-							<RecipeGrid recipes={fakeJSON} />
-						</>
+						<Typography variant="h2" component="h2">
+							Explore New Recipes
+						</Typography>
 					)}
+					<RecipeGrid recipes={fakeJSON} columns={12} />
 				</Container>
 				<Container
 					sx={{

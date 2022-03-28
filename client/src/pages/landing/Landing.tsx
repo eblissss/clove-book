@@ -49,7 +49,6 @@ export default function Landing() {
 						component="h2"
 						variant="h2"
 						sx={{
-							fontFamily: ["serif", "Sen"],
 							color: "secondary.contrastText",
 						}}
 					>
@@ -65,25 +64,12 @@ export default function Landing() {
 						width: "100%",
 						p: "2rem",
 						mt: "8rem",
-
-					// 	backgroundColor: "secondary.dark",
-					// 	border: "7px solid #ffffff",
-					// 	borderRadius: "32px",
-					// 	opacity: "0.7",
-
-					// 	transition: "opacity 400ms ease",
-					// 	"&:hover": {
-					// 		backgroundColor: "secondary.dark",
-					// 		opacity: "0.9",
-					// 	},
 					}}
 				>
 					<Typography
-
 						component="h3"
 						variant="h3"
 						sx={{
-							fontFamily: ["serif", "Sen"],
 							color: "secondary.contrastText",
 						}}
 					>
@@ -136,7 +122,6 @@ export default function Landing() {
 						component="h4"
 						variant="h4"
 						sx={{
-							fontFamily: ["serif", "Sen"],
 							color: "secondary.contrastText",
 						}}
 					>

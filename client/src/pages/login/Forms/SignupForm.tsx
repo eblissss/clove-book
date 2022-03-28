@@ -118,7 +118,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 									autoComplete="email"
 								/>
 							</Grid>
-							<Grid item xs={12} display="flex" margin="10px">
+							<Grid item xs={12} display="flex" mb="10px">
 								<TextField
 									className="Round"
 									fullWidth

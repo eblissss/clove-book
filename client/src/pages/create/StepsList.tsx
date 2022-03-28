@@ -27,6 +27,10 @@ function StepItem({
 		e.target.value = "";
 	};
 
+	const spawnStep = (e: any) => {
+		addStep!("");
+	};
+
 	return (
 		<Container disableGutters sx={{ display: "flex", alignItems: "top" }}>
 			{added ? (
@@ -39,6 +43,7 @@ function StepItem({
 			) : (
 				<AddCircleIcon
 					sx={{ color: "primary.dark", fontSize: "32px", mt: "10px" }}
+					onClick={spawnStep}
 				/>
 			)}
 			<Container disableGutters sx={{ flex: 4, px: "10px" }}>

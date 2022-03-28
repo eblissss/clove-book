@@ -93,7 +93,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 						variant="h3"
 						component="h3"
 						sx={{
-							color: "primary.darkContrastText",
+							color: "primary.contrastText",
 							fontWeight: 700,
 						}}
 					>
@@ -102,7 +102,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 					<Typography
 						variant="h6"
 						component="h6"
-						sx={{ color: "primary.darkContrastText" }}
+						sx={{ color: "primary.contrastText" }}
 					>
 						Ready in {recipe.readyInMinutes}m
 					</Typography>

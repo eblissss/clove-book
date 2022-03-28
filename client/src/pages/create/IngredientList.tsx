@@ -18,6 +18,7 @@ function IngredientItem({
 	doDel,
 	addIng,
 	update,
+	autoSelect,
 }: {
 	data?: stringIng;
 	id: number;
@@ -25,12 +26,17 @@ function IngredientItem({
 	doDel: Function;
 	addIng?: Function;
 	update?: Function;
+	autoSelect?: string;
 }) {
 	const newIng: React.ChangeEventHandler<
 		HTMLInputElement | HTMLTextAreaElement
 	> = (e: any) => {
-		addIng!(e.target.value);
+		addIng!(e.target);
 		e.target.value = "";
+	};
+
+	const spawnIng = (e: any) => {
+		addIng!("");
 	};
 
 	return (
@@ -48,11 +54,12 @@ function IngredientItem({
 			) : (
 				<AddCircleIcon
 					sx={{ color: "primary.dark", fontSize: "32px" }}
+					onClick={spawnIng}
 				/>
 			)}
 			<Container disableGutters sx={{ flex: 4, px: "10px" }}>
 				<TextField
-					autoFocus
+					autoFocus={autoSelect === "name"}
 					fullWidth
 					id={`ingredient-${id}`}
 					className="recipeInput"
@@ -69,22 +76,41 @@ function IngredientItem({
 			</Container>
 			<Container disableGutters sx={{ flex: 1, pl: "20px", pr: "5px" }}>
 				<TextField
+					autoFocus={autoSelect === "amount"}
 					id={`ingredientAmount-${id}`}
 					className="recipeInput"
-					placeholder="Amt"
+					placeholder="Amount"
+					onChange={
+						added
+							? (e) => {
+									update!(e.target.value, id, "amount");
+							  }
+							: newIng
+					}
+					value={data?.amount}
 				></TextField>
 			</Container>
 			<Container disableGutters sx={{ flex: 1, px: "10px" }}>
 				<TextField
 					id={`ingredientUnit-${id}`}
+					autoFocus={autoSelect === "unit"}
 					className="recipeInput"
 					placeholder="Unit"
+					onChange={
+						added
+							? (e) => {
+									update!(e.target.value, id, "unit");
+							  }
+							: newIng
+					}
+					value={data?.unit}
 				></TextField>
 			</Container>
 		</Container>
 	);
 }
 
+let autoSelect = "";
 function IngredientList() {
 	const [ingList, setIngList] = useState<stringIng[]>([]);
 
@@ -94,8 +120,24 @@ function IngredientList() {
 		setIngList(newList);
 	};
 
-	const addIngredient = (temp: string) => {
-		const tempIng: stringIng = { name: temp, amount: "", unit: "" };
+	const addIngredient = (target: any) => {
+		const tempIng: stringIng = { name: "", amount: "", unit: "" };
+		switch (target.placeholder) {
+			case "New Ingredient":
+				tempIng.name = target.value;
+				autoSelect = "name";
+				break;
+			case "Amount":
+				tempIng.amount = target.value;
+				autoSelect = "amount";
+				break;
+			case "Unit":
+				tempIng.unit = target.value;
+				autoSelect = "unit";
+				break;
+			default:
+				break;
+		}
 		setIngList([...ingList, tempIng]);
 	};
 
@@ -154,6 +196,9 @@ function IngredientList() {
 							id={i}
 							doDel={doDelete}
 							update={updateIngredient}
+							autoSelect={
+								i + 1 === ingList.length ? autoSelect : ""
+							}
 						/>
 					);
 				})}

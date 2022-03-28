@@ -14,7 +14,7 @@ function Tag({ onClick, name, props }: tagProps) {
 			component="div"
 			sx={{
 				display: "flex",
-				color: "white",
+				color: "secondary.contrastText",
 				backgroundColor: "secondary.dark",
 				height: "30px",
 				borderRadius: "5px",

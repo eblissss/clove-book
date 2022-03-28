@@ -13,6 +13,7 @@ import { TabBar } from "../../components/tabBar/TabBar";
 import { Ingredient } from "../../api/models";
 import IngredientList from "./IngredientList";
 import StepList from "./StepsList";
+import NutritionList from "./NutritionList";
 
 function Create() {
 	const saveRecipe = () => {};
@@ -27,6 +28,7 @@ function Create() {
 			<TabBar tab="create" />
 			<Container
 				id="BACKGROUND"
+				maxWidth="md"
 				sx={{
 					p: "30px",
 					minHeight: "calc(100vh - 59px)",
@@ -35,7 +37,6 @@ function Create() {
 					alignItems: "center",
 					justifyContent: "start",
 					width: "auto",
-					maxWidth: "70%",
 				}}
 			>
 				<Typography component="h3" variant="h3">
@@ -74,6 +75,8 @@ function Create() {
 				<IngredientList />
 				{/* STEPS LIST */}
 				<StepList />
+				{/* NUTRITION LIST */}
+				<NutritionList />
 				<Button
 					fullWidth
 					onClick={saveRecipe}

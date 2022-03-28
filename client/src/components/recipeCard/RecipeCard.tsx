@@ -38,6 +38,7 @@ export function RecipeCard(props: SimpleRecipe) {
 				flexDirection: "column",
 				borderRadius: "20px",
 				backgroundColor: "primary.dark",
+				maxWidth: "100%",
 			}}
 			onClick={updateSelectedRecipe}
 		>
@@ -60,7 +61,7 @@ export function RecipeCard(props: SimpleRecipe) {
 					variant="h5"
 					component="h3"
 					sx={{
-						color: "primary.darkContrastText",
+						color: "primary.contrastText",
 					}}
 				>
 					{props.name}
@@ -71,7 +72,7 @@ export function RecipeCard(props: SimpleRecipe) {
 						position: "absolute",
 						right: "0px",
 						top: "-30px",
-						backgroundColor: "#ffffffaa",
+						backgroundColor: "#3a3a3aaa",
 						width: "60px",
 						height: "30px",
 						justifyContent: "center",

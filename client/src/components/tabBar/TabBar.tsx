@@ -14,17 +14,26 @@ interface tabProps {
 	selectedTab?: string;
 }
 
-function OneTab(props: tabProps) {
+function OneTab({ tab, selectedTab }: tabProps) {
 	return (
-		<Button
+		<IconButton
 			component={RouterLink}
-			to={`/${props.tab}`}
-			className={props.selectedTab === props.tab ? "" : "Translucent"}
+			to={`/${tab}`}
+			disableRipple
+			className={selectedTab === tab ? "" : "Translucent"}
 			sx={{
 				display: "inline-block",
 				width: "200px",
 				height: "100%",
 				textAlign: "center",
+				"&.Translucent": {
+					"& svg": {
+						opacity: "60%",
+					},
+					"&:hover svg": {
+						opacity: "70%",
+					},
+				},
 			}}
 		>
 			<TabIcon />
@@ -32,13 +41,13 @@ function OneTab(props: tabProps) {
 				sx={{
 					position: "relative",
 					top: "25%",
-					color: "primary.contrastText",
+					color: "primary.lightContrastText",
 					fontSize: "1.4rem",
 				}}
 			>
-				{props.tab.toUpperCase()}
+				{tab.toUpperCase()}
 			</Typography>
-		</Button>
+		</IconButton>
 	);
 }
 
@@ -62,7 +71,7 @@ export function TabBar(props: tabProps) {
 				component={RouterLink}
 				to="/home"
 				sx={{
-					height: "59px",
+					maxHeight: "59px",
 				}}
 			>
 				<CardMedia
@@ -90,7 +99,7 @@ export function TabBar(props: tabProps) {
 					width: "100px",
 					height: "70%",
 					mr: "12px",
-					backgroundColor: "secondary.main",
+					backgroundColor: "secondary.dark",
 					borderRadius: "17px",
 					color: "secondary.contrastText",
 					fontSize: "1.1rem",

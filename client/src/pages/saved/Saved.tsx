@@ -71,7 +71,7 @@ function Saved() {
 							paperProps={{ flex: "2" }}
 						/>
 					</Container>
-					<RecipeGrid recipes={fakeJSON} />
+					<RecipeGrid recipes={fakeJSON} columns={16} />
 				</Container>
 			</Container>
 		</Box>

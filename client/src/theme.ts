@@ -37,9 +37,10 @@ const palette = {
 	},
 	secondary: {
 		main: "#A4DA87", // Green
-		light: "#E4FDE1", 
+		light: "#E4FDE1",
 		dark: "#5E8076",
-		contrastText: "#000000",
+		lightContrastText: "#000000",
+		contrastText: "#ffffff",
 	},
 	tertiary: {
 		main: "#5C6573",
@@ -69,10 +70,7 @@ const theme = createTheme({
 		MuiTypography: {
 			styleOverrides: {
 				root: {
-					fontFamily: [
-						'sans-serif',
-						'Sen',
-					  ],
+					fontFamily: ["sans-serif", "Sen"],
 					// color: palette.primary.contrastText,
 				},
 			},
@@ -99,14 +97,8 @@ const theme = createTheme({
 							transform: "translateY(-2px)",
 						},
 					},
-					"&.Translucent": {
-						opacity: "70%",
-						"&:hover": {
-							opacity: "70%",
-						},
-					},
 					"&.Classic": {
-						backgroundColor: palette.secondary.main,
+						backgroundColor: palette.secondary.dark,
 						borderRadius: "17px",
 						color: palette.secondary.contrastText,
 						fontSize: "1.2rem",
@@ -114,7 +106,7 @@ const theme = createTheme({
 						transition: "transform 300ms ease",
 						"&:hover": {
 							backgroundColor: palette.secondary.dark,
-							
+
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
 						},
@@ -130,7 +122,7 @@ const theme = createTheme({
 							'"Segoe UI"',
 							"Akzidenz Grotesk BQ Medium",
 							"sans-serif",
-							'Sen',
+							"Sen",
 						],
 						fontSize: "16px",
 						padding: "10px 25px",
@@ -149,6 +141,16 @@ const theme = createTheme({
 			styleOverrides: {
 				root: {
 					"& .MuiInputBase-multiline": {
+						padding: "10px 12px",
+						borderRadius: "15px",
+						backgroundColor: palette.primary.dark,
+						"&.Mui-focused": {
+							backgroundColor: palette.primary.dark,
+						},
+						"& .MuiInputBase-inputMultiline": {
+							fontSize: 16,
+							color: palette.primary.contrastText,
+						},
 						"&.MuiFilledInput-underline:before": {
 							borderBottom: `0px solid ${palette.primary.main}`,
 						},
@@ -157,12 +159,6 @@ const theme = createTheme({
 						},
 						"&.MuiFilledInput-underline:after": {
 							borderBottom: `3px solid ${palette.primary.dark}`,
-						},
-						padding: "10px 12px",
-						borderRadius: "15px",
-						backgroundColor: palette.primary.dark,
-						"& .MuiInputBase-inputMultiline": {
-							fontSize: 16,
 						},
 					},
 					"&.recipeInput": {

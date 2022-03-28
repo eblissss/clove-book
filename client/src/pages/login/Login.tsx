@@ -21,17 +21,20 @@ const userInfo: NewUser = {
 	email: "",
 };
 
-const immediateValidate = localStorage.getItem("immediateValidate") !== null;
-
-if (immediateValidate) {
-	userInfo.username = localStorage.getItem("userInfo-username") as string;
-	userInfo.email = localStorage.getItem("userInfo-email") as string;
-	userInfo.password = localStorage.getItem("userInfo-password") as string;
-	userInfo.firstName = localStorage.getItem("userInfo-firstName") as string;
-	userInfo.lastName = localStorage.getItem("userInfo-lastName") as string;
-}
-
 export default function Login() {
+	const immediateValidate =
+		localStorage.getItem("immediateValidate") !== null;
+
+	if (immediateValidate) {
+		userInfo.username = localStorage.getItem("userInfo-username") as string;
+		userInfo.email = localStorage.getItem("userInfo-email") as string;
+		userInfo.password = localStorage.getItem("userInfo-password") as string;
+		userInfo.firstName = localStorage.getItem(
+			"userInfo-firstName"
+		) as string;
+		userInfo.lastName = localStorage.getItem("userInfo-lastName") as string;
+	}
+
 	const time = useAppSelector(selectTime);
 	const [useValid, setUseValid] = useState(immediateValidate);
 

@@ -2,7 +2,10 @@ package routes
 
 import (
 	"context"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"server/lib/creds"
 	"server/models"
 	"strconv"
@@ -43,6 +46,7 @@ func (r *Client) CreateRecipe(c *gin.Context) {
 	stub := models.RecipeStub{
 		CookbookID:    recipe.CookbookID,
 		SpoonacularID: -1, // TODO: decide what id to assign to user recipes
+		ImageURL:      recipe.ImageURL,
 		RecipeName:    recipe.RecipeName,
 		IsUserRecipe:  true,
 		TotalTime:     recipe.TotalTime,
@@ -116,7 +120,48 @@ func (r *Client) GetRecipe(c *gin.Context) {
 	r.getCookbookRecipe(ctx, c, id)
 }
 
-func (r *Client) getSpoonacularRecipe(ctx context.Context, c *gin.Context, id string) {}
+// https://spoonacular.com/food-api/docs#Get-Recipe-Information
+func (r *Client) getSpoonacularRecipe(ctx context.Context, c *gin.Context, id string) {
+	resp, err := http.Get("https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" +
+		os.Getenv("API_KEY") + "&includeNutrition=true")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipe"})
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not read spoonacular recipe"})
+		return
+	}
+
+	var recipe models.SpoonacularRecipe
+	json.Unmarshal(body, &recipe)
+
+	stub := models.RecipeStub{
+		CookbookID:    primitive.NilObjectID,
+		SpoonacularID: recipe.SpoonacularID,
+		ImageURL:      recipe.ImageURL,
+		RecipeName:    recipe.RecipeName,
+		IsUserRecipe:  false,
+		TotalTime:     recipe.TotalTime,
+		Ingredients:   recipe.Ingredients,
+	}
+
+	// this is dumb there has to be a better way but whatever no one has to know
+	// TODO: standardize tag names?
+	if (recipe.IsCheap)       { stub.Tags = append(stub.Tags, "cheap")}
+	if (recipe.IsDairyFree)   { stub.Tags = append(stub.Tags, "dairy free")}
+	if (recipe.IsGlutenFree)  { stub.Tags = append(stub.Tags, "gluten free")}
+	if (recipe.IsKeto)        { stub.Tags = append(stub.Tags, "keto")}
+	if (recipe.IsSustainable) { stub.Tags = append(stub.Tags, "sustainable")}
+	if (recipe.IsVegan)       { stub.Tags = append(stub.Tags, "vegan")}
+	if (recipe.IsVegetarian)  { stub.Tags = append(stub.Tags, "vegetarian")}
+	if (recipe.IsHealthy)     { stub.Tags = append(stub.Tags, "healthy")}
+
+	c.JSON(http.StatusOK, stub)
+}
 
 func (r *Client) getCookbookRecipe(ctx context.Context, c *gin.Context, id string) {
 	res := r.RecipeCollection.FindOne(ctx, bson.M{

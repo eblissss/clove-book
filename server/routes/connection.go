@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"server/client/email"
-	"server/client/spoonacular"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -20,9 +19,9 @@ type Client struct {
 	AuthUserCollection *mongo.Collection
 	RecipeCollection   *mongo.Collection
 	StubCollection     *mongo.Collection
-	SpoonClient        *spoonacular.Client
-	MailClient         *email.Client
-	Validator          *validator.Validate
+	// SpoonClient        *spoonacular.Client
+	MailClient *email.Client
+	Validator  *validator.Validate
 }
 
 func New() *Client {
@@ -32,7 +31,7 @@ func New() *Client {
 	recipeCollection := OpenCollection(mongoClient, "recipes")
 	stubCollection := OpenCollection(mongoClient, "stubs")
 	validate := validator.New()
-	spoonClient := spoonacular.New()
+	// spoonClient := spoonacular.New()
 
 	mailClient := email.Must(email.New(os.Getenv("SENDGRID_KEY")))
 
@@ -43,7 +42,7 @@ func New() *Client {
 		StubCollection:     stubCollection,
 		MailClient:         mailClient,
 		Validator:          validate,
-		SpoonClient:        spoonClient,
+		// SpoonClient:        spoonClient,
 	}
 }
 

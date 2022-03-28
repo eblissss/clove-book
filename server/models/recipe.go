@@ -41,3 +41,21 @@ type Instruction struct {
 	Description string `json:"description" bson:"description"`
 	// TODO: add array of ingredients?
 }
+
+type SpoonacularRecipe struct {
+	RecipeName    string       `json:"title"`
+	SpoonacularID int64        `json:"id"`
+	ImageURL      string       `json:"image"`
+	TotalTime     int64        `json:"readyInMinutes"`
+	Ingredients   []Ingredient `json:"extendedIngredients"`
+
+	// there has to be a better way to save tags
+	IsCheap       bool `json:"cheap"`
+	IsDairyFree   bool `json:"dairyFree"`
+	IsGlutenFree  bool `json:"glutenFree"`
+	IsKeto        bool `json:"ketogenic"`
+	IsSustainable bool `json:"sustainable"`
+	IsVegan       bool `json:"vegan"`
+	IsVegetarian  bool `json:"vegetarian"`
+	IsHealthy     bool `json:"veryHealthy"`
+}

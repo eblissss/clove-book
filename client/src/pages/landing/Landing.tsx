@@ -3,7 +3,7 @@ import { Box, Button, Container, Typography, useTheme } from "@mui/material";
 
 import { Link as RouterLink } from "react-router-dom";
 
-import BgImage from "../../assets/landing-bg.jpg";
+import BgImage from "../../assets/landing-bg.png";
 import cloveImg from "../../assets/cloveB.png";
 
 export default function Landing() {

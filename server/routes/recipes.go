@@ -74,8 +74,15 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	query, _ := c.GetQuery("query")
+	// pattern := fmt.Sprintf("%s", query)
+
 	cur, err := r.StubCollection.Find(ctx,
-		bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: ".*", Options: "i"}}},
+		// still not fuzzy but partial at least
+		bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}}},
+
+		// this is an order of magnitude faster but not fuzzy or partial
+		// bson.M{"$text": bson.M{"$search": query}},
 	)
 
 	if err != nil {
@@ -151,14 +158,30 @@ func (r *Client) getSpoonacularRecipe(ctx context.Context, c *gin.Context, id st
 
 	// this is dumb there has to be a better way but whatever no one has to know
 	// TODO: standardize tag names?
-	if (recipe.IsCheap)       { stub.Tags = append(stub.Tags, "cheap")}
-	if (recipe.IsDairyFree)   { stub.Tags = append(stub.Tags, "dairy free")}
-	if (recipe.IsGlutenFree)  { stub.Tags = append(stub.Tags, "gluten free")}
-	if (recipe.IsKeto)        { stub.Tags = append(stub.Tags, "keto")}
-	if (recipe.IsSustainable) { stub.Tags = append(stub.Tags, "sustainable")}
-	if (recipe.IsVegan)       { stub.Tags = append(stub.Tags, "vegan")}
-	if (recipe.IsVegetarian)  { stub.Tags = append(stub.Tags, "vegetarian")}
-	if (recipe.IsHealthy)     { stub.Tags = append(stub.Tags, "healthy")}
+	if recipe.IsCheap {
+		stub.Tags = append(stub.Tags, "cheap")
+	}
+	if recipe.IsDairyFree {
+		stub.Tags = append(stub.Tags, "dairy free")
+	}
+	if recipe.IsGlutenFree {
+		stub.Tags = append(stub.Tags, "gluten free")
+	}
+	if recipe.IsKeto {
+		stub.Tags = append(stub.Tags, "keto")
+	}
+	if recipe.IsSustainable {
+		stub.Tags = append(stub.Tags, "sustainable")
+	}
+	if recipe.IsVegan {
+		stub.Tags = append(stub.Tags, "vegan")
+	}
+	if recipe.IsVegetarian {
+		stub.Tags = append(stub.Tags, "vegetarian")
+	}
+	if recipe.IsHealthy {
+		stub.Tags = append(stub.Tags, "healthy")
+	}
 
 	c.JSON(http.StatusOK, stub)
 }

@@ -25,3 +25,4 @@ yarn-error.log*
 */package-lock.json
 server/.env
 client/.env
+*.exe

@@ -4,7 +4,7 @@ const setFilters = () => {
 	// go through each filter from state
 };
 
-export const getRandomRecipes = () => requests.getRecipes("&sort=random", [""]);
+export const getRandomRecipes = () => requests.getRecipes("", [""]);
 
 // get popular
 export const getPopularRecipes = () =>

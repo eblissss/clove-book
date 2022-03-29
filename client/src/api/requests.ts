@@ -80,7 +80,7 @@ export const addRecipe = (
 export const getRecipes = (
 	query: string,
 	tags: string[]
-): Promise<models.SimpleRecipe> =>
+): Promise<models.SimpleRecipe[]> =>
 	requests.get("/recipes", { query: query, tags: tags });
 
 export const deleteRecipe = (cookbookID: number) =>

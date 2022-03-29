@@ -10,6 +10,8 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -34,6 +36,8 @@ func New() *Client {
 	// spoonClient := spoonacular.New()
 
 	mailClient := email.Must(email.New(os.Getenv("SENDGRID_KEY")))
+
+	GuaranteeTextIndex(recipeCollection, "name")
 
 	return &Client{
 		UserCollection:     userCollection,
@@ -74,4 +78,23 @@ func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collecti
 	var collection *mongo.Collection = client.Database("CookBookMainCluster").Collection(collectionName)
 
 	return collection
+}
+
+// Create a text index (or dont if already exists) for the collection
+func GuaranteeTextIndex(collection *mongo.Collection, indexCol string) error {
+
+	index := mongo.IndexModel{
+		Keys: bson.D{primitive.E{Key: indexCol, Value: "text"}},
+	}
+
+	opts := options.CreateIndexes().SetMaxTime(5 * time.Second)
+
+	indexName, err := collection.Indexes().CreateOne(context.Background(), index, opts)
+	if err != nil {
+		_ = fmt.Errorf("Could not create index query")
+		return err
+	}
+	fmt.Println("Created index", indexName)
+
+	return nil
 }

@@ -9,6 +9,10 @@ import RecipeGrid, {
 	RecipeStack,
 } from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
+import { getRandomRecipes } from "../../api/customRequests";
+import { getRecipes } from "../../api/requests";
+import { useAppSelector } from "../../app/hooks";
+import { selectSearch } from "../../components/searchBar/searchSlice";
 
 const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
@@ -29,6 +33,8 @@ function Home() {
 	const [popularRecipes, setPopularRecipes] =
 		useState<SimpleRecipe[]>(fakeJSON);
 
+	const searchInfo = useAppSelector(selectSearch);
+
 	useEffect(() => {
 		/*
 		Recipe.getRandoms()
@@ -47,8 +53,21 @@ function Home() {
 		const searchVal = (
 			document.getElementById("search") as HTMLInputElement
 		).value;
-
 		console.log(searchVal);
+
+		if (searchVal === "") {
+			setSearching(false);
+			setRecipes(fakeJSON);
+		} else {
+			setSearching(true);
+			const combinedTags = [
+				...searchInfo.searchTags,
+				...searchInfo.filters,
+			];
+			getRecipes(searchVal, combinedTags).then((stuff) =>
+				setRecipes(stuff)
+			);
+		}
 	}
 
 	function ingredientSearch(ingredients: string[]) {
@@ -87,7 +106,7 @@ function Home() {
 							Explore New Recipes
 						</Typography>
 					)}
-					<RecipeGrid recipes={fakeJSON} columns={12} />
+					<RecipeGrid recipes={recipes} columns={12} />
 				</Container>
 				<Container
 					sx={{
@@ -116,7 +135,7 @@ function Home() {
 						>
 							Popular Dishes
 						</Typography>
-						<RecipeStack recipes={fakeJSON} />
+						<RecipeStack recipes={popularRecipes} />
 					</Container>
 				</Container>
 			</Container>

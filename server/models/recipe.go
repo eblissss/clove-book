@@ -42,6 +42,16 @@ type Instruction struct {
 	// TODO: add array of ingredients?
 }
 
+type SpoonacularSearchRecipe struct {
+	RecipeName    string `json:"title"`
+	SpoonacularID int64  `json:"id"`
+	ImageURL      string `json:"image"`
+}
+
+type SpoonacularSearchResponse struct {
+	Recipes []SpoonacularSearchRecipe `json:"results"`
+}
+
 type SpoonacularRecipe struct {
 	RecipeName    string       `json:"title"`
 	SpoonacularID int64        `json:"id"`

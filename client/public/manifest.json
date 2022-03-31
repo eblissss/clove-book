@@ -1,9 +1,9 @@
 {
-	"short_name": "Clove Book",
-	"name": "Clove Book",
+	"short_name": "Clove",
+	"name": "Clove Cookbook App",
 	"icons": [
 		{
-			"src": "favicon.ico",
+			"src": "cloveicon.ico",
 			"sizes": "64x64 32x32 24x24 16x16",
 			"type": "image/x-icon"
 		},

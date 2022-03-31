@@ -13,7 +13,7 @@ export default function Landing() {
 		<Box
 			component="div"
 			sx={{
-				background: `linear-gradient(90deg,	rgba(163, 187, 198, 0.9) 0%, rgba(163, 187, 198, 0) 42.56%), url(${BgImage}) no-repeat center center fixed`,
+				background: `linear-gradient(90deg,	rgba(163, 187, 198, 0.9) 0%, rgba(163, 187, 198, 0) 42.56%), background: "primary.main"`,
 				backgroundSize: "cover",
 				width: "100%",
 				height: "100vh",

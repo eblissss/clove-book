@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 export interface ModalState {
-	id: number;
+	id: string;
 	isCookbookID: boolean;
 	isOpen: boolean;
 }
 
 const initialState: ModalState = {
-	id: 0,
+	id: "",
 	isCookbookID: true,
 	isOpen: false,
 };
@@ -20,7 +20,7 @@ export const modalSlice = createSlice({
 	reducers: {
 		setModal: (
 			state,
-			action: PayloadAction<{ id: number; isCookbookID: boolean }>
+			action: PayloadAction<{ id: string; isCookbookID: boolean }>
 		) => {
 			state.id = action.payload.id;
 			state.isCookbookID = action.payload.isCookbookID;

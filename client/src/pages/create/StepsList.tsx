@@ -5,6 +5,8 @@ import {
 } from "@mui/icons-material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { setInstructions } from "./creationSlice";
+import { Instruction } from "../../api/models";
 
 function StepItem({
 	data,
@@ -13,18 +15,20 @@ function StepItem({
 	doDel,
 	addStep,
 	update,
+	autoFocus,
 }: {
-	data?: string;
+	data?: Instruction;
 	id: number;
 	added: boolean;
 	doDel: Function;
 	addStep?: Function;
 	update?: Function;
+	autoFocus?: boolean;
 }) {
 	const newStep: React.ChangeEventHandler<
 		HTMLInputElement | HTMLTextAreaElement
 	> = (e: any) => {
-		addStep!(e.target.value);
+		addStep!(e.target);
 		e.target.value = "";
 	};
 
@@ -49,7 +53,7 @@ function StepItem({
 			)}
 			<Container disableGutters sx={{ flex: 4, px: "10px" }}>
 				<TextField
-					autoFocus
+					autoFocus={autoFocus}
 					fullWidth
 					id={`step-${id}`}
 					className="recipeInput"
@@ -58,11 +62,11 @@ function StepItem({
 					onChange={
 						added
 							? (e) => {
-									update!(e.target.value, id, "name");
+									update!(e.target.value, id);
 							  }
 							: newStep
 					}
-					value={data}
+					value={data?.description}
 				></TextField>
 			</Container>
 		</Container>
@@ -72,7 +76,7 @@ function StepItem({
 function StepList() {
 	const dispatch = useDispatch();
 
-	const [stepList, setStepList] = useState<string[]>([]);
+	const [stepList, setStepList] = useState<Instruction[]>([]);
 
 	const doDelete = (toDel: number) => {
 		const newList = [...stepList];
@@ -80,18 +84,22 @@ function StepList() {
 		setStepList(newList);
 	};
 
-	const addStep = (temp: string) => {
-		setStepList([...stepList, temp]);
+	const addStep = (target: any) => {
+		setStepList([...stepList, { description: target.value }]);
 	};
 
 	const updateStep = (value: string, id: number) => {
 		const newList = [...stepList];
-		newList[id] = value;
-		dispatch(newList);
+		newList[id].description = value;
 		setStepList(newList);
 	};
 
-	const saveRecipe = () => {};
+	const saveInstructions = () => {
+		dispatch(setInstructions(stepList));
+	};
+	document
+		.getElementById("createSubmit")
+		?.addEventListener("click", saveInstructions);
 
 	return (
 		<Box
@@ -128,6 +136,7 @@ function StepList() {
 							id={i}
 							doDel={doDelete}
 							update={updateStep}
+							autoFocus={i + 1 === stepList.length}
 						/>
 					);
 				})}

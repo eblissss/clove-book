@@ -18,10 +18,10 @@ const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
 	fakeJSON.push({
 		spoonacularID: 0,
-		cookbookID: 0,
+		cookbookID: "0",
 		name: "Vegan Cheesecake",
 		imageURL: "https://source.unsplash.com/random",
-		readyInMinutes: 10,
+		totalTime: 10,
 		tags: ["dessert", "grass"],
 		savedAt: "March 4th",
 	});

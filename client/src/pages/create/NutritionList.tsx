@@ -1,16 +1,13 @@
 import {
 	Box,
 	Button,
-	Checkbox,
 	Container,
-	FormLabel,
 	List,
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
 	Menu,
-	OutlinedInput,
 	TextField,
 	Typography,
 } from "@mui/material";
@@ -74,22 +71,18 @@ function NutritionItem({
 			</Container>
 			<Container disableGutters sx={{ flex: 6, px: "10px" }}>
 				<TextField
-					autoFocus
 					fullWidth
 					id={`nutrition-${nutrition.name}`}
 					className="recipeInput"
 					placeholder="100g"
 					multiline
-					onChange={(e) => update(e.target.value, id)}
+					onChange={(e) => update(e.target.value, nutrition)}
 					value={nutrition.amount}
 				></TextField>
 			</Container>
 		</Container>
 	);
 }
-
-// idea: click on item in menu and it moves to list
-//       in reverse for clicking '-'
 
 function NutrientSelector({
 	items,
@@ -170,16 +163,9 @@ function NutritionList() {
 	const [unselected, setUnselected] = useState<string[]>(defaultUnselected);
 	const [nutriList, setNutriList] = useState<Nutrient[]>(defaultNutri);
 
-	console.log("SELECTED", selected);
-	console.log("UNSELECTED", unselected);
-
-	// stil need to add
-	// setNutriList([...nutriList, temp]);
-
-	const updateList = (value: string, id: number) => {
+	const updateList = (value: string, nutr: Nutrient) => {
 		const newList = [...nutriList];
-		newList[id].amount = value;
-		dispatch(setNutrients(newList));
+		newList[newList.indexOf(nutr)].amount = value;
 		setNutriList(newList);
 	};
 
@@ -188,7 +174,6 @@ function NutritionList() {
 		let newUnselected: string[];
 
 		if (select) {
-			console.log("going to select");
 			newSelected = [...selected, value];
 			newUnselected = [...unselected];
 			newUnselected.splice(newUnselected.indexOf(value), 1);
@@ -198,15 +183,16 @@ function NutritionList() {
 			newUnselected = [...unselected, value];
 		}
 
-		console.log(selected);
-		console.log(unselected);
-		console.log(newSelected);
-		console.log(newUnselected);
 		setSelected(newSelected);
 		setUnselected(newUnselected);
 	};
 
-	const saveRecipe = () => {};
+	const saveNutritions = () => {
+		dispatch(setNutrients(nutriList));
+	};
+	document
+		.getElementById("createSubmit")
+		?.addEventListener("click", saveNutritions);
 
 	return (
 		<Box

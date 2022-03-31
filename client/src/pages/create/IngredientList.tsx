@@ -8,6 +8,12 @@ import { useDispatch } from "react-redux";
 import { setIngredients } from "./creationSlice";
 import { Ingredient } from "../../api/models";
 
+interface IngStr {
+	name: string;
+	amount: string;
+	unit: string;
+}
+
 function IngredientItem({
 	data,
 	id,
@@ -17,7 +23,7 @@ function IngredientItem({
 	update,
 	autoSelect,
 }: {
-	data?: Ingredient;
+	data?: IngStr;
 	id: number;
 	added: boolean;
 	doDel: Function;
@@ -111,16 +117,16 @@ let autoSelect = "";
 function IngredientList() {
 	const dispatch = useDispatch();
 
-	const [ingList, setIngList] = useState<Ingredient[]>([]);
+	const [ingStrList, setIngStrList] = useState<IngStr[]>([]);
 
 	const doDelete = (toDel: number) => {
-		const newList = [...ingList];
+		const newList = [...ingStrList];
 		newList!.splice(toDel, 1);
-		setIngList(newList);
+		setIngStrList(newList);
 	};
 
 	const addIngredient = (target: any) => {
-		const tempIng: Ingredient = { name: "", amount: 0, unit: "" };
+		const tempIng: IngStr = { name: "", amount: "", unit: "" };
 		switch (target.placeholder) {
 			case "New Ingredient":
 				tempIng.name = target.value;
@@ -137,17 +143,17 @@ function IngredientList() {
 			default:
 				break;
 		}
-		setIngList([...ingList, tempIng]);
+		setIngStrList([...ingStrList, tempIng]);
 	};
 
 	const updateIngredient = (value: string, id: number, slot: string) => {
-		const newList = [...ingList];
+		const newList = [...ingStrList];
 		switch (slot) {
 			case "name":
 				newList[id].name = value;
 				break;
 			case "amount":
-				newList[id].amount = parseInt(value);
+				newList[id].amount = value;
 				break;
 			case "unit":
 				newList[id].unit = value;
@@ -155,11 +161,23 @@ function IngredientList() {
 			default:
 				break;
 		}
-		dispatch(setIngredients(newList));
-		setIngList(newList);
+		setIngStrList(newList);
 	};
 
-	const saveRecipe = () => {};
+	const saveIngredients = () => {
+		const ingList: Ingredient[] = [];
+		ingStrList.forEach((ing) => {
+			ingList.push({
+				name: ing.name,
+				amount: parseInt(ing.amount),
+				unit: ing.unit,
+			});
+		});
+		dispatch(setIngredients(ingList));
+	};
+	document
+		.getElementById("createSubmit")
+		?.addEventListener("click", saveIngredients);
 
 	return (
 		<Box
@@ -186,7 +204,7 @@ function IngredientList() {
 				Ingredients:
 			</Typography>
 			<List>
-				{ingList?.map((ing, i) => {
+				{ingStrList?.map((ing, i) => {
 					console.log(i, ing);
 					return (
 						<IngredientItem
@@ -197,7 +215,7 @@ function IngredientList() {
 							doDel={doDelete}
 							update={updateIngredient}
 							autoSelect={
-								i + 1 === ingList.length ? autoSelect : ""
+								i + 1 === ingStrList.length ? autoSelect : ""
 							}
 						/>
 					);

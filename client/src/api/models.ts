@@ -24,10 +24,10 @@ export interface Instruction {
 
 export interface SimpleRecipe {
 	spoonacularID: number;
-	cookbookID: number;
+	cookbookID: string;
 	name: string;
 	imageURL?: string;
-	readyInMinutes?: number;
+	totalTime?: number;
 	tags?: string[];
 	savedAt: string;
 }

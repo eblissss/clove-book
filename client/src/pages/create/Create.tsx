@@ -1,20 +1,13 @@
-import {
-	Box,
-	Button,
-	Container,
-	List,
-	TextField,
-	Typography,
-} from "@mui/material";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { TabBar } from "../../components/tabBar/TabBar";
-import { Ingredient, Recipe, RecipeNutrients } from "../../api/models";
+import { Recipe, RecipeNutrients } from "../../api/models";
 import IngredientList from "./IngredientList";
 import StepList from "./StepsList";
 import NutritionList from "./NutritionList";
-import { getUser } from "../../api/requests";
+import { addRecipe, getUser } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../user/userSlice";
 import { store } from "../../app/store";
@@ -24,11 +17,6 @@ function Create() {
 
 	const saveRecipe = () => {
 		const authorID = user.userID;
-
-		let author = "";
-		getUser(user.userID).then((data) => {
-			author = data.username;
-		});
 
 		// Get stuff from inputs
 		const name = (document.getElementById("recipeName") as HTMLInputElement)
@@ -81,23 +69,29 @@ function Create() {
 			}
 		});
 
-		const data: Recipe = {
-			author: author,
-			authorID: authorID,
-			cookTime: cookTime,
-			cookbookID: 0,
-			createdAt: createdAt,
-			ingredients: ingredients,
-			instructions: instructions,
-			name: name,
-			prepTime: prepTime,
-			savedAt: createdAt,
-			spoonacularID: 0,
-			totalTime: totalTime,
-			imageURL: imageURL,
-			readyInMinutes: totalTime,
-			tags: tags,
-		};
+		getUser(user.userID).then((res) => {
+			const author = res.username;
+
+			const data: Recipe = {
+				author: author,
+				authorID: authorID,
+				cookTime: cookTime,
+				cookbookID: "0",
+				createdAt: createdAt,
+				ingredients: ingredients,
+				instructions: instructions,
+				name: name,
+				prepTime: prepTime,
+				savedAt: createdAt,
+				spoonacularID: 0,
+				totalTime: totalTime,
+				imageURL: imageURL,
+				tags: tags,
+			};
+
+			console.log(data);
+			addRecipe(data);
+		});
 	};
 
 	return (
@@ -147,6 +141,7 @@ function Create() {
 						Recipe Name:
 					</Typography>
 					<TextField
+						autoFocus
 						id="recipeName"
 						className="recipeInput"
 						placeholder="lentils"
@@ -240,6 +235,7 @@ function Create() {
 				<NutritionList />
 				<Button
 					fullWidth
+					id="createSubmit"
 					onClick={saveRecipe}
 					className="Classic"
 					sx={{ mt: "1rem" }}

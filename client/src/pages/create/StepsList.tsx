@@ -4,6 +4,7 @@ import {
 	RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 function StepItem({
 	data,
@@ -69,6 +70,8 @@ function StepItem({
 }
 
 function StepList() {
+	const dispatch = useDispatch();
+
 	const [stepList, setStepList] = useState<string[]>([]);
 
 	const doDelete = (toDel: number) => {
@@ -84,6 +87,7 @@ function StepList() {
 	const updateStep = (value: string, id: number) => {
 		const newList = [...stepList];
 		newList[id] = value;
+		dispatch(newList);
 		setStepList(newList);
 	};
 

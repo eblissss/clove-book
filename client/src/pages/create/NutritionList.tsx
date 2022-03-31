@@ -16,26 +16,29 @@ import {
 } from "@mui/material";
 import { RemoveCircle as RemoveCircleIcon } from "@mui/icons-material";
 import React, { useState } from "react";
-
-interface NutriPair {
-	name: string;
-	data: string;
-}
+import { useDispatch } from "react-redux";
+import { setNutrients } from "./creationSlice";
+import { Nutrient } from "../../api/models";
 
 const defaultNutritions: string[] = ["Sugar", "Protein", "Sodium", "Calories"];
 
 const allNutrients = [
-	"Sugar",
-	"Protein",
-	"Sodium",
 	"Calories",
 	"Fat",
-	"Vitamin A",
+	"Saturated Fat",
+	"Carbohydrates",
+	"Sugar",
+	"Cholestorol",
+	"Sodium",
+	"Protein",
+	"Fiber",
 ];
 
-const defaultNutri = allNutrients.map((name) => ({
+const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
 	name: name,
-	data: "",
+	amount: "",
+	indented: false,
+	percentOfDailyNeeds: "0",
 }));
 
 const defaultUnselected = allNutrients.filter(
@@ -48,7 +51,7 @@ function NutritionItem({
 	remove,
 	update,
 }: {
-	nutrition: NutriPair;
+	nutrition: Nutrient;
 	id: number;
 	remove: Function;
 	update: Function;
@@ -65,14 +68,7 @@ function NutritionItem({
 				disableGutters
 				sx={{ flex: 1, px: "10px", alignSelf: "center" }}
 			>
-				<Typography
-					variant="h6"
-					component="h6"
-					fontWeight={700}
-					// sx={{
-					// 	mr: "1rem",
-					// }}
-				>
+				<Typography variant="h6" component="h6" fontWeight={700}>
 					{nutrition.name}
 				</Typography>
 			</Container>
@@ -85,7 +81,7 @@ function NutritionItem({
 					placeholder="100g"
 					multiline
 					onChange={(e) => update(e.target.value, id)}
-					value={nutrition.data}
+					value={nutrition.amount}
 				></TextField>
 			</Container>
 		</Container>
@@ -168,9 +164,11 @@ function NutrientSelector({
 }
 
 function NutritionList() {
+	const dispatch = useDispatch();
+
 	const [selected, setSelected] = useState<string[]>(defaultNutritions);
 	const [unselected, setUnselected] = useState<string[]>(defaultUnselected);
-	const [nutriList, setNutriList] = useState<NutriPair[]>(defaultNutri);
+	const [nutriList, setNutriList] = useState<Nutrient[]>(defaultNutri);
 
 	console.log("SELECTED", selected);
 	console.log("UNSELECTED", unselected);
@@ -180,7 +178,8 @@ function NutritionList() {
 
 	const updateList = (value: string, id: number) => {
 		const newList = [...nutriList];
-		newList[id].data = value;
+		newList[id].amount = value;
+		dispatch(setNutrients(newList));
 		setNutriList(newList);
 	};
 

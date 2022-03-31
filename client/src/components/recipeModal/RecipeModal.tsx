@@ -208,17 +208,15 @@ function RecipeModalContent({ recipe }: contentProps) {
 						</Typography>
 
 						{recipe.instructions.length > 0 ? (
-							recipe.instructions?.map((instruction) => (
+							recipe.instructions?.map((instruction, i) => (
 								<Typography
-									key={instruction.number + "i"}
+									key={"instruction-" + i}
 									variant="body1"
 									component="h5"
 									sx={{
 										p: "1px",
 									}}
 								>
-									{instruction.number}: Ingredients Needed:{" "}
-									{instruction.ingredients}
 									{instruction.description}
 								</Typography>
 							))

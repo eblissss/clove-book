@@ -18,10 +18,8 @@ export interface Ingredient {
 	unit: string;
 }
 
-interface Instruction {
-	number: number;
+export interface Instruction {
 	description: string;
-	ingredients: Ingredient[];
 }
 
 export interface SimpleRecipe {
@@ -53,4 +51,16 @@ export interface Userpass {
 export interface Useremail {
 	username: string;
 	email: string;
+}
+
+export interface Nutrient {
+	name: string;
+	amount: string;
+	indented: boolean;
+	percentOfDailyNeeds: string;
+}
+
+export interface RecipeNutrients {
+	bad: Nutrient[];
+	good: Nutrient[];
 }

@@ -5,6 +5,7 @@ import searchReducer from "../components/searchBar/searchSlice";
 import modalReducer from "../components/recipeModal/modalSlice";
 import errorReducer from "../components/errorPopup/errorSlice";
 import userReducer from "../pages/user/userSlice";
+import creationReducer from "../pages/create/creationSlice";
 
 export const store = configureStore({
 	reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
 		modal: modalReducer,
 		error: errorReducer,
 		user: userReducer,
+		creation: creationReducer,
 	},
 });
 

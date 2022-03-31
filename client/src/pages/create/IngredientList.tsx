@@ -4,12 +4,9 @@ import {
 	RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
 import React, { useState } from "react";
-
-interface stringIng {
-	name: string;
-	amount: string;
-	unit: string;
-}
+import { useDispatch } from "react-redux";
+import { setIngredients } from "./creationSlice";
+import { Ingredient } from "../../api/models";
 
 function IngredientItem({
 	data,
@@ -20,7 +17,7 @@ function IngredientItem({
 	update,
 	autoSelect,
 }: {
-	data?: stringIng;
+	data?: Ingredient;
 	id: number;
 	added: boolean;
 	doDel: Function;
@@ -112,7 +109,9 @@ function IngredientItem({
 
 let autoSelect = "";
 function IngredientList() {
-	const [ingList, setIngList] = useState<stringIng[]>([]);
+	const dispatch = useDispatch();
+
+	const [ingList, setIngList] = useState<Ingredient[]>([]);
 
 	const doDelete = (toDel: number) => {
 		const newList = [...ingList];
@@ -121,7 +120,7 @@ function IngredientList() {
 	};
 
 	const addIngredient = (target: any) => {
-		const tempIng: stringIng = { name: "", amount: "", unit: "" };
+		const tempIng: Ingredient = { name: "", amount: 0, unit: "" };
 		switch (target.placeholder) {
 			case "New Ingredient":
 				tempIng.name = target.value;
@@ -148,7 +147,7 @@ function IngredientList() {
 				newList[id].name = value;
 				break;
 			case "amount":
-				newList[id].amount = value;
+				newList[id].amount = parseInt(value);
 				break;
 			case "unit":
 				newList[id].unit = value;
@@ -156,6 +155,7 @@ function IngredientList() {
 			default:
 				break;
 		}
+		dispatch(setIngredients(newList));
 		setIngList(newList);
 	};
 

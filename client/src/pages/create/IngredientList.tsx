@@ -4,8 +4,11 @@ import {
 	RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setIngredients } from "./creationSlice";
+import { Ingredient } from "../../api/models";
 
-interface stringIng {
+interface IngStr {
 	name: string;
 	amount: string;
 	unit: string;
@@ -20,7 +23,7 @@ function IngredientItem({
 	update,
 	autoSelect,
 }: {
-	data?: stringIng;
+	data?: IngStr;
 	id: number;
 	added: boolean;
 	doDel: Function;
@@ -112,16 +115,18 @@ function IngredientItem({
 
 let autoSelect = "";
 function IngredientList() {
-	const [ingList, setIngList] = useState<stringIng[]>([]);
+	const dispatch = useDispatch();
+
+	const [ingStrList, setIngStrList] = useState<IngStr[]>([]);
 
 	const doDelete = (toDel: number) => {
-		const newList = [...ingList];
+		const newList = [...ingStrList];
 		newList!.splice(toDel, 1);
-		setIngList(newList);
+		setIngStrList(newList);
 	};
 
 	const addIngredient = (target: any) => {
-		const tempIng: stringIng = { name: "", amount: "", unit: "" };
+		const tempIng: IngStr = { name: "", amount: "", unit: "" };
 		switch (target.placeholder) {
 			case "New Ingredient":
 				tempIng.name = target.value;
@@ -138,11 +143,11 @@ function IngredientList() {
 			default:
 				break;
 		}
-		setIngList([...ingList, tempIng]);
+		setIngStrList([...ingStrList, tempIng]);
 	};
 
 	const updateIngredient = (value: string, id: number, slot: string) => {
-		const newList = [...ingList];
+		const newList = [...ingStrList];
 		switch (slot) {
 			case "name":
 				newList[id].name = value;
@@ -156,10 +161,23 @@ function IngredientList() {
 			default:
 				break;
 		}
-		setIngList(newList);
+		setIngStrList(newList);
 	};
 
-	const saveRecipe = () => {};
+	const saveIngredients = () => {
+		const ingList: Ingredient[] = [];
+		ingStrList.forEach((ing) => {
+			ingList.push({
+				name: ing.name,
+				amount: parseInt(ing.amount),
+				unit: ing.unit,
+			});
+		});
+		dispatch(setIngredients(ingList));
+	};
+	document
+		.getElementById("createSubmit")
+		?.addEventListener("click", saveIngredients);
 
 	return (
 		<Box
@@ -186,7 +204,7 @@ function IngredientList() {
 				Ingredients:
 			</Typography>
 			<List>
-				{ingList?.map((ing, i) => {
+				{ingStrList?.map((ing, i) => {
 					console.log(i, ing);
 					return (
 						<IngredientItem
@@ -197,7 +215,7 @@ function IngredientList() {
 							doDel={doDelete}
 							update={updateIngredient}
 							autoSelect={
-								i + 1 === ingList.length ? autoSelect : ""
+								i + 1 === ingStrList.length ? autoSelect : ""
 							}
 						/>
 					);

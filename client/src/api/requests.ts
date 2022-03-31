@@ -83,6 +83,9 @@ export const getRecipes = (
 ): Promise<models.SimpleRecipe[]> =>
 	requests.get("/recipes", { query: query, tags: tags });
 
+export const getRecipe = (id: string): Promise<models.Recipe> =>
+	requests.get(`/recipes/${id}`);
+
 export const deleteRecipe = (cookbookID: number) =>
 	requests.delete(`/recipes/${cookbookID}`);
 

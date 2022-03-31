@@ -1,41 +1,41 @@
 import {
 	Box,
 	Button,
-	Checkbox,
 	Container,
-	FormLabel,
 	List,
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
 	Menu,
-	OutlinedInput,
 	TextField,
 	Typography,
 } from "@mui/material";
 import { RemoveCircle as RemoveCircleIcon } from "@mui/icons-material";
 import React, { useState } from "react";
-
-interface NutriPair {
-	name: string;
-	data: string;
-}
+import { useDispatch } from "react-redux";
+import { setNutrients } from "./creationSlice";
+import { Nutrient } from "../../api/models";
 
 const defaultNutritions: string[] = ["Sugar", "Protein", "Sodium", "Calories"];
 
 const allNutrients = [
-	"Sugar",
-	"Protein",
-	"Sodium",
 	"Calories",
 	"Fat",
-	"Vitamin A",
+	"Saturated Fat",
+	"Carbohydrates",
+	"Sugar",
+	"Cholestorol",
+	"Sodium",
+	"Protein",
+	"Fiber",
 ];
 
-const defaultNutri = allNutrients.map((name) => ({
+const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
 	name: name,
-	data: "",
+	amount: "",
+	indented: false,
+	percentOfDailyNeeds: "0",
 }));
 
 const defaultUnselected = allNutrients.filter(
@@ -48,7 +48,7 @@ function NutritionItem({
 	remove,
 	update,
 }: {
-	nutrition: NutriPair;
+	nutrition: Nutrient;
 	id: number;
 	remove: Function;
 	update: Function;
@@ -65,35 +65,24 @@ function NutritionItem({
 				disableGutters
 				sx={{ flex: 1, px: "10px", alignSelf: "center" }}
 			>
-				<Typography
-					variant="h6"
-					component="h6"
-					fontWeight={700}
-					// sx={{
-					// 	mr: "1rem",
-					// }}
-				>
+				<Typography variant="h6" component="h6" fontWeight={700}>
 					{nutrition.name}
 				</Typography>
 			</Container>
 			<Container disableGutters sx={{ flex: 6, px: "10px" }}>
 				<TextField
-					autoFocus
 					fullWidth
 					id={`nutrition-${nutrition.name}`}
 					className="recipeInput"
 					placeholder="100g"
 					multiline
-					onChange={(e) => update(e.target.value, id)}
-					value={nutrition.data}
+					onChange={(e) => update(e.target.value, nutrition)}
+					value={nutrition.amount}
 				></TextField>
 			</Container>
 		</Container>
 	);
 }
-
-// idea: click on item in menu and it moves to list
-//       in reverse for clicking '-'
 
 function NutrientSelector({
 	items,
@@ -168,19 +157,15 @@ function NutrientSelector({
 }
 
 function NutritionList() {
+	const dispatch = useDispatch();
+
 	const [selected, setSelected] = useState<string[]>(defaultNutritions);
 	const [unselected, setUnselected] = useState<string[]>(defaultUnselected);
-	const [nutriList, setNutriList] = useState<NutriPair[]>(defaultNutri);
+	const [nutriList, setNutriList] = useState<Nutrient[]>(defaultNutri);
 
-	console.log("SELECTED", selected);
-	console.log("UNSELECTED", unselected);
-
-	// stil need to add
-	// setNutriList([...nutriList, temp]);
-
-	const updateList = (value: string, id: number) => {
+	const updateList = (value: string, nutr: Nutrient) => {
 		const newList = [...nutriList];
-		newList[id].data = value;
+		newList[newList.indexOf(nutr)].amount = value;
 		setNutriList(newList);
 	};
 
@@ -189,7 +174,6 @@ function NutritionList() {
 		let newUnselected: string[];
 
 		if (select) {
-			console.log("going to select");
 			newSelected = [...selected, value];
 			newUnselected = [...unselected];
 			newUnselected.splice(newUnselected.indexOf(value), 1);
@@ -199,15 +183,16 @@ function NutritionList() {
 			newUnselected = [...unselected, value];
 		}
 
-		console.log(selected);
-		console.log(unselected);
-		console.log(newSelected);
-		console.log(newUnselected);
 		setSelected(newSelected);
 		setUnselected(newUnselected);
 	};
 
-	const saveRecipe = () => {};
+	const saveNutritions = () => {
+		dispatch(setNutrients(nutriList));
+	};
+	document
+		.getElementById("createSubmit")
+		?.addEventListener("click", saveNutritions);
 
 	return (
 		<Box

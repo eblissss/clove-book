@@ -11,13 +11,13 @@ export function RecipeCard(props: SimpleRecipe) {
 	const dispatch = useAppDispatch();
 
 	function updateSelectedRecipe() {
-		if (props.cookbookID >= 0) {
+		if (props.cookbookID >= "0") {
 			console.log("cookbookID: ", props.cookbookID);
 			dispatch(setModal({ id: props.cookbookID, isCookbookID: true }));
 		} else {
 			console.log(props.spoonacularID);
 			dispatch(
-				setModal({ id: props.spoonacularID, isCookbookID: false })
+				setModal({ id: "" + props.spoonacularID, isCookbookID: false })
 			);
 		}
 
@@ -88,7 +88,7 @@ export function RecipeCard(props: SimpleRecipe) {
 							textAlign: "center",
 						}}
 					>
-						{props.readyInMinutes}m
+						{props.totalTime}m
 					</Typography>
 				</Box>
 

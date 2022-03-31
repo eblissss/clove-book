@@ -10,7 +10,7 @@ import {
 	Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { doRegister } from "../../../api/requests";
+import { doLogin, doRegister } from "../../../api/requests";
 import { NewUser } from "../../../api/models";
 import { setUserID } from "../../user/userSlice";
 import { useDispatch } from "react-redux";
@@ -44,10 +44,16 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 			.then((data) => {
 				console.log(data);
 				removeStorage();
-
-				dispatch(setUserID("" + data.userID));
-
-				navigate("/home");
+				doLogin({
+					username: userInfo.username,
+					password: userInfo.password,
+				})
+					.then((res) => {
+						console.log(res);
+						dispatch(setUserID("" + data.userID));
+						navigate("/home");
+					})
+					.catch((err) => console.log(err));
 			})
 			.catch((err) => console.log(err));
 	};

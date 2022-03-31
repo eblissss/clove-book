@@ -16,6 +16,7 @@ import { closeModal, selectModal } from "./modalSlice";
 
 import { Recipe } from "../../api/models";
 import Tag from "../tag/Tag";
+import { getRecipe } from "../../api/requests";
 
 // import { getRecipe } from "../../api/requests"
 
@@ -104,7 +105,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 						component="h6"
 						sx={{ color: "primary.contrastText" }}
 					>
-						Ready in {recipe.readyInMinutes}m
+						Ready in {recipe.totalTime}m
 					</Typography>
 				</Box>
 				{/* REQUIRED INGREDIENTS */}
@@ -208,17 +209,15 @@ function RecipeModalContent({ recipe }: contentProps) {
 						</Typography>
 
 						{recipe.instructions.length > 0 ? (
-							recipe.instructions?.map((instruction) => (
+							recipe.instructions?.map((instruction, i) => (
 								<Typography
-									key={instruction.number + "i"}
+									key={"instruction-" + i}
 									variant="body1"
 									component="h5"
 									sx={{
 										p: "1px",
 									}}
 								>
-									{instruction.number}: Ingredients Needed:{" "}
-									{instruction.ingredients}
 									{instruction.description}
 								</Typography>
 							))
@@ -251,7 +250,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 }
 
 const dataA: Recipe = {
-	cookbookID: 0,
+	cookbookID: "0",
 	spoonacularID: 0,
 	ingredients: [
 		{ name: "Spinach", amount: 1, unit: "cup" },
@@ -264,11 +263,10 @@ const dataA: Recipe = {
 	author: "jo",
 	authorID: "1231",
 	imageURL: "https://source.unsplash.com/random",
-	readyInMinutes: 15,
+	totalTime: 15,
 	tags: ["chicken", "mars", "vegan"],
 	cookTime: 5,
 	prepTime: 10,
-	totalTime: 15,
 	createdAt: "5:04 PM, Friday 14th 2021",
 };
 
@@ -282,8 +280,12 @@ function RecipeModal() {
 	const [recipe, setRecipe] = useState<Recipe>(dataA);
 
 	useEffect(() => {
-		// data = getRecipe(modalInfo.ID, modalInfo.isCookbookID)
-		// setRecipe(data);
+		if (open) {
+			getRecipe("" + modalInfo.id).then((data) => {
+				console.log(data);
+				// setRecipe(data);
+			});
+		}
 	}, [open]);
 
 	return (

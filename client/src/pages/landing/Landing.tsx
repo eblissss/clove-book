@@ -3,9 +3,10 @@ import { Box, Button, Container, Typography, useTheme } from "@mui/material";
 
 import { Link as RouterLink } from "react-router-dom";
 
-import BgImage from "../../assets/landing-bg.png";
+
 import cloveImg from "../../assets/cloveB.png";
 
+import BgImage from "../../assets/clove3d.png";
 export default function Landing() {
 	const theme = useTheme();
 
@@ -13,43 +14,53 @@ export default function Landing() {
 		<Box
 			component="div"
 			sx={{
-				background: `linear-gradient(90deg,	rgba(163, 187, 198, 0.9) 0%, rgba(163, 187, 198, 0) 42.56%), background: "primary.main"`,
+				// linear-gradient(90deg,	rgba(163, 187, 198, 0.9) 0%, rgba(163, 187, 198, 0) 42.56%),
+				backgroundColor: "primary.light",
 				backgroundSize: "cover",
 				width: "100%",
 				height: "100vh",
+				display: "flex",
+				flexDirection: "column"
+				
 			}}
 		>
+			<Box component="div" sx = {{ width: "100%", overflow: "hidden", animation: "rotation infinite 3s linear",
+}}>
+	<img src={BgImage}/></Box>
 			<Container
 				disableGutters
 				sx={{
+					//backgroundColor: "#64ab42",
 					position: "absolute",
 					display: "flex",
 					flexDirection: "column",
 					align: "center",
-					left: "16%",
+					alignSelf: "center",
+					textAlign: "center",
 					top: "10%",
-					width: "50vw",
+					width: "100%",
 				}}
 			>
 				<img src={cloveImg} width="100%" />
 				<Box
 					component="div"
 					sx={{
-						background: `linear-gradient(0deg, ${theme.palette.secondary.main} 50%, #00000000 100%)`,
+						//background: `linear-gradient(0deg, ${theme.palette.secondary.main} 50%, #00000000 100%)`,
 						borderRadius: "0px 0px 25px 25px",
-						alignSelf: "flex-start",
-						width: "100%",
+						alignSelf: "center",
+						width: "70%",
 						textAlign: "center",
+						align: "center",
 						px: "3rem",
-						py: "1rem",
-						mt: "1rem",
+						py: "0.25rem",
+						//mt: "1rem",
 					}}
 				>
 					<Typography
 						component="h2"
 						variant="h2"
 						sx={{
-							color: "secondary.contrastText",
+							color: "primary.dark",
 						}}
 					>
 						Dish It Out
@@ -61,9 +72,11 @@ export default function Landing() {
 					to="/login"
 					sx={{
 						alignSelf: "flex-start",
-						width: "100%",
+						width: "70%",
+						textAlign: "center",
+						align: "center",
 						p: "2rem",
-						mt: "8rem",
+						mt: "10%",
 					}}
 				>
 					<Typography

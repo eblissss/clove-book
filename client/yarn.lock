@@ -7747,6 +7747,11 @@ react-merge-refs@^1.1.0:
   resolved "https://registry.npmjs.org/react-merge-refs/-/react-merge-refs-1.1.0.tgz"
   integrity sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==
 
+react-native-spinning-image@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-spinning-image/-/react-native-spinning-image-1.0.2.tgz#e5fc76dc5647ea237801cb281635e53679576ff3"
+  integrity sha512-4KpX7MBbojVRoOUp7SjIUZgr0+bBmznSQiokWlwNHSbCzbJ+xdwoQuUqw81zKsqxDGNz+P+sB0/uMLUwfVhz4Q==
+
 react-reconciler@^0.26.2:
   version "0.26.2"
   resolved "https://registry.npmjs.org/react-reconciler/-/react-reconciler-0.26.2.tgz"

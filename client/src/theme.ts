@@ -25,20 +25,36 @@ declare module "@mui/material/styles" {
 		darkContrastText?: string;
 	}
 }
+/*
+#f5efde
+##aa9c8c 
+Dark Beige #695540 
+Darker 
+#4f3c2f
 
+Dark Background Logo Clove: (yellow) #FACF50 
+Dark Background: #82916B (green)
+Dark Background Logo Text: (see light beige)
+
+Clove Light Background Logo Text: (same as dark background)#82916B
+Light Background Clove: (orange) #E5932A 
+
+
+*/
 const palette = {
 	primary: {
-		main: "#AAADB1",
-		light: "#DDE3E3",
-		dark: "#575761",
+		main: "#aa9c8c",
+		light: "#f5efde",
+		dark: "#695540",
+		darker: "#4f3c2f",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
-		lightContrastText: "#000000",
-		contrastText: "#ffffff",
+		lightContrastText: "#493520",
+		contrastText: "#E8E5D1",
 	},
 	secondary: {
-		main: "#A4DA87", // Green
-		light: "#E4FDE1",
-		dark: "#5E8076",
+		main: "#E5932A", // Green
+		yellow: "#FACF50",
+		moss: "#82916B",
 		lightContrastText: "#000000",
 		contrastText: "#ffffff",
 	},
@@ -80,7 +96,7 @@ const theme = createTheme({
 				root: {
 					"&.Logout": {
 						"&:hover": {
-							backgroundColor: palette.secondary.dark,
+							backgroundColor: palette.secondary.moss,
 						},
 					},
 					"&.OnLight": {
@@ -98,14 +114,14 @@ const theme = createTheme({
 						},
 					},
 					"&.Classic": {
-						backgroundColor: palette.secondary.dark,
+						backgroundColor: palette.secondary.moss,
 						borderRadius: "17px",
 						color: palette.secondary.contrastText,
 						fontSize: "1.2rem",
 						textAlign: "center",
 						transition: "transform 300ms ease",
 						"&:hover": {
-							backgroundColor: palette.secondary.dark,
+							backgroundColor: palette.secondary.moss,
 
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
@@ -128,8 +144,8 @@ const theme = createTheme({
 						padding: "10px 25px",
 						transition: "transform 150ms, box-shadow 150ms",
 						"&:hover": {
-							backgroundColor: palette.secondary.dark,
-							color: palette.secondary.light,
+							backgroundColor: palette.secondary.moss,
+							color: palette.secondary.yellow,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
 						},
@@ -237,6 +253,7 @@ const theme = createTheme({
 			},
 		},
 	},
+	
 });
 
 export default responsiveFontSizes(theme);

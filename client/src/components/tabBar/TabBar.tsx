@@ -62,7 +62,7 @@ export function TabBar(props: tabProps) {
 				top: "0px",
 				width: "100%",
 				height: "59px",
-				backgroundColor: "primary.main",
+				backgroundColor: "secondary.moss",
 				whiteSpace: "nowrap",
 				overflow: "hidden",
 			}}

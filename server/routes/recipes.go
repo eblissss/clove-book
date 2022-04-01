@@ -292,9 +292,11 @@ func (r *Client) getPopularRecipes(ctx context.Context, c *gin.Context) {
 }
 
 func (r *Client) getCookbookRecipe(ctx context.Context, c *gin.Context, id string) {
+	objID, _ := primitive.ObjectIDFromHex(id)
 	res := r.RecipeCollection.FindOne(ctx, bson.M{
-		"cookbookID": id,
+		"cookbookID": objID,
 	})
+
 	if res.Err() != nil {
 		if res.Err() == mongo.ErrNoDocuments {
 			c.Status(http.StatusNotFound)

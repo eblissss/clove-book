@@ -37,7 +37,6 @@ type Ingredient struct {
 }
 
 type Instruction struct {
-	Number      int64  `json:"number" bson:"number"` // not sure this is necessary when instructions are in an array and have an index?
 	Description string `json:"description" bson:"description"`
 	// TODO: add array of ingredients?
 }

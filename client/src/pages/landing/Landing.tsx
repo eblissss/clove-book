@@ -3,7 +3,6 @@ import { Box, Button, Container, Typography, useTheme } from "@mui/material";
 
 import { Link as RouterLink } from "react-router-dom";
 
-
 import cloveImg from "../../assets/cloveB.png";
 
 import BgImage from "../../assets/clove3d.png";
@@ -14,19 +13,46 @@ export default function Landing() {
 		<Box
 			component="div"
 			sx={{
-				// linear-gradient(90deg,	rgba(163, 187, 198, 0.9) 0%, rgba(163, 187, 198, 0) 42.56%),
 				backgroundColor: "primary.light",
 				backgroundSize: "cover",
 				width: "100%",
 				height: "100vh",
 				display: "flex",
-				flexDirection: "column"
-				
+				flexDirection: "column",
+				overflow: "hidden",
 			}}
 		>
-			<Box component="div" sx = {{ width: "100%", overflow: "hidden", animation: "rotation infinite 3s linear",
-}}>
-	<img src={BgImage}/></Box>
+			{/* THIS IS THE SPINNING IMAGE */}
+			<Box
+				component="div"
+				sx={{
+					position: "absolute",
+					right: 0,
+					bottom: 0,
+					overflow: "hidden",
+					width: "100%",
+					height: "100%",
+				}}
+			>
+				<Box
+					component="div"
+					sx={{
+						position: "absolute",
+						animation: "spin infinite 200s linear",
+						"@keyframes spin": {
+							"0%": {
+								transform: "rotate(0deg)",
+							},
+							"100%": {
+								transform: "rotate(360deg)",
+							},
+						},
+					}}
+				>
+					<img src={BgImage}></img>
+				</Box>
+			</Box>
+
 			<Container
 				disableGutters
 				sx={{
@@ -37,7 +63,7 @@ export default function Landing() {
 					align: "center",
 					alignSelf: "center",
 					textAlign: "center",
-					top: "10%",
+					top: "5%",
 					width: "100%",
 				}}
 			>

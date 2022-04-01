@@ -7,7 +7,7 @@ import { AccountBox as AccIcon } from "@mui/icons-material";
 
 import { doLogout } from "../../api/requests";
 
-import cloveImg from "../../assets/cloveB.png";
+import cloveImg from "../../assets/cloveA.png";
 
 interface tabProps {
 	tab: string;

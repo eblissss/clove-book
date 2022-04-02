@@ -45,7 +45,7 @@ const palette = {
 	primary: {
 		main: "#aa9c8c",
 		light: "#f5efde",
-		dark: "#695540",
+		dark: "#57544a",
 		darker: "#4f3c2f",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
 		lightContrastText: "#493520",
@@ -253,7 +253,6 @@ const theme = createTheme({
 			},
 		},
 	},
-	
 });
 
 export default responsiveFontSizes(theme);

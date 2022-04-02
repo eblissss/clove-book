@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -26,6 +27,7 @@ func (r *Client) CreateRecipe(c *gin.Context) {
 	var recipe models.Recipe
 
 	if err := c.BindJSON(&recipe); err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
 		return
 	}
@@ -290,9 +292,11 @@ func (r *Client) getPopularRecipes(ctx context.Context, c *gin.Context) {
 }
 
 func (r *Client) getCookbookRecipe(ctx context.Context, c *gin.Context, id string) {
+	objID, _ := primitive.ObjectIDFromHex(id)
 	res := r.RecipeCollection.FindOne(ctx, bson.M{
-		"cookbookID": id,
+		"cookbookID": objID,
 	})
+
 	if res.Err() != nil {
 		if res.Err() == mongo.ErrNoDocuments {
 			c.Status(http.StatusNotFound)

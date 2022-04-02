@@ -7,7 +7,7 @@ import { AccountBox as AccIcon } from "@mui/icons-material";
 
 import { doLogout } from "../../api/requests";
 
-import cloveImg from "../../assets/cloveB.png";
+import cloveImg from "../../assets/cloveA.png";
 
 interface tabProps {
 	tab: string;
@@ -62,7 +62,7 @@ export function TabBar(props: tabProps) {
 				top: "0px",
 				width: "100%",
 				height: "59px",
-				backgroundColor: "primary.main",
+				backgroundColor: "secondary.moss",
 				whiteSpace: "nowrap",
 				overflow: "hidden",
 			}}

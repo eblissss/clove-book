@@ -76,7 +76,7 @@ function Create() {
 				author: author,
 				authorID: authorID,
 				cookTime: cookTime,
-				cookbookID: "0",
+				cookbookID: "000000000000000000000000",
 				createdAt: createdAt,
 				ingredients: ingredients,
 				instructions: instructions,
@@ -236,6 +236,7 @@ function Create() {
 				<Button
 					fullWidth
 					id="createSubmit"
+					type="button"
 					onClick={saveRecipe}
 					className="Classic"
 					sx={{ mt: "1rem" }}

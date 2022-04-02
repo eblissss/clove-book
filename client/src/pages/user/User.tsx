@@ -307,7 +307,7 @@ function UserPage() {
 						sx={{
 							m: "20px",
 							backgroundColor: "primary.main",
-							color: "primary.light",
+							color: "primary.dark",
 							"&:hover": {
 								color: "primary.dark",
 							},

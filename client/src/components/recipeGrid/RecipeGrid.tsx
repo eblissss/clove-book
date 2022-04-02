@@ -12,7 +12,7 @@ function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 	return (
 		<Grid
 			container
-			spacing={4}
+			spacing={3}
 			columns={columns}
 			sx={{
 				mt: "0px",
@@ -31,7 +31,7 @@ function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 export function RecipeStack({ recipes }: RecipeGridProps) {
 	return (
 		<Stack
-			spacing={4}
+			spacing={3}
 			divider={<Divider orientation="horizontal" flexItem />}
 		>
 			{recipes.map((recipe, i) => (

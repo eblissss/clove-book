@@ -14,12 +14,12 @@ function Tag({ onClick, name, props }: tagProps) {
 			component="div"
 			sx={{
 				display: "flex",
-				color: "secondary.contrastText",
-				backgroundColor: "secondary.dark",
+				color: "secondary.lightContrastText",
+				backgroundColor: "secondary.main",
 				height: "30px",
 				borderRadius: "5px",
-				p: "5px",
-				m: "5px",
+				p: "6px",
+				m: "6px",
 				alignItems: "center",
 				...props,
 			}}

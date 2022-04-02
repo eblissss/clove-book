@@ -36,13 +36,13 @@ function IngredientPanel({ searchFunc, boxProps }: PanelProps) {
 					pb: "10px",
 				}}
 			>
-				Tell us what you have
+				Search by ingredients
 			</Typography>
 			<TextField
 				multiline
 				minRows={12}
 				id="ingredientField"
-				placeholder="lentils"
+				placeholder="Lentils"
 				variant="filled"
 			></TextField>
 			<Button

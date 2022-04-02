@@ -113,7 +113,11 @@ function NutrientSelector({
 				aria-expanded={open ? "true" : undefined}
 				onClick={handleClick}
 				variant="contained"
-				sx={{}}
+				
+				sx={{
+					backgroundColor: "secondary.main",
+					color: "primary.light"
+				}}
 			>
 				Select Nutrition Items
 			</Button>

@@ -43,9 +43,9 @@ Light Background Clove: (orange) #E5932A
 */
 const palette = {
 	primary: {
-		main: "#bca88a",
+		main: "#d9c9b2",
 		light: "#f5efde",
-		dark: "#5d524a",
+		dark: "#6e5e4f",
 		darker: "#4f3c2f",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
 		lightContrastText: "#493520",
@@ -55,7 +55,7 @@ const palette = {
 		main: "#E5932A", // Green
 		yellow: "#FACF50",
 		moss: "#82916B",
-		lightContrastText: "#000000",
+		lightContrastText: "#452400",
 		contrastText: "#ffffff",
 	},
 	tertiary: {
@@ -94,6 +94,8 @@ const theme = createTheme({
 		MuiButton: {
 			styleOverrides: {
 				root: {
+					fontFamily: ["sans-serif", "Sen"],
+					fontWeight: "bold",
 					"&.Logout": {
 						"&:hover": {
 							backgroundColor: palette.secondary.moss,
@@ -114,15 +116,15 @@ const theme = createTheme({
 						},
 					},
 					"&.Classic": {
-						backgroundColor: palette.secondary.moss,
+						backgroundColor: palette.secondary.main,
 						borderRadius: "17px",
-						color: palette.secondary.contrastText,
-						fontSize: "1.2rem",
+						color: palette.secondary.lightContrastText,
+						fontSize: "1.3rem",
 						textAlign: "center",
-						transition: "transform 300ms ease",
+						transition: "transform 150ms, box-shadow 150ms",
 						"&:hover": {
 							backgroundColor: palette.secondary.moss,
-
+							color: palette.secondary.yellow,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
 						},

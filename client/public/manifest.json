@@ -8,9 +8,9 @@
 			"type": "image/x-icon"
 		},
 		{
-			"src": "clove_icon@2x.png",
+			"src": "appletouchicon.png",
 			"type": "image/png",
-			"sizes": "314x283"
+			"sizes": "4320×4321"
 		},
 		{
 			"src": "clove.png",

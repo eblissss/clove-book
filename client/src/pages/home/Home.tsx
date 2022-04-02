@@ -133,7 +133,7 @@ function Home() {
 							component="h4"
 							sx={{ my: "20px", textAlign: "center" }}
 						>
-							Popular Dishes
+							Featured Dishes
 						</Typography>
 						<RecipeStack recipes={popularRecipes} />
 					</Container>

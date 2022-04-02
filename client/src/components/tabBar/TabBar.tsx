@@ -76,7 +76,10 @@ export function TabBar(props: tabProps) {
 			>
 				<CardMedia
 					image={cloveImg}
-					sx={{ height: "59px", width: "135px" }}
+					sx={{ height: "59px",
+					 width: "135px",
+					 mt: "10px"
+					}}
 				/>
 			</Button>
 			<OneTab tab="home" selectedTab={props.tab} />

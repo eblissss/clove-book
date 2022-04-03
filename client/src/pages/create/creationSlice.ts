@@ -21,13 +21,13 @@ export const creationSlice = createSlice({
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
 		setIngredients: (state, action: PayloadAction<Ingredient[]>) => {
-			state.ingredients = action.payload;
+			state.ingredients = [...action.payload];
 		},
 		setInstructions: (state, action: PayloadAction<Instruction[]>) => {
-			state.instructions = action.payload;
+			state.instructions = [...action.payload];
 		},
 		setNutrients: (state, action: PayloadAction<Nutrient[]>) => {
-			state.nutrients = action.payload;
+			state.nutrients = [...action.payload];
 		},
 	},
 });

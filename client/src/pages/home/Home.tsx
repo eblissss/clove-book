@@ -122,16 +122,16 @@ function Home() {
 						maxWidth={false}
 						sx={{
 							mt: "20px",
-							p: "20px",
+							p: "15px 28px",
 							borderRadius: "15px",
 							backgroundColor: "primary.main",
 							maxWidth: "300px",
 						}}
 					>
 						<Typography
-							variant="h4"
-							component="h4"
-							sx={{ my: "20px", textAlign: "center" }}
+							variant="h5"
+							component="h5"
+							sx={{ mb: "10px", textAlign: "center" }}
 						>
 							Featured Dishes
 						</Typography>

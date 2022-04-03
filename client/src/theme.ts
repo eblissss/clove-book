@@ -43,9 +43,9 @@ Light Background Clove: (orange) #E5932A
 */
 const palette = {
 	primary: {
-		main: "#d9c9b2",
-		light: "#f5efde",
-		dark: "#6e5e4f",
+		main: "#a7bfc2",
+		light: "#e1eaeb",
+		dark: "#607173",
 		darker: "#4f3c2f",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
 		lightContrastText: "#493520",

@@ -58,7 +58,6 @@ function StepItem({
 					id={`step-${id}`}
 					className="recipeInput"
 					placeholder="Add a new step"
-					multiline
 					onChange={
 						added
 							? (e) => {

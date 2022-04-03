@@ -139,7 +139,7 @@ export default function Landing() {
 					right: "0px",
 					top: "0px",
 					background:
-						"linear-gradient(270deg, rgba(163, 187, 198, 0.6) 0%, rgba(163, 187, 198, 0) 50%)",
+						"linear-gradient(270deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 50%)",
 				}}
 			>
 				<Button

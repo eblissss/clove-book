@@ -11,7 +11,10 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import { RemoveCircle as RemoveCircleIcon } from "@mui/icons-material";
+import {
+	RemoveCircle as RemoveCircleIcon,
+	AddCircle as AddCircleIcon,
+} from "@mui/icons-material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setNutrients } from "./creationSlice";
@@ -113,10 +116,9 @@ function NutrientSelector({
 				aria-expanded={open ? "true" : undefined}
 				onClick={handleClick}
 				variant="contained"
-				
 				sx={{
 					backgroundColor: "secondary.main",
-					color: "primary.light"
+					color: "primary.light",
 				}}
 			>
 				Select Nutrition Items
@@ -146,6 +148,10 @@ function NutrientSelector({
 									role={undefined}
 									onClick={handleToggle(nutri)}
 								>
+									<ListItemIcon>
+										<AddCircleIcon />
+									</ListItemIcon>
+
 									<ListItemText
 										id={labelId}
 										primary={nutri}

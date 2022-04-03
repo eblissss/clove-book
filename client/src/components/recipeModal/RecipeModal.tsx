@@ -37,7 +37,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 				maxHeight: "80%",
 				bgcolor: "primary.light",
 				border: "2px solid #fff",
-				borderRadius: "35px",
+				borderRadius: "20px",
 				boxShadow: 12,
 				overflowX: "hidden",
 				overflowY: "auto",
@@ -105,7 +105,10 @@ function RecipeModalContent({ recipe }: contentProps) {
 						component="h6"
 						sx={{ color: "primary.contrastText" }}
 					>
-						Ready in {recipe.totalTime}m
+						Ready in {recipe.totalTime}m {" - "} {recipe.prepTime}m
+						Prep
+						{" + "}
+						{recipe.cookTime}m Cook
 					</Typography>
 				</Box>
 				{/* REQUIRED INGREDIENTS */}
@@ -218,7 +221,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 										p: "1px",
 									}}
 								>
-									{instruction.description}
+									{i + 1}. {instruction.description}
 								</Typography>
 							))
 						) : (
@@ -283,7 +286,7 @@ function RecipeModal() {
 		if (open) {
 			getRecipe("" + modalInfo.id).then((data) => {
 				console.log(data);
-				// setRecipe(data);
+				setRecipe(data);
 			});
 		}
 	}, [open]);

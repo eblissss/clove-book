@@ -1,6 +1,6 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 
-import React from "react";
+import React, { useState } from "react";
 
 import { TabBar } from "../../components/tabBar/TabBar";
 import { Recipe, RecipeNutrients } from "../../api/models";
@@ -11,9 +11,12 @@ import { addRecipe, getUser } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../user/userSlice";
 import { store } from "../../app/store";
+import CreateSuccess from "./CreateSuccess";
 
 function Create() {
 	const user = useAppSelector(selectUser);
+
+	const [openSuccess, setOpenSuccess] = useState(false);
 
 	const saveRecipe = () => {
 		const authorID = user.userID;
@@ -90,7 +93,9 @@ function Create() {
 			};
 
 			console.log(data);
-			addRecipe(data);
+			addRecipe(data).then(() => {
+				setOpenSuccess(true);
+			});
 		});
 	};
 
@@ -101,6 +106,8 @@ function Create() {
 				backgroundColor: "primary.light",
 			}}
 		>
+			{openSuccess ? <CreateSuccess /> : <></>}
+
 			<TabBar tab="create" />
 			<Container
 				id="BACKGROUND"

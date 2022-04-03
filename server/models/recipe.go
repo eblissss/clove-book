@@ -7,7 +7,7 @@ import (
 )
 
 type Recipe struct {
-	RecipeStub
+	RecipeStub   `bson:",inline"`
 	Nutrients    *RecipeNutrients
 	Author       string             `json:"author" bson:"author"`
 	AuthorID     primitive.ObjectID `json:"authorID" bson:"authorID"`

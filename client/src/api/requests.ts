@@ -75,7 +75,7 @@ export const getFavorites = (username: string, query: string) => {
 
 export const addRecipe = (
 	data: models.Recipe
-): Promise<{ cookbookID: number }> => requests.post("/recipes", data);
+): Promise<{ cookbookID: string }> => requests.post("/recipes", data);
 
 export const getRecipes = (
 	query: string,
@@ -86,17 +86,17 @@ export const getRecipes = (
 export const getRecipe = (id: string): Promise<models.Recipe> =>
 	requests.get(`/recipes/${id}`);
 
-export const deleteRecipe = (cookbookID: number) =>
+export const deleteRecipe = (cookbookID: string) =>
 	requests.delete(`/recipes/${cookbookID}`);
 
-export const updateRecipe = (cookbookID: number, data: models.Recipe) =>
+export const updateRecipe = (cookbookID: string, data: models.Recipe) =>
 	requests.put(`/recipes/${cookbookID}`, data);
 
 // ==== User Section ====
 export const doRegister = (
 	data: models.NewUser,
 	code: string
-): Promise<{ userID: number }> => requests.post("/users", data, { code: code });
+): Promise<{ userID: string }> => requests.post("/users", data, { code: code });
 
 export const doAuth = (data: models.Useremail): Promise<{ expires: string }> =>
 	requests.post("/users/auth", data);

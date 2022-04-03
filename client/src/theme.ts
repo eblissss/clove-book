@@ -41,7 +41,7 @@ Light Background Clove: (orange) #E5932A
 
 
 */
-const palette = {
+export const palette = {
 	primary: {
 		main: "#a7bfc2",
 		light: "#e1eaeb",

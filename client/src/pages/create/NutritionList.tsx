@@ -15,10 +15,12 @@ import {
 	RemoveCircle as RemoveCircleIcon,
 	AddCircle as AddCircleIcon,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setNutrients } from "./creationSlice";
+import { selectCreation, setNutrients } from "./creationSlice";
 import { Nutrient } from "../../api/models";
+import { useAppSelector } from "../../app/hooks";
+import { selectCreationUpdate } from "./creationUpdateSlice";
 
 const defaultNutritions: string[] = ["Sugar", "Protein", "Sodium", "Calories"];
 
@@ -38,7 +40,7 @@ const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
 	name: name,
 	amount: "",
 	indented: false,
-	percentOfDailyNeeds: "0",
+	percentOfDailyNeeds: 0,
 }));
 
 const defaultUnselected = allNutrients.filter(
@@ -47,12 +49,10 @@ const defaultUnselected = allNutrients.filter(
 
 function NutritionItem({
 	nutrition,
-	id,
 	remove,
 	update,
 }: {
 	nutrition: Nutrient;
-	id: number;
 	remove: Function;
 	update: Function;
 }) {
@@ -173,6 +173,21 @@ function NutritionList() {
 	const [unselected, setUnselected] = useState<string[]>(defaultUnselected);
 	const [nutriList, setNutriList] = useState<Nutrient[]>(defaultNutri);
 
+	const success = useAppSelector(selectCreationUpdate).success;
+	useEffect(() => {
+		if (success) {
+			setNutriList([]);
+			dispatch(setNutrients([]));
+		}
+	}, [success]);
+
+	const reduxNutrients = useAppSelector(selectCreation).nutrients;
+	useEffect(() => {
+		if (reduxNutrients.length > nutriList.length) {
+			setNutriList(reduxNutrients);
+		}
+	}, []);
+
 	const updateList = (value: string, nutr: Nutrient) => {
 		const newList = [...nutriList];
 		newList[newList.indexOf(nutr)].amount = value;
@@ -237,7 +252,6 @@ function NutritionList() {
 							<NutritionItem
 								nutrition={nutri}
 								key={`nutri-${i}`}
-								id={i}
 								remove={swapSelected}
 								update={updateList}
 							/>

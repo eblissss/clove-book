@@ -1,20 +1,55 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+	Box,
+	Button,
+	Container,
+	IconButton,
+	TextField,
+	Typography,
+} from "@mui/material";
+import { Cancel as CancelIcon } from "@mui/icons-material";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { TabBar } from "../../components/tabBar/TabBar";
 import { Recipe, RecipeNutrients } from "../../api/models";
 import IngredientList from "./IngredientList";
 import StepList from "./StepsList";
 import NutritionList from "./NutritionList";
-import { addRecipe, getUser } from "../../api/requests";
+import {
+	addRecipe,
+	getRecipe,
+	getUser,
+	updateRecipe,
+} from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../user/userSlice";
 import { store } from "../../app/store";
 import CreateSuccess from "./CreateSuccess";
+import { useDispatch } from "react-redux";
+import {
+	selectCreationUpdate,
+	setCreationEditing,
+	setCreationSuccess,
+} from "./creationUpdateSlice";
+import {
+	setIngredients,
+	setInstructions,
+	setNutrients,
+	setRecipeTags,
+} from "./creationSlice";
+import TagsInput from "./TagsInput";
 
 function Create() {
+	const dispatch = useDispatch();
+
 	const user = useAppSelector(selectUser);
+	const editing = useAppSelector(selectCreationUpdate).editing;
+
+	useEffect(() => {
+		if (editing) {
+			fillText(editing);
+		}
+	}, []);
 
 	const [openSuccess, setOpenSuccess] = useState(false);
 
@@ -38,15 +73,13 @@ function Create() {
 		);
 		const totalTime = prepTime + cookTime;
 
-		// GET TAGS
-		const tags: string[] = [];
-
 		const createdAt = new Date().toISOString();
 
 		const creationStuff = store.getState().creation;
 		const ingredients = creationStuff.ingredients;
 		const instructions = creationStuff.instructions;
 		const nutrients = creationStuff.nutrients;
+		const tags = creationStuff.tags;
 
 		const nutrition: RecipeNutrients = {
 			good: [],
@@ -90,13 +123,63 @@ function Create() {
 				totalTime: totalTime,
 				imageURL: imageURL,
 				tags: tags,
+				nutrients: nutrition,
 			};
-
 			console.log(data);
-			addRecipe(data).then(() => {
-				setOpenSuccess(true);
-			});
+
+			if (!editing) {
+				addRecipe(data).then(() => {
+					setOpenSuccess(true);
+					resetText();
+				});
+			} else {
+				updateRecipe(editing, data).then(() => {
+					setOpenSuccess(true);
+					resetText();
+				});
+			}
 		});
+	};
+
+	const fillText = (id: string) => {
+		// DONT DO GET RECIPE, use MODAL state ez clap
+		getRecipe(id).then((recipe) => {
+			// TOP STUFF
+			(document.getElementById("recipeName") as HTMLInputElement).value =
+				recipe.name;
+			(document.getElementById("recipeImage") as HTMLInputElement).value =
+				"" + recipe.imageURL;
+			(
+				document.getElementById("recipePrepTime") as HTMLInputElement
+			).value = "" + recipe.prepTime;
+			(
+				document.getElementById("recipeCookTime") as HTMLInputElement
+			).value = "" + recipe.cookTime;
+
+			// LISTS
+			dispatch(setIngredients(recipe.ingredients));
+			dispatch(setInstructions(recipe.instructions));
+			dispatch(
+				setNutrients(recipe.nutrients.good.concat(recipe.nutrients.bad))
+			);
+			dispatch(setRecipeTags(recipe.tags!));
+		});
+	};
+
+	const resetText = () => {
+		dispatch(setCreationSuccess(true));
+		(document.getElementById("recipeName") as HTMLInputElement).value = "";
+		(document.getElementById("recipeImage") as HTMLInputElement).value = "";
+		(document.getElementById("recipePrepTime") as HTMLInputElement).value =
+			"";
+		(document.getElementById("recipeCookTime") as HTMLInputElement).value =
+			"";
+		dispatch(setCreationSuccess(false));
+	};
+
+	const cancelEditing = () => {
+		dispatch(setCreationEditing(""));
+		resetText();
 	};
 
 	return (
@@ -107,7 +190,6 @@ function Create() {
 			}}
 		>
 			{openSuccess ? <CreateSuccess /> : <></>}
-
 			<TabBar tab="create" />
 			<Container
 				id="BACKGROUND"
@@ -122,9 +204,18 @@ function Create() {
 					width: "auto",
 				}}
 			>
-				<Typography component="h3" variant="h3">
-					Create a New Recipe
-				</Typography>
+				{!editing ? (
+					<Typography component="h3" variant="h3">
+						Create a New Recipe
+					</Typography>
+				) : (
+					<Typography component="h3" variant="h3">
+						Editing a Recipe
+						<IconButton onClick={cancelEditing}>
+							<CancelIcon />
+						</IconButton>
+					</Typography>
+				)}
 				{/* RECIPE NAME BOX */}
 				<Box
 					component="div"
@@ -199,6 +290,7 @@ function Create() {
 					}}
 				>
 					<Container
+						disableGutters
 						sx={{
 							display: "flex",
 							alignItems: "center",
@@ -208,6 +300,7 @@ function Create() {
 							variant="h6"
 							component="h6"
 							fontWeight={700}
+							sx={{ mr: "5px" }}
 						>
 							Prep Time:
 						</Typography>
@@ -218,11 +311,15 @@ function Create() {
 							sx={{ width: "10rem" }}
 						></TextField>
 					</Container>
-					<Container sx={{ display: "flex", alignItems: "center" }}>
+					<Container
+						disableGutters
+						sx={{ display: "flex", alignItems: "center" }}
+					>
 						<Typography
 							variant="h6"
 							component="h6"
 							fontWeight={700}
+							sx={{ mr: "5px" }}
 						>
 							Cook Time:
 						</Typography>
@@ -240,6 +337,32 @@ function Create() {
 				<StepList />
 				{/* NUTRITION LIST */}
 				<NutritionList />
+
+				{/* TAGS BOX */}
+				<Box
+					component="div"
+					sx={{
+						backgroundColor: "primary.main",
+						p: "6px 10px",
+						m: "20px",
+						borderRadius: "8px",
+						display: "flex",
+						alignItems: "center",
+						width: "100%",
+						justifyContent: "space-around",
+					}}
+				>
+					<Typography
+						variant="h6"
+						component="h6"
+						fontWeight={700}
+						sx={{ mr: "1rem", flex: 1 }}
+					>
+						Tags:
+					</Typography>
+					<TagsInput />
+				</Box>
+
 				<Button
 					fullWidth
 					id="createSubmit"
@@ -248,7 +371,7 @@ function Create() {
 					className="Classic"
 					sx={{ mt: "1rem" }}
 				>
-					Publish Recipe
+					{!editing ? "Publish Recipe" : "Update Recipe"}
 				</Button>
 			</Container>
 		</Box>

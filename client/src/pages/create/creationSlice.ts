@@ -7,12 +7,14 @@ interface Creation {
 	ingredients: Ingredient[];
 	instructions: Instruction[];
 	nutrients: Nutrient[];
+	tags: string[];
 }
 
 const initialState: Creation = {
 	ingredients: [],
 	instructions: [],
 	nutrients: [],
+	tags: [],
 };
 
 export const creationSlice = createSlice({
@@ -29,10 +31,13 @@ export const creationSlice = createSlice({
 		setNutrients: (state, action: PayloadAction<Nutrient[]>) => {
 			state.nutrients = [...action.payload];
 		},
+		setRecipeTags: (state, action: PayloadAction<string[]>) => {
+			state.tags = [...action.payload];
+		},
 	},
 });
 
-export const { setIngredients, setInstructions, setNutrients } =
+export const { setIngredients, setInstructions, setNutrients, setRecipeTags } =
 	creationSlice.actions;
 
 export const selectCreation = (state: RootState) => state.creation;

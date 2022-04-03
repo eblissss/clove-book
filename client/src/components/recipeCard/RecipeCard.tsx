@@ -5,7 +5,9 @@ import { SimpleRecipe } from "../../api/models";
 import { useAppDispatch } from "../../app/hooks";
 import { openModal, setModal } from "../recipeModal/modalSlice";
 import { addSearchTag } from "../searchBar/searchSlice";
+import { alpha } from "@mui/material";
 import Tag from "../tag/Tag";
+import { palette } from "../../theme";
 
 export function RecipeCard(props: SimpleRecipe) {
 	const dispatch = useAppDispatch();
@@ -72,10 +74,11 @@ export function RecipeCard(props: SimpleRecipe) {
 						position: "absolute",
 						right: "0px",
 						top: "-30px",
-						backgroundColor: "#3a3a3aaa",
 						width: "60px",
 						height: "30px",
 						justifyContent: "center",
+						borderRadius: "10px 0 0 0",
+						backgroundColor: alpha(palette.primary.dark, 0.7),
 					}}
 				>
 					<Typography

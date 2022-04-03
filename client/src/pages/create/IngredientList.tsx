@@ -3,10 +3,12 @@ import {
 	AddCircle as AddCircleIcon,
 	RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setIngredients } from "./creationSlice";
+import { selectCreation, setIngredients } from "./creationSlice";
 import { Ingredient } from "../../api/models";
+import { useAppSelector } from "../../app/hooks";
+import { selectCreationUpdate } from "./creationUpdateSlice";
 
 interface IngStr {
 	name: string;
@@ -119,6 +121,29 @@ function IngredientList() {
 
 	const [ingStrList, setIngStrList] = useState<IngStr[]>([]);
 
+	const success = useAppSelector(selectCreationUpdate).success;
+	useEffect(() => {
+		if (success) {
+			setIngStrList([]);
+			dispatch(setIngredients([]));
+		}
+	}, [success]);
+
+	const reduxIngredients = useAppSelector(selectCreation).ingredients;
+	useEffect(() => {
+		if (reduxIngredients.length > ingStrList.length) {
+			const tempIngStrList: IngStr[] = [];
+			reduxIngredients.forEach((ing) => {
+				tempIngStrList.push({
+					name: ing.name,
+					amount: "" + ing.amount,
+					unit: ing.unit,
+				});
+			});
+			setIngStrList(tempIngStrList);
+		}
+	}, []);
+
 	const doDelete = (toDel: number) => {
 		const newList = [...ingStrList];
 		newList!.splice(toDel, 1);
@@ -205,7 +230,6 @@ function IngredientList() {
 			</Typography>
 			<List>
 				{ingStrList?.map((ing, i) => {
-					console.log(i, ing);
 					return (
 						<IngredientItem
 							key={`ing-${i}`}

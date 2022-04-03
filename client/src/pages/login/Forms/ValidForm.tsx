@@ -50,7 +50,7 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 				})
 					.then((res) => {
 						console.log(res);
-						dispatch(setUserID("" + data.userID));
+						dispatch(setUserID(data.userID));
 						navigate("/home");
 					})
 					.catch((err) => console.log(err));

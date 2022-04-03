@@ -6,6 +6,7 @@ import modalReducer from "../components/recipeModal/modalSlice";
 import errorReducer from "../components/errorPopup/errorSlice";
 import userReducer from "../pages/user/userSlice";
 import creationReducer from "../pages/create/creationSlice";
+import creationUpdateReducer from "../pages/create/creationUpdateSlice";
 
 export const store = configureStore({
 	reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
 		error: errorReducer,
 		user: userReducer,
 		creation: creationReducer,
+		creationUpdate: creationUpdateReducer,
 	},
 });
 

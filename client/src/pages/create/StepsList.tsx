@@ -3,10 +3,12 @@ import {
 	AddCircle as AddCircleIcon,
 	RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setInstructions } from "./creationSlice";
+import { selectCreation, setInstructions } from "./creationSlice";
 import { Instruction } from "../../api/models";
+import { useAppSelector } from "../../app/hooks";
+import { selectCreationUpdate } from "./creationUpdateSlice";
 
 function StepItem({
 	data,
@@ -37,17 +39,20 @@ function StepItem({
 	};
 
 	return (
-		<Container disableGutters sx={{ display: "flex", alignItems: "top" }}>
+		<Container
+			disableGutters
+			sx={{ display: "flex", alignItems: "center" }}
+		>
 			{added ? (
 				<RemoveCircleIcon
-					sx={{ color: "primary.dark", fontSize: "32px", mt: "10px" }}
+					sx={{ color: "primary.dark", fontSize: "32px" }}
 					onClick={() => {
 						doDel(id);
 					}}
 				/>
 			) : (
 				<AddCircleIcon
-					sx={{ color: "primary.dark", fontSize: "32px", mt: "10px" }}
+					sx={{ color: "primary.dark", fontSize: "32px" }}
 					onClick={spawnStep}
 				/>
 			)}
@@ -76,6 +81,21 @@ function StepList() {
 	const dispatch = useDispatch();
 
 	const [stepList, setStepList] = useState<Instruction[]>([]);
+
+	const success = useAppSelector(selectCreationUpdate).success;
+	useEffect(() => {
+		if (success) {
+			setStepList([]);
+			dispatch(setInstructions([]));
+		}
+	}, [success]);
+
+	const reduxSteps = useAppSelector(selectCreation).instructions;
+	useEffect(() => {
+		if (reduxSteps.length > stepList.length) {
+			setStepList(reduxSteps);
+		}
+	}, []);
 
 	const doDelete = (toDel: number) => {
 		const newList = [...stepList];
@@ -126,7 +146,6 @@ function StepList() {
 			</Typography>
 			<List>
 				{stepList?.map((step, i) => {
-					console.log(i, step);
 					return (
 						<StepItem
 							key={`step-${i}`}

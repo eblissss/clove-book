@@ -178,19 +178,20 @@ function RecipeModalContent({ recipe }: contentProps) {
 								pl: "5px",
 							}}
 						>
-							{recipe.ingredients?.map((ingredient) => (
-								<Typography
-									key={ingredient.name}
-									variant="body1"
-									component="h5"
-									sx={{
-										p: "1px",
-									}}
-								>
-									{ingredient.name}: {ingredient.amount}{" "}
-									{ingredient.unit}
-								</Typography>
-							))}
+							{recipe.nutrients?.good
+								.concat(recipe.nutrients?.bad)
+								.map((nutrient) => (
+									<Typography
+										key={nutrient.name}
+										variant="body1"
+										component="h5"
+										sx={{
+											p: "1px",
+										}}
+									>
+										{nutrient.name}: {nutrient.amount}
+									</Typography>
+								))}
 						</Container>
 					</Box>
 					{/* INSTRUCTIONS */}
@@ -271,6 +272,10 @@ const dataA: Recipe = {
 	cookTime: 5,
 	prepTime: 10,
 	createdAt: "5:04 PM, Friday 14th 2021",
+	nutrients: {
+		good: [],
+		bad: [],
+	},
 };
 
 function RecipeModal() {

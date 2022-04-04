@@ -14,10 +14,16 @@ import { doLogin, doRegister } from "../../../api/requests";
 import { NewUser } from "../../../api/models";
 import { setUserID } from "../../user/userSlice";
 import { useDispatch } from "react-redux";
+import { decodeToken } from "react-jwt";
 
 interface validProps {
 	userInfo: NewUser;
 	setUseValid: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface cbJWT {
+	userID: string;
+	exp: string;
 }
 
 const removeStorage = () => {
@@ -50,6 +56,12 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 				})
 					.then((res) => {
 						console.log(res);
+						const decoded = decodeToken(res.refreshToken);
+						localStorage.setItem(
+							"userID",
+							(decoded as cbJWT)!.userID
+						);
+						localStorage.setItem("expiry", (decoded as cbJWT)!.exp);
 						dispatch(setUserID(data.userID));
 						navigate("/home");
 					})

@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 
 import Landing from "../landing/Landing";
 import Example from "../example/Example";
@@ -10,10 +10,13 @@ import Create from "../create/Create";
 import User from "../user/User";
 
 import ErrorPopup from "../../components/errorPopup/ErrorPopup";
+import { useDispatch } from "react-redux";
+import { setUserID } from "../user/userSlice";
 
 function App() {
 	return (
 		<BrowserRouter>
+			<LoggedIn />
 			<ErrorPopup />
 			{/* A <Routes> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
@@ -28,6 +31,29 @@ function App() {
 			</Routes>
 		</BrowserRouter>
 	);
+}
+
+// This keeps us logged in after refreshing or whatever
+function LoggedIn() {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const curExpiry = localStorage.getItem("expiry");
+		const curTime = new Date().getTime() / 1000;
+		if (curExpiry !== null && parseInt(curExpiry) > curTime) {
+			const userID = localStorage.getItem("userID");
+			if (userID !== null) {
+				dispatch(setUserID(userID));
+			} else {
+				navigate("/");
+			}
+		} else {
+			navigate("/");
+		}
+	}, []);
+
+	return <></>;
 }
 
 export default App;

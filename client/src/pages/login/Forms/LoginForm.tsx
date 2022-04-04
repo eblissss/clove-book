@@ -23,6 +23,7 @@ import { decodeToken } from "react-jwt";
 
 interface cbJWT {
 	userID: string;
+	exp: string;
 }
 
 export function LoginForm() {
@@ -49,8 +50,9 @@ export function LoginForm() {
 				if (data !== undefined) {
 					const decoded = decodeToken(data.refreshToken);
 					const userID: string = (decoded as cbJWT)!.userID;
-					console.log(decoded);
-					console.log(userID);
+					const expiry: string = (decoded as cbJWT)!.exp;
+					localStorage.setItem("userID", userID);
+					localStorage.setItem("expiry", expiry);
 
 					dispatch(setUserID(userID));
 
@@ -81,7 +83,9 @@ export function LoginForm() {
 						pt: "5%",
 					}}
 				>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main", margin: "10px"}}>
+					<Avatar
+						sx={{ m: 1, bgcolor: "secondary.main", margin: "10px" }}
+					>
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography variant="h5" align="center">

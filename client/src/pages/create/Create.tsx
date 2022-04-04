@@ -15,12 +15,7 @@ import { Recipe, RecipeNutrients } from "../../api/models";
 import IngredientList from "./IngredientList";
 import StepList from "./StepsList";
 import NutritionList from "./NutritionList";
-import {
-	addRecipe,
-	getRecipe,
-	getUser,
-	updateRecipe,
-} from "../../api/requests";
+import { addRecipe, getUser, updateRecipe } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../user/userSlice";
 import { store } from "../../app/store";
@@ -38,16 +33,18 @@ import {
 	setRecipeTags,
 } from "./creationSlice";
 import TagsInput from "./TagsInput";
+import { selectRecipe } from "../../components/recipeModal/recipeSlice";
 
 function Create() {
 	const dispatch = useDispatch();
 
 	const user = useAppSelector(selectUser);
 	const editing = useAppSelector(selectCreationUpdate).editing;
+	const recipeInfo = useAppSelector(selectRecipe);
 
 	useEffect(() => {
 		if (editing) {
-			fillText(editing);
+			fillText();
 		}
 	}, []);
 
@@ -136,34 +133,32 @@ function Create() {
 				updateRecipe(editing, data).then(() => {
 					setOpenSuccess(true);
 					resetText();
+					setCreationEditing("");
 				});
 			}
 		});
 	};
 
-	const fillText = (id: string) => {
-		// DONT DO GET RECIPE, use MODAL state ez clap
-		getRecipe(id).then((recipe) => {
-			// TOP STUFF
-			(document.getElementById("recipeName") as HTMLInputElement).value =
-				recipe.name;
-			(document.getElementById("recipeImage") as HTMLInputElement).value =
-				"" + recipe.imageURL;
-			(
-				document.getElementById("recipePrepTime") as HTMLInputElement
-			).value = "" + recipe.prepTime;
-			(
-				document.getElementById("recipeCookTime") as HTMLInputElement
-			).value = "" + recipe.cookTime;
+	const fillText = () => {
+		// TOP STUFF
+		(document.getElementById("recipeName") as HTMLInputElement).value =
+			recipeInfo.name;
+		(document.getElementById("recipeImage") as HTMLInputElement).value =
+			"" + recipeInfo.imageURL;
+		(document.getElementById("recipePrepTime") as HTMLInputElement).value =
+			"" + recipeInfo.prepTime;
+		(document.getElementById("recipeCookTime") as HTMLInputElement).value =
+			"" + recipeInfo.cookTime;
 
-			// LISTS
-			dispatch(setIngredients(recipe.ingredients));
-			dispatch(setInstructions(recipe.instructions));
-			dispatch(
-				setNutrients(recipe.nutrients.good.concat(recipe.nutrients.bad))
-			);
-			dispatch(setRecipeTags(recipe.tags!));
-		});
+		// LISTS
+		dispatch(setIngredients(recipeInfo.ingredients));
+		dispatch(setInstructions(recipeInfo.instructions));
+		dispatch(
+			setNutrients(
+				recipeInfo.nutrients.good.concat(recipeInfo.nutrients.bad)
+			)
+		);
+		dispatch(setRecipeTags(recipeInfo.tags!));
 	};
 
 	const resetText = () => {

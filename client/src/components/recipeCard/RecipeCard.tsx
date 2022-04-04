@@ -14,7 +14,6 @@ export function RecipeCard(props: SimpleRecipe) {
 
 	function updateSelectedRecipe() {
 		if (props.cookbookID >= "0") {
-			console.log("cookbookID: ", props.cookbookID);
 			dispatch(setModal({ id: props.cookbookID, isCookbookID: true }));
 		} else {
 			console.log(props.spoonacularID);

@@ -7,6 +7,7 @@ import errorReducer from "../components/errorPopup/errorSlice";
 import userReducer from "../pages/user/userSlice";
 import creationReducer from "../pages/create/creationSlice";
 import creationUpdateReducer from "../pages/create/creationUpdateSlice";
+import recipeReducer from "../components/recipeModal/recipeSlice";
 
 export const store = configureStore({
 	reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
 		user: userReducer,
 		creation: creationReducer,
 		creationUpdate: creationUpdateReducer,
+		recipe: recipeReducer,
 	},
 });
 

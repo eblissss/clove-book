@@ -209,7 +209,7 @@ function UserPage() {
 					disableGutters
 					sx={{
 						display: "inline-flex",
-						width: "auto",
+						width: "70%",
 						flexDirection: "column",
 					}}
 				>
@@ -217,6 +217,7 @@ function UserPage() {
 						sx={{
 							display: "inline-flex",
 							alignItems: "end",
+							justifyContent: "center",
 						}}
 					>
 						<Typography component="h3" variant="h3">

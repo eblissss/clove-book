@@ -4,9 +4,11 @@ import {
 	Fade,
 	Typography,
 	Box,
-	Paper,
 	CardMedia,
 	Container,
+	SpeedDialIcon,
+	SpeedDial,
+	SpeedDialAction,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -18,13 +20,46 @@ import { Recipe } from "../../api/models";
 import Tag from "../tag/Tag";
 import { getRecipe } from "../../api/requests";
 
-// import { getRecipe } from "../../api/requests"
+import {
+	Edit as EditIcon,
+	DeleteForever as DeleteIcon,
+	Menu as MenuIcon,
+} from "@mui/icons-material";
+import { store } from "../../app/store";
+import { setRecipe } from "./recipeSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import {
+	setCreationEditing,
+	setCreationSuccess,
+} from "../../pages/create/creationUpdateSlice";
 
 interface contentProps {
 	recipe: Recipe;
 }
 
 function RecipeModalContent({ recipe }: contentProps) {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const [canEdit, setCanEdit] = useState(false);
+
+	useEffect(() => {
+		const userID = store.getState().user.user.userID;
+		console.log(recipe.authorID === userID);
+		setCanEdit(recipe.authorID === userID);
+	}, []);
+
+	const edit = () => {
+		dispatch(setRecipe(recipe));
+		dispatch(setCreationEditing(recipe.cookbookID));
+		console.log(recipe);
+		console.log(recipe.cookbookID);
+		navigate("/create");
+	};
+
+	const deleteDialog = () => {};
+
 	return (
 		<Box
 			component="div"
@@ -33,8 +68,8 @@ function RecipeModalContent({ recipe }: contentProps) {
 				top: "50%",
 				left: "50%",
 				transform: "translate(-50%, -50%)",
-				minWidth: "400px",
-				maxHeight: "80%",
+				minWidth: "70%",
+				maxHeight: "85%",
 				bgcolor: "primary.light",
 				border: "2px solid #fff",
 				borderRadius: "20px",
@@ -80,6 +115,32 @@ function RecipeModalContent({ recipe }: contentProps) {
 						<Tag name={tag} key={tag + i} />
 					))}
 				</Container>
+				{/* EDIT AND DELETE MENU */}
+				{canEdit ? (
+					<SpeedDial
+						ariaLabel="editDial"
+						icon={
+							<SpeedDialIcon
+								icon={<MenuIcon />}
+								openIcon={<EditIcon />}
+								onClick={edit}
+							/>
+						}
+						sx={{ position: "absolute", top: "20px", left: "20px" }}
+						direction="right"
+					>
+						<SpeedDialAction
+							icon={<DeleteIcon />}
+							tooltipTitle={"Delete"}
+							sx={{
+								bgcolor: "primary.main",
+							}}
+							onClick={deleteDialog}
+						/>
+					</SpeedDial>
+				) : (
+					<></>
+				)}
 				{/* TITLE AND SUBTITLE */}
 				<Box
 					component="div"
@@ -212,7 +273,8 @@ function RecipeModalContent({ recipe }: contentProps) {
 							Steps to Follow:
 						</Typography>
 
-						{recipe.instructions.length > 0 ? (
+						{recipe.instructions !== null &&
+						recipe.instructions.length > 0 ? (
 							recipe.instructions?.map((instruction, i) => (
 								<Typography
 									key={"instruction-" + i}
@@ -235,15 +297,15 @@ function RecipeModalContent({ recipe }: contentProps) {
 								}}
 							>
 								{}
-								these are instructions Non etiam tempor id arcu
-								magna ante eget. Nec per posuere cubilia cras
-								porttitor condimentum orci suscipit. Leo
-								maecenas in tristique, himenaeos elementum
-								placerat. Taciti rutrum nostra, eget cursus
-								velit ultricies. Quam molestie tellus himenaeos
-								cubilia congue vivamus ultricies. Interdum
-								praesent ut penatibus fames eros ad consectetur
-								sed.
+								1. go frick yourself. 2. these are instructions.
+								3. Non etiam tempor id arcu magna ante eget. Nec
+								per posuere cubilia cras porttitor condimentum
+								orci suscipit. Leo maecenas in tristique,
+								himenaeos elementum placerat. Taciti rutrum
+								nostra, eget cursus velit ultricies. Quam
+								molestie tellus himenaeos cubilia congue vivamus
+								ultricies. Interdum praesent ut penatibus fames
+								eros ad consectetur sed.
 							</Typography>
 						)}
 					</Box>
@@ -288,6 +350,10 @@ function RecipeModal() {
 	const [recipe, setRecipe] = useState<Recipe>(dataA);
 
 	useEffect(() => {
+		// TEMPORARY - REMOVE WHEN SPOON RECIPES FIXED
+		if (modalInfo.id == "0") {
+			return;
+		}
 		if (open) {
 			getRecipe("" + modalInfo.id).then((data) => {
 				console.log(data);

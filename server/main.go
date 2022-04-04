@@ -33,7 +33,7 @@ func main() {
 	r.GET("/recipes/:id", c.GetRecipe)
 	r.PUT("/recipes/:id", c.UpdateRecipe)
 	r.DELETE("/recipes/:id", c.DeleteRecipe)
-	r.PUT("/users/:userID/favorites", c.SaveFavorite)
+	r.PUT("/users/:userID/favorites", c.UpdateFavorite)
 	r.GET("/users/:userID/favorites", c.ViewFavorites)
 
 	// Users

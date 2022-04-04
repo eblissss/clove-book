@@ -16,7 +16,7 @@ interface SelectorProps {
 const textOptions = ["My Recipes", "Favorites"];
 
 function menuSelector({ getCollection, props }: SelectorProps) {
-	const [text, setText] = useState(0);
+	const [text, setText] = useState(1);
 
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);

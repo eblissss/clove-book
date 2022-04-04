@@ -269,6 +269,7 @@ func (r *Client) getPopularRecipes(ctx context.Context, c *gin.Context) {
 		}
 	}
 
+	// Find instead of findOne
 	res := r.RecipeCollection.FindOne(ctx,
 		bson.M{"cookbookID": bson.M{"$in": objectIds}},
 	)
@@ -408,10 +409,146 @@ func (r *Client) DeleteRecipe(c *gin.Context) {
 	c.JSON(http.StatusOK, bson.M{"deleted": cookbookID})
 }
 
-func (r *Client) SaveFavorite(c *gin.Context) {
-	c.Status(http.StatusServiceUnavailable)
+func (r *Client) UpdateFavorite(c *gin.Context) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	param := c.Params.ByName("userID")
+	userID, _ := primitive.ObjectIDFromHex(param)
+
+	set, _ := c.GetQuery("set")
+	cookbookID, _ := c.GetQuery("cookbookID")
+
+	var fav models.FavoriteRecipes
+
+	res := r.FavoriteCollection.FindOne(ctx, bson.M{
+		"user_id": userID,
+	})
+
+	noPrevFavorites := false
+
+	if res.Err() != nil {
+		if res.Err() == mongo.ErrNoDocuments {
+			noPrevFavorites = true
+			if set == "true" {
+				fav = models.FavoriteRecipes{UserID: userID, Favorites: []string{cookbookID}}
+			} else {
+				fav = models.FavoriteRecipes{UserID: userID, Favorites: []string{}}
+			}
+		} else {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	if !noPrevFavorites {
+		fav := models.FavoriteRecipes{}
+		err := res.Decode(&fav)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		if set == "true" {
+			fav.Favorites = append(fav.Favorites, cookbookID)
+		} else {
+			for i, v := range fav.Favorites {
+				if v == cookbookID {
+					fav.Favorites = append(fav.Favorites[:i], fav.Favorites[i+1:]...)
+					break
+				}
+			}
+		}
+
+		result, err := r.FavoriteCollection.UpdateOne(ctx, bson.M{"user_id": userID}, bson.M{"$set": fav})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Favorite could not be updated"})
+			return
+		}
+		if result.MatchedCount == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "User list to be updated not found"})
+			return
+		}
+
+	} else {
+		_, err := r.FavoriteCollection.InsertOne(ctx, fav)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Favorite could not be added"})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, bson.M{"updated": cookbookID})
 }
 
 func (r *Client) ViewFavorites(c *gin.Context) {
-	c.Status(http.StatusServiceUnavailable)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	param := c.Params.ByName("userID")
+	userID, _ := primitive.ObjectIDFromHex(param)
+
+	query, _ := c.GetQuery("query")
+
+	res := r.FavoriteCollection.FindOne(ctx, bson.M{
+		"user_id": userID,
+	})
+
+	if res.Err() != nil {
+		if res.Err() == mongo.ErrNoDocuments {
+			c.Status(http.StatusNotFound)
+			return
+		} else {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	fav := models.FavoriteRecipes{}
+	err := res.Decode(&fav)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	r.GetManyRecipes(c, fav.Favorites, query)
+}
+
+func (r *Client) GetManyRecipes(c *gin.Context, ids []string, query string) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// this only does our cookbook database right now
+
+	objectIds := make([]primitive.ObjectID, len(ids))
+	for i := range ids {
+		id, err := primitive.ObjectIDFromHex(ids[i])
+		if err == nil {
+			objectIds = append(objectIds, id)
+		}
+	}
+
+	cur, err := r.StubCollection.Find(ctx,
+		bson.M{
+			"name":       primitive.Regex{Pattern: query, Options: "i"},
+			"cookbookID": bson.M{"$in": objectIds},
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	foundRecipes := make([]models.RecipeStub, 0)
+
+	err = cur.All(ctx, &foundRecipes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, foundRecipes)
 }

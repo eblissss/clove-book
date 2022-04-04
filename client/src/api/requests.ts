@@ -69,9 +69,11 @@ export const setFavorite = (
 	);
 };
 
-export const getFavorites = (username: string, query: string) => {
+export const getFavorites = (
+	username: string,
+	query: string
+): Promise<models.SimpleRecipe[]> =>
 	requests.get(`/users/${username}/favorites`, { query: query });
-};
 
 export const addRecipe = (
 	data: models.Recipe

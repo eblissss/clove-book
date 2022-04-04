@@ -68,3 +68,8 @@ type SpoonacularRecipe struct {
 	IsVegetarian  bool `json:"vegetarian"`
 	IsHealthy     bool `json:"veryHealthy"`
 }
+
+type FavoriteRecipes struct {
+	UserID    primitive.ObjectID `json:"userID" bson:"user_id"`
+	Favorites []string           `json:"favorites" bson:"favorites"`
+}

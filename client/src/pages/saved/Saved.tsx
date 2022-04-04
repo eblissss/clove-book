@@ -1,11 +1,14 @@
 import { Box, Container, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SimpleRecipe } from "../../api/models";
+import { getFavorites, getUser } from "../../api/requests";
+import { useAppSelector } from "../../app/hooks";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
 import SearchBar from "../../components/searchBar/SearchBar";
 
 import { TabBar } from "../../components/tabBar/TabBar";
+import { selectUser } from "../user/userSlice";
 import MenuSelector from "./menuSelector";
 
 const fakeJSON: SimpleRecipe[] = [];
@@ -22,19 +25,36 @@ for (let i = 0; i < 12; i++) {
 }
 
 function Saved() {
-	const [collection, setCollection] = useState("My Recipes");
+	const [collection, setCollection] = useState("Favorites");
+	const [favRecipes, setFavRecipes] = useState<SimpleRecipe[]>(fakeJSON);
+	const [myRecipes, setMyRecipes] = useState<SimpleRecipe[]>(fakeJSON);
+	const [searchText, setSearchText] = useState("");
+	const [loading, setLoading] = useState(true);
+
+	const userID = useAppSelector(selectUser).userID;
+
+	useEffect(() => {
+		if (collection === "Favorites") {
+			// getUser(userID).then((data) => {
+			// 	getFavorites(data.username, searchText).then((recipes) => {
+			// 		setFavRecipes(recipes);
+			// 		setLoading(false);
+			// 	});
+			// });
+		} else if (collection === "My Recipes") {
+			// probably something like getUserRecipes(userID)
+		}
+	}, [collection, searchText]);
 
 	function updateCollection(collection: string) {
 		setCollection(collection);
-		console.log(collection);
 	}
 
 	function search() {
 		const searchVal = (
 			document.getElementById("search") as HTMLInputElement
 		).value;
-
-		console.log(searchVal);
+		setSearchText(searchVal);
 	}
 
 	return (

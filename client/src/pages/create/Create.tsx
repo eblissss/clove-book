@@ -109,7 +109,7 @@ function Create() {
 				author: author,
 				authorID: authorID,
 				cookTime: cookTime,
-				cookbookID: "000000000000000000000000",
+				cookbookID: recipeInfo.cookbookID,
 				createdAt: createdAt,
 				ingredients: ingredients,
 				instructions: instructions,
@@ -140,6 +140,7 @@ function Create() {
 	};
 
 	const fillText = () => {
+		console.log(recipeInfo);
 		// TOP STUFF
 		(document.getElementById("recipeName") as HTMLInputElement).value =
 			recipeInfo.name;

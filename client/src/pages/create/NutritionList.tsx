@@ -183,7 +183,7 @@ function NutritionList() {
 
 	const reduxNutrients = useAppSelector(selectCreation).nutrients;
 	useEffect(() => {
-		if (reduxNutrients.length > nutriList.length) {
+		if (reduxNutrients.length > 0) {
 			setNutriList(reduxNutrients);
 		}
 	}, []);

@@ -188,7 +188,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 							component="h6"
 							fontWeight={700}
 						>
-							Required Ingredients:
+							Ingredients
 						</Typography>
 						<Container
 							disableGutters
@@ -229,7 +229,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 							component="h6"
 							fontWeight={700}
 						>
-							Nutrition Information:
+							Nutrition Information
 						</Typography>
 						<Container
 							disableGutters
@@ -270,7 +270,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 							component="h6"
 							fontWeight={700}
 						>
-							Steps to Follow:
+							Instructions
 						</Typography>
 
 						{recipe.instructions !== null &&

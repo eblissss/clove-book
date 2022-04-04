@@ -92,7 +92,7 @@ function StepList() {
 
 	const reduxSteps = useAppSelector(selectCreation).instructions;
 	useEffect(() => {
-		if (reduxSteps.length > stepList.length) {
+		if (reduxSteps.length > 0) {
 			setStepList(reduxSteps);
 		}
 	}, []);

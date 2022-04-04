@@ -320,7 +320,7 @@ func (r *Client) UpdateRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	param := c.Param("cookbookID")
+	param := c.Params.ByName("id")
 	cookbookID, _ := primitive.ObjectIDFromHex(param)
 
 	var recipe models.Recipe
@@ -382,7 +382,7 @@ func (r *Client) DeleteRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	param := c.Param("cookbookID")
+	param := c.Params.ByName("id")
 	cookbookID, _ := primitive.ObjectIDFromHex(param)
 
 	recipeDeleted, err := r.RecipeCollection.DeleteOne(ctx, bson.M{"cookbookID": cookbookID})

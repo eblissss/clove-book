@@ -82,20 +82,14 @@ function StepList() {
 
 	const [stepList, setStepList] = useState<Instruction[]>([]);
 
-	const success = useAppSelector(selectCreationUpdate).success;
-	useEffect(() => {
-		if (success) {
-			setStepList([]);
-			dispatch(setInstructions([]));
-		}
-	}, [success]);
-
 	const reduxSteps = useAppSelector(selectCreation).instructions;
 	useEffect(() => {
-		if (reduxSteps.length > 0) {
-			setStepList(reduxSteps);
-		}
-	}, []);
+		const newSteps: Instruction[] = [];
+		reduxSteps.forEach((step) => {
+			newSteps.push({ description: step.description });
+		});
+		setStepList([...newSteps]);
+	}, [reduxSteps]);
 
 	const doDelete = (toDel: number) => {
 		const newList = [...stepList];

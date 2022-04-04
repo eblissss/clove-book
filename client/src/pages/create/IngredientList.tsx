@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { selectCreation, setIngredients } from "./creationSlice";
 import { Ingredient } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
-import { selectCreationUpdate } from "./creationUpdateSlice";
 
 interface IngStr {
 	name: string;
@@ -121,28 +120,18 @@ function IngredientList() {
 
 	const [ingStrList, setIngStrList] = useState<IngStr[]>([]);
 
-	const success = useAppSelector(selectCreationUpdate).success;
-	useEffect(() => {
-		if (success) {
-			setIngStrList([]);
-			dispatch(setIngredients([]));
-		}
-	}, [success]);
-
 	const reduxIngredients = useAppSelector(selectCreation).ingredients;
 	useEffect(() => {
-		if (reduxIngredients.length > ingStrList.length) {
-			const tempIngStrList: IngStr[] = [];
-			reduxIngredients.forEach((ing) => {
-				tempIngStrList.push({
-					name: ing.name,
-					amount: "" + ing.amount,
-					unit: ing.unit,
-				});
+		const tempIngStrList: IngStr[] = [];
+		reduxIngredients.forEach((ing) => {
+			tempIngStrList.push({
+				name: ing.name,
+				amount: "" + ing.amount,
+				unit: ing.unit,
 			});
-			setIngStrList(tempIngStrList);
-		}
-	}, []);
+		});
+		setIngStrList(tempIngStrList);
+	}, [reduxIngredients]);
 
 	const doDelete = (toDel: number) => {
 		const newList = [...ingStrList];

@@ -24,7 +24,6 @@ import { useDispatch } from "react-redux";
 import {
 	selectCreationUpdate,
 	setCreationEditing,
-	setCreationSuccess,
 } from "./creationUpdateSlice";
 import {
 	setIngredients,
@@ -133,7 +132,7 @@ function Create() {
 				updateRecipe(editing, data).then(() => {
 					setOpenSuccess(true);
 					resetText();
-					setCreationEditing("");
+					dispatch(setCreationEditing(""));
 				});
 			}
 		});
@@ -163,19 +162,23 @@ function Create() {
 	};
 
 	const resetText = () => {
-		dispatch(setCreationSuccess(true));
 		(document.getElementById("recipeName") as HTMLInputElement).value = "";
 		(document.getElementById("recipeImage") as HTMLInputElement).value = "";
 		(document.getElementById("recipePrepTime") as HTMLInputElement).value =
 			"";
 		(document.getElementById("recipeCookTime") as HTMLInputElement).value =
 			"";
-		dispatch(setCreationSuccess(false));
+
+		// LISTS
+		dispatch(setIngredients([]));
+		dispatch(setInstructions([]));
+		dispatch(setNutrients([]));
+		dispatch(setRecipeTags([]));
 	};
 
 	const cancelEditing = () => {
-		dispatch(setCreationEditing(""));
 		resetText();
+		dispatch(setCreationEditing(""));
 	};
 
 	return (

@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
 import Tag from "../../components/tag/Tag";
 import { selectCreation, setRecipeTags } from "./creationSlice";
-import { selectCreationUpdate } from "./creationUpdateSlice";
 
 function TagsInput() {
 	const dispatch = useDispatch();
@@ -21,20 +20,10 @@ function TagsInput() {
 		setInput(e.target.value);
 	};
 
-	const success = useAppSelector(selectCreationUpdate).success;
-	useEffect(() => {
-		if (success) {
-			setTags([]);
-			dispatch(setRecipeTags(tags));
-		}
-	}, [success]);
-
 	const reduxTags = useAppSelector(selectCreation).tags;
 	useEffect(() => {
-		if (reduxTags.length > tags.length) {
-			setTags(reduxTags);
-		}
-	}, []);
+		setTags(reduxTags);
+	}, [reduxTags]);
 
 	const saveTags = () => {
 		dispatch(setRecipeTags(tags));

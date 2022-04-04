@@ -9,6 +9,7 @@ import {
 	SpeedDialIcon,
 	SpeedDial,
 	SpeedDialAction,
+	LinearProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -29,10 +30,8 @@ import { store } from "../../app/store";
 import { setRecipe } from "./recipeSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import {
-	setCreationEditing,
-	setCreationSuccess,
-} from "../../pages/create/creationUpdateSlice";
+import { setCreationEditing } from "../../pages/create/creationUpdateSlice";
+import { openError, setError } from "../errorPopup/errorSlice";
 
 interface contentProps {
 	recipe: Recipe;
@@ -44,17 +43,19 @@ function RecipeModalContent({ recipe }: contentProps) {
 
 	const [canEdit, setCanEdit] = useState(false);
 
+	if (recipe == undefined) {
+		recipe = dataA;
+	}
+
 	useEffect(() => {
 		const userID = store.getState().user.user.userID;
-		console.log(recipe.authorID === userID);
 		setCanEdit(recipe.authorID === userID);
 	}, []);
 
 	const edit = () => {
 		dispatch(setRecipe(recipe));
 		dispatch(setCreationEditing(recipe.cookbookID));
-		console.log(recipe);
-		console.log(recipe.cookbookID);
+		dispatch(closeModal());
 		navigate("/create");
 	};
 
@@ -90,7 +91,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 					component="img"
 					sx={{
 						height: "200px",
-						borderRadius: "35px 35px 0px 0px",
+						borderRadius: "20px 20px 0px 0px",
 					}}
 					image={
 						recipe.imageURL
@@ -348,16 +349,19 @@ function RecipeModal() {
 	const open = modalInfo.isOpen;
 
 	const [recipe, setRecipe] = useState<Recipe>(dataA);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		// TEMPORARY - REMOVE WHEN SPOON RECIPES FIXED
-		if (modalInfo.id == "0") {
-			return;
-		}
 		if (open) {
 			getRecipe("" + modalInfo.id).then((data) => {
 				console.log(data);
-				setRecipe(data);
+				if (data !== undefined && data.name !== "") {
+					setRecipe(data);
+					setLoading(false);
+				} else {
+					dispatch(setError("Error: Could not load recipe"));
+					dispatch(openError());
+				}
 			});
 		}
 	}, [open]);
@@ -375,7 +379,11 @@ function RecipeModal() {
 			>
 				<Fade in={open}>
 					<div>
-						<RecipeModalContent recipe={recipe} />
+						{loading ? (
+							<LinearProgress />
+						) : (
+							<RecipeModalContent recipe={recipe} />
+						)}
 					</div>
 				</Fade>
 			</Modal>

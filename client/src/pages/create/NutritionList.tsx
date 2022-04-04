@@ -20,7 +20,6 @@ import { useDispatch } from "react-redux";
 import { selectCreation, setNutrients } from "./creationSlice";
 import { Nutrient } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
-import { selectCreationUpdate } from "./creationUpdateSlice";
 
 const defaultNutritions: string[] = ["Sugar", "Protein", "Sodium", "Calories"];
 
@@ -39,13 +38,9 @@ const allNutrients = [
 const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
 	name: name,
 	amount: "",
-	indented: false,
+	indented: defaultNutritions.includes(name),
 	percentOfDailyNeeds: 0,
 }));
-
-const defaultUnselected = allNutrients.filter(
-	(x) => defaultNutritions.indexOf(x) < 0
-);
 
 function NutritionItem({
 	nutrition,
@@ -61,7 +56,7 @@ function NutritionItem({
 			<RemoveCircleIcon
 				sx={{ color: "primary.dark", fontSize: "32px", mt: "10px" }}
 				onClick={() => {
-					remove(nutrition.name, false);
+					remove(false, nutrition);
 				}}
 			/>
 			<Container
@@ -91,7 +86,7 @@ function NutrientSelector({
 	items,
 	setSelected,
 }: {
-	items: string[];
+	items: Nutrient[];
 	setSelected: Function;
 }) {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -103,8 +98,8 @@ function NutrientSelector({
 		setAnchorEl(null);
 	};
 
-	const handleToggle = (value: string) => () => {
-		setSelected(value, true);
+	const handleToggle = (nutri: Nutrient) => () => {
+		setSelected(true, nutri);
 	};
 
 	return (
@@ -143,7 +138,7 @@ function NutrientSelector({
 						const labelId = `checkbox-list-label-${nutri}`;
 
 						return (
-							<ListItem key={nutri} disablePadding>
+							<ListItem key={nutri.name} disablePadding>
 								<ListItemButton
 									role={undefined}
 									onClick={handleToggle(nutri)}
@@ -154,7 +149,7 @@ function NutrientSelector({
 
 									<ListItemText
 										id={labelId}
-										primary={nutri}
+										primary={nutri.name}
 									/>
 								</ListItemButton>
 							</ListItem>
@@ -169,24 +164,21 @@ function NutrientSelector({
 function NutritionList() {
 	const dispatch = useDispatch();
 
-	const [selected, setSelected] = useState<string[]>(defaultNutritions);
-	const [unselected, setUnselected] = useState<string[]>(defaultUnselected);
 	const [nutriList, setNutriList] = useState<Nutrient[]>(defaultNutri);
-
-	const success = useAppSelector(selectCreationUpdate).success;
-	useEffect(() => {
-		if (success) {
-			setNutriList([]);
-			dispatch(setNutrients([]));
-		}
-	}, [success]);
 
 	const reduxNutrients = useAppSelector(selectCreation).nutrients;
 	useEffect(() => {
-		if (reduxNutrients.length > 0) {
-			setNutriList(reduxNutrients);
-		}
-	}, []);
+		const newNutrients: Nutrient[] = [];
+		reduxNutrients.forEach((nutrient) => {
+			newNutrients.push({
+				name: nutrient.name,
+				amount: nutrient.amount,
+				indented: nutrient.indented,
+				percentOfDailyNeeds: nutrient.percentOfDailyNeeds,
+			});
+		});
+		setNutriList([...newNutrients]);
+	}, [reduxNutrients]);
 
 	const updateList = (value: string, nutr: Nutrient) => {
 		const newList = [...nutriList];
@@ -194,22 +186,10 @@ function NutritionList() {
 		setNutriList(newList);
 	};
 
-	const swapSelected = (value: string, select: boolean) => {
-		let newSelected: string[];
-		let newUnselected: string[];
-
-		if (select) {
-			newSelected = [...selected, value];
-			newUnselected = [...unselected];
-			newUnselected.splice(newUnselected.indexOf(value), 1);
-		} else {
-			newSelected = [...selected];
-			newSelected.splice(newSelected.indexOf(value), 1);
-			newUnselected = [...unselected, value];
-		}
-
-		setSelected(newSelected);
-		setUnselected(newUnselected);
+	const swapSelected = (select: boolean, nutr: Nutrient) => {
+		const newList = [...nutriList];
+		newList[newList.indexOf(nutr)].indented = select;
+		setNutriList(newList);
 	};
 
 	const saveNutritions = () => {
@@ -243,10 +223,13 @@ function NutritionList() {
 			>
 				Nutrition Information:
 			</Typography>
-			<NutrientSelector items={unselected} setSelected={swapSelected} />
+			<NutrientSelector
+				items={nutriList.filter((nutri) => !nutri.indented)}
+				setSelected={swapSelected}
+			/>
 			<List>
 				{nutriList
-					?.filter((item) => selected.indexOf(item.name) > -1)
+					.filter((nutri) => nutri.indented)
 					.map((nutri, i) => {
 						return (
 							<NutritionItem

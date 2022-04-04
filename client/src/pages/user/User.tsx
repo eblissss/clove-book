@@ -324,7 +324,7 @@ function UserPage() {
 				<DialogTitle>Confirm Account Deletion</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						To confirm deletion of your account, please enter your
+						To finish deleting your account, please enter your
 						username.
 					</DialogContentText>
 					<TextField
@@ -353,7 +353,7 @@ function UserPage() {
 				<DialogTitle>Reset Password</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						Input your old password and new password.
+						Input old password and new password.
 					</DialogContentText>
 					<TextField
 						autoFocus

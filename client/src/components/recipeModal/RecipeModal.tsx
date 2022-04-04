@@ -9,6 +9,8 @@ import {
 	SpeedDialIcon,
 	SpeedDial,
 	SpeedDialAction,
+	IconButton,
+	Stack,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -24,6 +26,8 @@ import {
 	Edit as EditIcon,
 	DeleteForever as DeleteIcon,
 	Menu as MenuIcon,
+	FavoriteBorder as Unfavorited,
+	Favorite as Favorited,
 } from "@mui/icons-material";
 import { store } from "../../app/store";
 import { setRecipe } from "./recipeSlice";
@@ -116,31 +120,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 					))}
 				</Container>
 				{/* EDIT AND DELETE MENU */}
-				{canEdit ? (
-					<SpeedDial
-						ariaLabel="editDial"
-						icon={
-							<SpeedDialIcon
-								icon={<MenuIcon />}
-								openIcon={<EditIcon />}
-								onClick={edit}
-							/>
-						}
-						sx={{ position: "absolute", top: "20px", left: "20px" }}
-						direction="right"
-					>
-						<SpeedDialAction
-							icon={<DeleteIcon />}
-							tooltipTitle={"Delete"}
-							sx={{
-								bgcolor: "primary.main",
-							}}
-							onClick={deleteDialog}
-						/>
-					</SpeedDial>
-				) : (
-					<></>
-				)}
+
 				{/* TITLE AND SUBTITLE */}
 				<Box
 					component="div"
@@ -149,112 +129,152 @@ function RecipeModalContent({ recipe }: contentProps) {
 						top: 0,
 						p: "10px",
 						position: "sticky",
+						display: "flex",
 					}}
 				>
-					<Typography
-						variant="h3"
-						component="h3"
-						sx={{
-							color: "primary.contrastText",
-							fontWeight: 700,
-						}}
-					>
-						{recipe.name}
-					</Typography>
-					<Typography
-						variant="h6"
-						component="h6"
-						sx={{ color: "primary.contrastText" }}
-					>
-						Ready in {recipe.totalTime}m {" - "} {recipe.prepTime}m
-						Prep
-						{" + "}
-						{recipe.cookTime}m Cook
-					</Typography>
-				</Box>
-				{/* REQUIRED INGREDIENTS */}
-				<Container disableGutters sx={{ p: "10px" }}>
-					<Box
-						component="div"
-						sx={{
-							backgroundColor: "primary.main",
-							p: "6px",
-							m: "10px",
-							borderRadius: "8px",
-						}}
-					>
+					<Container disableGutters sx={{}}>
+						<Typography
+							variant="h3"
+							component="h3"
+							sx={{
+								color: "primary.contrastText",
+								fontWeight: 700,
+							}}
+						>
+							{recipe.name}
+						</Typography>
 						<Typography
 							variant="h6"
 							component="h6"
-							fontWeight={700}
+							sx={{ color: "primary.contrastText" }}
 						>
-							Ingredients
+							Ready in {recipe.totalTime}m {" - "}{" "}
+							{recipe.prepTime}m Prep
+							{" + "}
+							{recipe.cookTime}m Cook
 						</Typography>
-						<Container
-							disableGutters
-							sx={{
-								borderLeft: "2px solid",
-								borderColor: "primary.dark",
-								pl: "5px",
-							}}
-						>
-							{recipe.ingredients?.map((ingredient) => (
-								<Typography
-									key={ingredient.name}
-									variant="body1"
-									component="h5"
+					</Container>
+					<Stack direction="row" spacing={1} sx={{ height: "auto" }}>
+						<IconButton aria-label="favorite">
+							<Unfavorited />
+						</IconButton>
+						{canEdit ? (
+							<SpeedDial
+								ariaLabel="editDial"
+								icon={
+									<SpeedDialIcon
+										icon={<MenuIcon />}
+										openIcon={<EditIcon />}
+										onClick={edit}
+									/>
+								}
+								sx={{
+									position: "absolute",
+									top: "20px",
+									left: "20px",
+								}}
+								direction="right"
+							>
+								<SpeedDialAction
+									icon={<DeleteIcon />}
+									tooltipTitle={"Delete"}
 									sx={{
-										p: "1px",
+										bgcolor: "primary.main",
 									}}
-								>
-									{ingredient.name}: {ingredient.amount}{" "}
-									{ingredient.unit}
-								</Typography>
-							))}
-						</Container>
-					</Box>
+									onClick={deleteDialog}
+								/>
+							</SpeedDial>
+						) : (
+							<></>
+						)}
+					</Stack>
+				</Box>
 
-					{/* NUTRITION */}
-					<Box
-						component="div"
-						sx={{
-							backgroundColor: "primary.main",
-							p: "6px",
-							m: "10px",
-							borderRadius: "8px",
-						}}
-					>
-						<Typography
-							variant="h6"
-							component="h6"
-							fontWeight={700}
-						>
-							Nutrition Information
-						</Typography>
-						<Container
-							disableGutters
+				<Container disableGutters sx={{ p: "10px", display: "flex" }}>
+					<Container disableGutters sx={{}}>
+						{/* REQUIRED INGREDIENTS */}
+						<Box
+							component="div"
 							sx={{
-								borderLeft: "2px solid",
-								borderColor: "primary.dark",
-								pl: "5px",
+								backgroundColor: "primary.main",
+								p: "6px",
+								m: "10px",
+								borderRadius: "8px",
 							}}
 						>
-							{recipe.nutrients?.good
-								.concat(recipe.nutrients?.bad)
-								.map((nutrient) => (
+							<Typography
+								variant="h6"
+								component="h6"
+								fontWeight={700}
+							>
+								Ingredients
+							</Typography>
+							<Container
+								disableGutters
+								sx={{
+									borderLeft: "2px solid",
+									borderColor: "primary.dark",
+									pl: "5px",
+								}}
+							>
+								{recipe.ingredients?.map((ingredient) => (
 									<Typography
-										key={nutrient.name}
+										key={ingredient.name}
 										variant="body1"
 										component="h5"
 										sx={{
 											p: "1px",
 										}}
 									>
-										{nutrient.name}: {nutrient.amount}
+										{ingredient.name}: {ingredient.amount}{" "}
+										{ingredient.unit}
 									</Typography>
 								))}
-						</Container>
-					</Box>
+							</Container>
+						</Box>
+
+						{/* NUTRITION */}
+						<Box
+							component="div"
+							sx={{
+								backgroundColor: "primary.main",
+								p: "6px",
+								m: "10px",
+								borderRadius: "8px",
+							}}
+						>
+							<Typography
+								variant="h6"
+								component="h6"
+								fontWeight={700}
+							>
+								Nutrition Information
+							</Typography>
+							<Container
+								disableGutters
+								sx={{
+									borderLeft: "2px solid",
+									borderColor: "primary.dark",
+									pl: "5px",
+								}}
+							>
+								{recipe.nutrients?.good
+									.concat(recipe.nutrients?.bad)
+									.map((nutrient) => (
+										<Typography
+											key={nutrient.name}
+											variant="body1"
+											component="h5"
+											sx={{
+												p: "1px",
+											}}
+										>
+											{nutrient.name}: {nutrient.amount}
+										</Typography>
+									))}
+							</Container>
+						</Box>
+					</Container>
 					{/* INSTRUCTIONS */}
 					<Box
 						component="div"

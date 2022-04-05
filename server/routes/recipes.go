@@ -492,6 +492,9 @@ func (r *Client) ViewFavorites(c *gin.Context) {
 
 	query, _ := c.GetQuery("query")
 
+	queryOnlyID, _ := c.GetQuery("onlyID")
+	onlyID := (queryOnlyID == "true")
+
 	res := r.FavoriteCollection.FindOne(ctx, bson.M{
 		"user_id": userID,
 	})
@@ -510,6 +513,11 @@ func (r *Client) ViewFavorites(c *gin.Context) {
 	err := res.Decode(&fav)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	if onlyID {
+		c.JSON(http.StatusOK, fav.Favorites)
 		return
 	}
 

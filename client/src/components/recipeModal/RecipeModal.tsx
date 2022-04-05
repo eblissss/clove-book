@@ -46,6 +46,17 @@ function RecipeModalContent({ recipe }: contentProps) {
 	const navigate = useNavigate();
 
 	const [canEdit, setCanEdit] = useState(false);
+	//const favorited = useState(false);
+	
+	// const favs = store.getState().user.user.favorites;
+	// isFav := false;
+
+    // for (_, x := range favs) {
+    //     if (x == recipe.cookbookID) {
+    //         result = true
+    //         break
+    //     }
+    // }
 
 	if (recipe == undefined) {
 		recipe = dataA;
@@ -63,6 +74,21 @@ function RecipeModalContent({ recipe }: contentProps) {
 		navigate("/create");
 	};
 
+
+	// const addFavorite = () => {
+	// 	const userID = store.getState().user.user.userID;
+	// 	const favs = ;
+	// 		for (_, x := range favs) {
+	// 			if (x == recipe.cookbookID) {
+	// 				result = true
+	// 				break
+	// 			}
+	// 		}	
+	// 	dispatch(setFavorite(userID, true, recipe.spoonacularID, recipe.cookbookID))
+	// }
+	
+	// TODO add & remove favorite
+
 	const deleteDialog = () => {};
 
 	return (
@@ -73,8 +99,9 @@ function RecipeModalContent({ recipe }: contentProps) {
 				top: "50%",
 				left: "50%",
 				transform: "translate(-50%, -50%)",
-				minWidth: "70%",
-				maxHeight: "85%",
+				minWidth: "180px",
+				width: "70%",
+				minHeight: "90px",
 				bgcolor: "primary.light",
 				border: "2px solid #fff",
 				borderRadius: "20px",
@@ -94,7 +121,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 				<CardMedia
 					component="img"
 					sx={{
-						height: "200px",
+						height: "400px",
 						borderRadius: "20px 20px 0px 0px",
 					}}
 					image={
@@ -111,7 +138,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 						position: "absolute",
 						display: "flex",
 						flexWrap: "wrap",
-						top: "150px",
+						top: "350px",
 						left: "10px",
 						width: "80%",
 					}}
@@ -157,8 +184,8 @@ function RecipeModalContent({ recipe }: contentProps) {
 							{recipe.cookTime}m Cook
 						</Typography>
 					</Container>
-					<Stack direction="row" spacing={1} sx={{ height: "auto" }}>
-						<IconButton aria-label="favorite">
+					<Stack direction="row" spacing={1}>
+						<IconButton aria-label="favorite" size="large" onClick={addFavorite}>
 							<Unfavorited />
 						</IconButton>
 						{canEdit ? (
@@ -168,6 +195,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 									<SpeedDialIcon
 										icon={<MenuIcon />}
 										openIcon={<EditIcon />}
+										size="large"
 										onClick={edit}
 									/>
 								}
@@ -193,14 +221,15 @@ function RecipeModalContent({ recipe }: contentProps) {
 					</Stack>
 				</Box>
 
-				<Container disableGutters sx={{ p: "10px", display: "flex" }}>
-					<Container disableGutters sx={{}}>
+				<Container disableGutters sx={{ p: "10px", display: "flex"}}>
+					<Container disableGutters sx={{width: "40%", height: "auto", mr: "0"}}>
 						{/* REQUIRED INGREDIENTS */}
 						<Box
 							component="div"
 							sx={{
 								backgroundColor: "primary.main",
-								p: "6px",
+								p: "12px",
+								pb: "12px",
 								m: "10px",
 								borderRadius: "8px",
 							}}
@@ -229,19 +258,19 @@ function RecipeModalContent({ recipe }: contentProps) {
 											p: "1px",
 										}}
 									>
-										{ingredient.name}: {ingredient.amount}{" "}
+										{ingredient.name}—{ingredient.amount}{"\u00A0"}
 										{ingredient.unit}
 									</Typography>
 								))}
 							</Container>
 						</Box>
-
 						{/* NUTRITION */}
 						<Box
 							component="div"
 							sx={{
 								backgroundColor: "primary.main",
-								p: "6px",
+								p: "12px",
+								pb: "12px",
 								m: "10px",
 								borderRadius: "8px",
 							}}
@@ -272,7 +301,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 												p: "1px",
 											}}
 										>
-											{nutrient.name}: {nutrient.amount}
+											{nutrient.name}: {nutrient.amount.replace(/\s/g, "\u00A0")}
 										</Typography>
 									))}
 							</Container>
@@ -283,9 +312,12 @@ function RecipeModalContent({ recipe }: contentProps) {
 						component="div"
 						sx={{
 							backgroundColor: "primary.main",
-							p: "6px",
+							p: "10px",
 							m: "10px",
 							borderRadius: "8px",
+							width: "60%",
+							minWidth: "40%",
+							ml: "0",
 						}}
 					>
 						<Typography

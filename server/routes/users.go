@@ -224,6 +224,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 
 	fmt.Println(user.Username)
+
 	accessToken, err := creds.NewSignedToken(
 		user.Username, user.UserID.Hex(), creds.InsecureToken, 24*time.Hour)
 	if err != nil {
@@ -233,6 +234,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 	c.SetCookie("token", accessToken, int(time.Now().Add(2*time.Hour).Unix()), "",
 		"clovebook.com", true, true)
+	
 
 	refreshToken, err := creds.NewSignedToken(
 		user.Username, user.UserID.Hex(), creds.InsecureToken, 48*time.Hour)
@@ -250,6 +252,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 func (r *Client) LogoutUser(c *gin.Context) {
 	// Kill cookie
 	c.SetCookie("token", "", -1, "", "clovebook.com", true, true)
+	
 	c.Status(http.StatusOK)
 }
 

@@ -57,23 +57,28 @@ const requests = {
 
 // ==== Recipe Section ====
 export const setFavorite = (
-	username: string,
+	userID: string,
 	set: boolean,
-	spoonacularID?: string,
-	cookbookID?: string
+	recipeID: string,
 ) => {
 	requests.put(
-		`/users/${username}/favorites`,
+		`/users/${userID}/favorites`,
 		{},
-		{ set: set, spoonacularID: spoonacularID, cookbookID: cookbookID }
+		{ set: set, recipeID: recipeID }
 	);
 };
 
 export const getFavorites = (
-	username: string,
-	query: string
+	userID: string,
+	query: string,
 ): Promise<models.SimpleRecipe[]> =>
-	requests.get(`/users/${username}/favorites`, { query: query });
+	requests.get(`/users/${userID}/favorites`, { query: query });
+
+export const getFavoriteIDs = (
+		userID: string,
+		query: string,
+	): Promise<string[]> =>
+		requests.get(`/users/${userID}/favorites`, { query: query, onlyID: "true" });
 
 export const addRecipe = (
 	data: models.Recipe

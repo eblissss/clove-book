@@ -131,6 +131,8 @@ function RecipeModalContent({ recipe }: contentProps) {
 						p: "10px",
 						position: "sticky",
 						display: "flex",
+						flexDirection: "row",
+						
 					}}
 				>
 					<Container disableGutters sx={{}}>

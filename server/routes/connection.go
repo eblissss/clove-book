@@ -25,6 +25,7 @@ type Client struct {
 	// SpoonClient        *spoonacular.Client
 	MailClient *email.Client
 	Validator  *validator.Validate
+	IsTest     bool
 }
 
 func New() *Client {
@@ -52,6 +53,54 @@ func New() *Client {
 		Validator:          validate,
 		// SpoonClient:        spoonClient,
 	}
+}
+
+func NewTest() (*Client, error) {
+	mongoClient := DBinstance()
+	userCollection := OpenCollection(mongoClient, "TEST_users")
+	err := userCollection.Drop(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	authUserCollection := OpenCollection(mongoClient, "TEST_auth_users")
+	err = authUserCollection.Drop(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	recipeCollection := OpenCollection(mongoClient, "TEST_recipes")
+	err = recipeCollection.Drop(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	stubCollection := OpenCollection(mongoClient, "TEST_stubs")
+	err = stubCollection.Drop(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	favoriteCollection := OpenCollection(mongoClient, "TEST_favorites")
+	err = favoriteCollection.Drop(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	validate := validator.New()
+
+	// spoonClient := spoonacular.New()
+
+	mailClient := email.Must(email.New(os.Getenv("SENDGRID_KEY")))
+
+	GuaranteeTextIndex(recipeCollection, "name")
+
+	return &Client{
+		UserCollection:     userCollection,
+		AuthUserCollection: authUserCollection,
+		RecipeCollection:   recipeCollection,
+		StubCollection:     stubCollection,
+		FavoriteCollection: favoriteCollection,
+		MailClient:         mailClient,
+		Validator:          validate,
+		IsTest:             true,
+		// SpoonClient:        spoonClient,
+	}, nil
 }
 
 //DBinstance func

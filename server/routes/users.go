@@ -48,11 +48,18 @@ func (r *Client) AuthUser(c *gin.Context) {
 	})
 
 	authUser.Code, authUser.Expires = generateRandomCode()
+	fmt.Printf("Generated code: %s\n", authUser.Code)
 
 	// Add AuthUser
 	if _, err := r.AuthUserCollection.InsertOne(ctx, *authUser); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user was not added to auth base"})
 		fmt.Println(err)
+		return
+	}
+
+	// Test
+	if r.IsTest {
+		c.JSON(http.StatusOK, authUser.Code)
 		return
 	}
 

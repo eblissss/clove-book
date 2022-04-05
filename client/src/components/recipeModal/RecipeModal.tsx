@@ -46,17 +46,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 	const navigate = useNavigate();
 
 	const [canEdit, setCanEdit] = useState(false);
-	//const favorited = useState(false);
 	
-	// const favs = store.getState().user.user.favorites;
-	// isFav := false;
-
-    // for (_, x := range favs) {
-    //     if (x == recipe.cookbookID) {
-    //         result = true
-    //         break
-    //     }
-    // }
 
 	if (recipe == undefined) {
 		recipe = dataA;

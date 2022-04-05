@@ -1,14 +1,15 @@
 package routes_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"server/models"
 	"server/routes"
-	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,8 @@ import (
 )
 
 func TestRecipes(t *testing.T) {
-	c := routes.New()
+	c, err := routes.NewTest()
+	assert.NoError(t, err)
 
 	t.Run("CreateRecipe", func(t *testing.T) {
 		w := httptest.NewRecorder()
@@ -33,12 +35,13 @@ func TestRecipes(t *testing.T) {
 			},
 			Author: "Amelia",
 		}
-		reqBody, err := json.Marshal(recipe)
+		body, err := json.Marshal(recipe)
 		assert.NoError(t, err)
 		ctx.Request = httptest.NewRequest(
 			http.MethodPost,
 			"/recipes",
-			io.NopCloser(strings.NewReader(string(reqBody))))
+			io.NopCloser(bytes.NewReader(body)),
+		)
 
 		c.CreateRecipe(ctx)
 
@@ -65,6 +68,11 @@ func TestRecipes(t *testing.T) {
 		assert.NoError(t, err)
 		ctx.Params = append(ctx.Params, gin.Param{Key: "id", Value: id.String()})
 
+		ctx.Request = httptest.NewRequest(
+			http.MethodGet,
+			fmt.Sprintf("/recipes/%s", id),
+			nil,
+		)
 		c.GetRecipe(ctx)
 
 		assert.Equal(t, http.StatusOK, w.Code)

@@ -112,6 +112,7 @@ func (r *Client) GetRecipe(c *gin.Context) {
 	id := c.Params.ByName("id")
 
 	// Verify user is logged in
+
 	cookie, err := c.Cookie("token")
 	if err != nil {
 		c.Status(http.StatusUnauthorized)

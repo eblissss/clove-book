@@ -56,7 +56,7 @@ func New() *Client {
 
 //DBinstance func
 func DBinstance() *mongo.Client {
-	godotenv.Load(".env")
+	godotenv.Load()
 
 	MongoDb := os.Getenv("MONGODB_URL")
 

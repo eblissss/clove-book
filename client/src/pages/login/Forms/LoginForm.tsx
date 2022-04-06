@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "../../../app/hooks";
 import { changeToDawn } from "../../../components/scene/sceneSlice";
-import { doLogin } from "../../../api/requests";
+import { doLogin, getFavoriteIDs } from "../../../api/requests";
 
 import {
 	Avatar,
@@ -20,6 +20,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import md5 from "md5";
 import { setUserID } from "../../user/userSlice";
 import { decodeToken } from "react-jwt";
+import { setInitialFavorites } from "../../../components/userFavs/favSlice";
 
 interface cbJWT {
 	userID: string;
@@ -55,6 +56,11 @@ export function LoginForm() {
 					localStorage.setItem("expiry", expiry);
 
 					dispatch(setUserID(userID));
+
+					getFavoriteIDs(userID, "").then((data) => {
+						console.log(data);
+						dispatch(setInitialFavorites({ data }));
+					});
 
 					navigate("/home");
 				}

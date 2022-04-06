@@ -21,7 +21,7 @@ import { closeModal, selectModal } from "./modalSlice";
 
 import { Recipe } from "../../api/models";
 import Tag from "../tag/Tag";
-import { getRecipe } from "../../api/requests";
+import { getFavoriteIDs, getRecipe } from "../../api/requests";
 
 import {
 	Edit as EditIcon,
@@ -36,6 +36,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { setCreationEditing } from "../../pages/create/creationUpdateSlice";
 import { openError, setError } from "../errorPopup/errorSlice";
+import { selectFavoriteByID, updateFavorite } from "../userFavs/favSlice";
 
 interface contentProps {
 	recipe: Recipe;
@@ -46,11 +47,15 @@ function RecipeModalContent({ recipe }: contentProps) {
 	const navigate = useNavigate();
 
 	const [canEdit, setCanEdit] = useState(false);
-	
+	const userID = store.getState().user.user.userID;
 
 	if (recipe == undefined) {
 		recipe = dataA;
 	}
+
+	const isFavorited: boolean = useAppSelector(
+		selectFavoriteByID(recipe.cookbookID)
+	);
 
 	useEffect(() => {
 		const userID = store.getState().user.user.userID;
@@ -64,20 +69,12 @@ function RecipeModalContent({ recipe }: contentProps) {
 		navigate("/create");
 	};
 
-
-	// const addFavorite = () => {
-	// 	const userID = store.getState().user.user.userID;
-	// 	const favs = ;
-	// 		for (_, x := range favs) {
-	// 			if (x == recipe.cookbookID) {
-	// 				result = true
-	// 				break
-	// 			}
-	// 		}	
-	// 	dispatch(setFavorite(userID, true, recipe.spoonacularID, recipe.cookbookID))
-	// }
-	
-	// TODO add & remove favorite
+	const toggleFav = () => {
+		dispatch(updateFavorite({ id: recipe.cookbookID, set: !isFavorited }));
+		getFavoriteIDs(userID, "").then((data) => {
+			console.log(data);
+		});
+	};
 
 	const deleteDialog = () => {};
 
@@ -137,7 +134,6 @@ function RecipeModalContent({ recipe }: contentProps) {
 						<Tag name={tag} key={tag + i} />
 					))}
 				</Container>
-				{/* EDIT AND DELETE MENU */}
 
 				{/* TITLE AND SUBTITLE */}
 				<Box
@@ -145,11 +141,10 @@ function RecipeModalContent({ recipe }: contentProps) {
 					sx={{
 						backgroundColor: "primary.dark",
 						top: 0,
-						p: "10px",
+						p: "20px",
 						position: "sticky",
 						display: "flex",
 						flexDirection: "row",
-						
 					}}
 				>
 					<Container disableGutters sx={{}}>
@@ -174,30 +169,51 @@ function RecipeModalContent({ recipe }: contentProps) {
 							{recipe.cookTime}m Cook
 						</Typography>
 					</Container>
-					<Stack direction="row" spacing={1}>
-						<IconButton aria-label="favorite" size="large" onClick={addFavorite}>
-							<Unfavorited />
+					<Container
+						sx={{
+							display: "inline-flex",
+							alignItems: "center",
+							justifyContent: "right",
+						}}
+					>
+						<IconButton
+							aria-label="favorite"
+							size="large"
+							onClick={toggleFav}
+							sx={{
+								height: "72px",
+								width: "72px",
+								mr: "1rem",
+							}}
+						>
+							{isFavorited ? (
+								<Favorited sx={{ fontSize: "50px" }} />
+							) : (
+								<Unfavorited sx={{ fontSize: "50px" }} />
+							)}
 						</IconButton>
+						{/* EDIT AND DELETE MENU */}
 						{canEdit ? (
 							<SpeedDial
 								ariaLabel="editDial"
 								icon={
 									<SpeedDialIcon
 										icon={<MenuIcon />}
-										openIcon={<EditIcon />}
-										size="large"
+										openIcon={
+											<EditIcon
+												sx={{ fontSize: "50px" }}
+											/>
+										}
+										sx={{ height: "72px", width: "72px" }}
 										onClick={edit}
 									/>
 								}
-								sx={{
-									position: "absolute",
-									top: "20px",
-									left: "20px",
-								}}
 								direction="right"
 							>
 								<SpeedDialAction
-									icon={<DeleteIcon />}
+									icon={
+										<DeleteIcon sx={{ fontSize: "50px" }} />
+									}
 									tooltipTitle={"Delete"}
 									sx={{
 										bgcolor: "primary.main",
@@ -208,11 +224,19 @@ function RecipeModalContent({ recipe }: contentProps) {
 						) : (
 							<></>
 						)}
-					</Stack>
+					</Container>
 				</Box>
 
-				<Container disableGutters sx={{ p: "10px", display: "flex"}}>
-					<Container disableGutters sx={{width: "40%", height: "auto", mr: "0"}}>
+				<Container disableGutters sx={{ p: "10px", display: "flex" }}>
+					<Container
+						disableGutters
+						sx={{
+							width: "40%",
+							minWidth: "auto",
+							height: "auto",
+							mr: "0",
+						}}
+					>
 						{/* REQUIRED INGREDIENTS */}
 						<Box
 							component="div"
@@ -248,7 +272,8 @@ function RecipeModalContent({ recipe }: contentProps) {
 											p: "1px",
 										}}
 									>
-										{ingredient.name}—{ingredient.amount}{"\u00A0"}
+										{ingredient.name}: {ingredient.amount}
+										{"\u00A0"}
 										{ingredient.unit}
 									</Typography>
 								))}
@@ -291,7 +316,11 @@ function RecipeModalContent({ recipe }: contentProps) {
 												p: "1px",
 											}}
 										>
-											{nutrient.name}: {nutrient.amount.replace(/\s/g, "\u00A0")}
+											{nutrient.name}:{" "}
+											{nutrient.amount.replace(
+												/\s/g,
+												"\u00A0"
+											)}
 										</Typography>
 									))}
 							</Container>

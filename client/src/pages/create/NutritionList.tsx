@@ -234,7 +234,7 @@ function NutritionList() {
 						return (
 							<NutritionItem
 								nutrition={nutri}
-								key={`nutri-${i}`}
+								key={`nutri ${i}`}
 								remove={swapSelected}
 								update={updateList}
 							/>

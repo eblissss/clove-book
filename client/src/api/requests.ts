@@ -56,10 +56,10 @@ const requests = {
 };
 
 // ==== Recipe Section ====
-export const setFavorite = (
+export const toggleFavorite = (
 	userID: string,
 	set: boolean,
-	recipeID: string,
+	recipeID: string
 ) => {
 	requests.put(
 		`/users/${userID}/favorites`,
@@ -70,15 +70,18 @@ export const setFavorite = (
 
 export const getFavorites = (
 	userID: string,
-	query: string,
+	query: string
 ): Promise<models.SimpleRecipe[]> =>
 	requests.get(`/users/${userID}/favorites`, { query: query });
 
 export const getFavoriteIDs = (
-		userID: string,
-		query: string,
-	): Promise<string[]> =>
-		requests.get(`/users/${userID}/favorites`, { query: query, onlyID: "true" });
+	userID: string,
+	query: string
+): Promise<string[]> =>
+	requests.get(`/users/${userID}/favorites`, {
+		query: query,
+		onlyID: "true",
+	});
 
 export const addRecipe = (
 	data: models.Recipe
@@ -128,5 +131,5 @@ export const updateUser = (userID: string, data: models.User) =>
 export const deleteUser = (userID: string) =>
 	requests.delete(`/users/${userID}`);
 
-export const updateAllFavorites = (userID: string, data: string []) =>
-	requests.put(`/users/${userID}/allfavorites`, data)
+// export const updateAllFavorites = (userID: string, data: string []) =>
+// 	requests.put(`/users/${userID}/allfavorites`, data)

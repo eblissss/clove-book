@@ -8,6 +8,7 @@ import userReducer from "../pages/user/userSlice";
 import creationReducer from "../pages/create/creationSlice";
 import creationUpdateReducer from "../pages/create/creationUpdateSlice";
 import recipeReducer from "../components/recipeModal/recipeSlice";
+import favoriteReducer from "../components/userFavs/favSlice";
 
 export const store = configureStore({
 	reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
 		creation: creationReducer,
 		creationUpdate: creationUpdateReducer,
 		recipe: recipeReducer,
+		favorite: favoriteReducer,
 	},
 });
 

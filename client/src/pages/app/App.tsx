@@ -12,6 +12,8 @@ import User from "../user/User";
 import ErrorPopup from "../../components/errorPopup/ErrorPopup";
 import { useDispatch } from "react-redux";
 import { setUserID } from "../user/userSlice";
+import { setInitialFavorites } from "../../components/userFavs/favSlice";
+import { getFavoriteIDs } from "../../api/requests";
 
 function App() {
 	return (
@@ -45,6 +47,11 @@ function LoggedIn() {
 			const userID = localStorage.getItem("userID");
 			if (userID !== null) {
 				dispatch(setUserID(userID));
+
+				getFavoriteIDs(userID, "").then((data) => {
+					console.log(data);
+					dispatch(setInitialFavorites({ data }));
+				});
 			} else {
 				navigate("/");
 			}

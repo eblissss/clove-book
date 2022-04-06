@@ -48,7 +48,6 @@ func (r *Client) AuthUser(c *gin.Context) {
 	})
 
 	authUser.Code, authUser.Expires = generateRandomCode()
-	fmt.Printf("Generated code: %s\n", authUser.Code)
 
 	// Add AuthUser
 	if _, err := r.AuthUserCollection.InsertOne(ctx, *authUser); err != nil {
@@ -183,7 +182,7 @@ func (r *Client) RegisterUser(c *gin.Context) {
 	user.UpdatedAt = time.Now()
 
 	// Insert user
-	result, err := r.UserCollection.InsertOne(ctx, *user)
+	_, err := r.UserCollection.InsertOne(ctx, *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user was not created"})
 		fmt.Println(err)
@@ -197,7 +196,7 @@ func (r *Client) RegisterUser(c *gin.Context) {
 	})
 
 	c.JSON(http.StatusOK, gin.H{
-		"userID": result.InsertedID,
+		"userID": user.UserID,
 	})
 }
 
@@ -241,7 +240,6 @@ func (r *Client) LoginUser(c *gin.Context) {
 	}
 	c.SetCookie("token", accessToken, int(time.Now().Add(2*time.Hour).Unix()), "",
 		"clovebook.com", true, true)
-	
 
 	refreshToken, err := creds.NewSignedToken(
 		user.Username, user.UserID.Hex(), creds.InsecureToken, 48*time.Hour)
@@ -259,7 +257,7 @@ func (r *Client) LoginUser(c *gin.Context) {
 func (r *Client) LogoutUser(c *gin.Context) {
 	// Kill cookie
 	c.SetCookie("token", "", -1, "", "clovebook.com", true, true)
-	
+
 	c.Status(http.StatusOK)
 }
 

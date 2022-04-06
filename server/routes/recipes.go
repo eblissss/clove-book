@@ -484,6 +484,17 @@ func (r *Client) UpdateFavorite(c *gin.Context) {
 	c.JSON(http.StatusOK, bson.M{"updated": cookbookID})
 }
 
+func (r *Client) UpdateAllFavorites(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	data := c.Params.ByName("favs")
+	userID := c.Params.ByName("userID")
+
+	r.FavoriteCollection.UpdateOne(ctx, bson.M{"user_id": userID}, bson.M{"favorites": data})
+	c.JSON(http.StatusOK, bson.M{"newFavorites": data})
+}
+
 func (r *Client) ViewFavorites(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()

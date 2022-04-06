@@ -127,3 +127,6 @@ export const updateUser = (userID: string, data: models.User) =>
 
 export const deleteUser = (userID: string) =>
 	requests.delete(`/users/${userID}`);
+
+export const updateAllFavorites = (userID: string, data: string []) =>
+	requests.put(`/users/${userID}/allfavorites`, data)

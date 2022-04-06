@@ -1,4 +1,16 @@
-import { getFavoriteIDs, setFavorite } from "../../api/requests";
+import { getFavoriteIDs, setFavorite, updateAllFavorites } from "../../api/requests";
+
+import React from 'react'
+
+function userFavs() {
+  return (
+	<div>userFavs</div>
+  )
+}
+
+export default userFavs
+
+
 
 // maybe we should make a class
 export class Favorites {
@@ -23,6 +35,11 @@ export class Favorites {
 		}
 	}
 	
-		setFavorite(userID, set, id);
+	reuploadFavorites = (userID: string) => {
+		let array : Array<string> = Array.from(this.favoriteSet);
+		updateAllFavorites(userID, array);
 	}
+		//setFavorite(userID, set, id);
+	}
+	let bonk = new Favorites("6248ac5bcb536d2a6c1d76b2");
 }

@@ -2,6 +2,7 @@ import { Divider, Grid, Stack } from "@mui/material";
 import React, { useState } from "react";
 import { SimpleRecipe } from "../../api/models";
 import { RecipeCard } from "../recipeCard/RecipeCard";
+import Masonry from "@mui/lab/Masonry";
 
 interface RecipeGridProps {
 	recipes: SimpleRecipe[];
@@ -10,21 +11,37 @@ interface RecipeGridProps {
 
 function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 	return (
-		<Grid
-			container
-			spacing={3}
-			columns={columns}
-			sx={{
-				mt: "0px",
-				justifyContent: "center",
-			}}
-		>
-			{recipes?.map((recipe, i) => (
-				<Grid item key={i} xs={"auto"} md={6} lg={4}>
-					<RecipeCard {...recipe} />
-				</Grid>
-			))}
-		</Grid>
+		<>
+			<Masonry
+				columns={columns}
+				spacing={2}
+				// sx={{
+				// 	mt: "0px",
+				// 	justifyContent: "center",
+				// }}
+			>
+				{recipes?.map((recipe, i) => (
+					<Grid item key={i} xs={"auto"} md={6} lg={4}>
+						<RecipeCard {...recipe} />
+					</Grid>
+				))}
+			</Masonry>
+		</>
+		// <Grid
+		// 	container
+		// 	spacing={3}
+		// 	columns={columns}
+		// 	sx={{
+		// 		mt: "0px",
+		// 		justifyContent: "center",
+		// 	}}
+		// >
+		// 	{recipes?.map((recipe, i) => (
+		// 		<Grid item key={i} xs={"auto"} md={6} lg={4}>
+		// 			<RecipeCard {...recipe} />
+		// 		</Grid>
+		// 	))}
+		// </Grid>
 	);
 }
 

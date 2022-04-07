@@ -6,6 +6,7 @@
 		"@emotion/react": "^11.8.1",
 		"@emotion/styled": "^11.8.1",
 		"@mui/icons-material": "5.5.0",
+		"@mui/lab": "^5.0.0-alpha.76",
 		"@mui/material": "^5.5.0",
 		"@react-three/drei": "^8.13.1",
 		"@react-three/fiber": "^7.0.26",

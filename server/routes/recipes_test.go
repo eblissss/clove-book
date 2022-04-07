@@ -14,13 +14,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func TestRecipes(t *testing.T) {
 	c, err := routes.NewTest()
 	assert.NoError(t, err)
+
+	SetupRegisterUser(t, c, SetupAuthUser(t, c))
+	token := SetupLoginUser(t, c)
 
 	t.Run("CreateRecipe", func(t *testing.T) {
 		w := httptest.NewRecorder()
@@ -42,13 +44,11 @@ func TestRecipes(t *testing.T) {
 			"/recipes",
 			io.NopCloser(bytes.NewReader(body)),
 		)
+		ctx.Request.AddCookie(token)
 
 		c.CreateRecipe(ctx)
 
 		assert.Equal(t, http.StatusOK, w.Code)
-
-		_, err = c.RecipeCollection.DeleteMany(context.Background(), bson.M{"name": "TEST_NAME_CREATE_RECIPE"})
-		assert.NoError(t, err)
 	})
 
 	t.Run("GetRecipe", func(t *testing.T) {
@@ -73,13 +73,17 @@ func TestRecipes(t *testing.T) {
 			fmt.Sprintf("/recipes/%s", id),
 			nil,
 		)
+		ctx.Request.AddCookie(token)
+
 		c.GetRecipe(ctx)
 
 		assert.Equal(t, http.StatusOK, w.Code)
-
-		_, err = c.RecipeCollection.DeleteMany(context.Background(), bson.M{"name": "TEST_NAME_GET_RECIPE"})
-		assert.NoError(t, err)
-
 	})
+
+	t.Run("UpdateRecipe", func(t *testing.T) {})
+
+	t.Run("UpdateFavorites", func(t *testing.T) {})
+	t.Run("ViewFavorites", func(t *testing.T) {})
+	t.Run("DeleteRecipe", func(t *testing.T) {})
 
 }

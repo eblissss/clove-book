@@ -85,6 +85,8 @@ function Create() {
 			switch (nutrient.name) {
 				case "Calories":
 				case "Fat":
+					nutrition.bad.push(nutrient);
+					break;
 				case "Saturated Fat":
 				case "Carbohydrates":
 				case "Sugar":

@@ -207,7 +207,9 @@ function RecipeModalContent({ recipe }: contentProps) {
 							<>
 								<IconButton size="large" sx={{}} onClick={edit}>
 									<EditIcon
-										sx={{ color: "primary.textContrast" }}
+										sx={{ color: "primary.contrastText",
+									fontSize: "50px",
+								}}
 									/>
 								</IconButton>
 								<IconButton>
@@ -379,7 +381,7 @@ function RecipeModalContent({ recipe }: contentProps) {
 							))
 						) : (
 							<Typography
-								key="texxt"
+								key="text"
 								variant="body1"
 								component="h5"
 								sx={{

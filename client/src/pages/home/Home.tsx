@@ -9,7 +9,7 @@ import RecipeGrid, {
 	RecipeStack,
 } from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
-import { getRecipes } from "../../api/requests";
+import { getPopularRecipes, getRecipes } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import { selectSearch } from "../../components/searchBar/searchSlice";
 
@@ -17,7 +17,7 @@ const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
 	fakeJSON.push({
 		spoonacularID: 0,
-		cookbookID: "0",
+		cookbookID: "000000000000000000000000",
 		name: "Vegan Cheesecake",
 		imageURL: "https://source.unsplash.com/random",
 		totalTime: 10,
@@ -34,17 +34,10 @@ function Home() {
 
 	const searchInfo = useAppSelector(selectSearch);
 
+	// TODO replace [] with combined tags
 	useEffect(() => {
-		/*
-		Recipe.getRandoms()
-			.then((data) => {
-				setRecipes(data);
-			})
-			.catch((err) => {
-				console.log(err);
-			})
-		return () => {};
-		*/
+		getRecipes("", []).then((stuff) => setRecipes(stuff));
+		getPopularRecipes().then((data) => setPopularRecipes(data));
 	}, []);
 
 	// should probably cap search to every 200ms or so

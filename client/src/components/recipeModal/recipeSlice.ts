@@ -8,7 +8,7 @@ export interface RecipeState {
 
 const initialState: RecipeState = {
 	recipe: {
-		cookbookID: "0",
+		cookbookID: "000000000000000000000000",
 		spoonacularID: 0,
 		ingredients: [
 			{ name: "Spinach", amount: 1, unit: "cup" },
@@ -45,7 +45,6 @@ export const recipeSlice = createSlice({
 });
 
 export const { setRecipe } = recipeSlice.actions;
-
 export const selectRecipe = (state: RootState) => state.recipe.recipe;
 
 export default recipeSlice.reducer;

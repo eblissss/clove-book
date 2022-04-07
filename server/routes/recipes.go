@@ -105,7 +105,7 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	MAX_RECIPES := 30
+	// MAX_RECIPES := 30
 
 	query, _ := c.GetQuery("query")
 
@@ -130,16 +130,17 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 		return
 	}
 
-	cbAmount := len(foundRecipes)
-	if cbAmount < MAX_RECIPES {
-		if query == "" {
-			spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
-			foundRecipes = append(foundRecipes, spoonResults...)
-		} else {
-			spoonResults := r.searchSpoonacularRecipes(c, query, []string{}, MAX_RECIPES-cbAmount)
-			foundRecipes = append(foundRecipes, spoonResults...)
-		}
-	}
+	// UNCOMMENT TO SEARCH SPOONACULAR
+	// cbAmount := len(foundRecipes)
+	// if cbAmount < MAX_RECIPES {
+	// 	if query == "" {
+	// 		spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
+	// 		foundRecipes = append(foundRecipes, spoonResults...)
+	// 	} else {
+	// 		spoonResults := r.searchSpoonacularRecipes(c, query, []string{}, MAX_RECIPES-cbAmount)
+	// 		foundRecipes = append(foundRecipes, spoonResults...)
+	// 	}
+	// }
 
 	c.JSON(http.StatusOK, foundRecipes)
 }

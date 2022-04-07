@@ -174,7 +174,7 @@ function NutritionList() {
 	};
 
 	const saveNutritions = () => {
-		dispatch(setNutrients(nutriList));
+		dispatch(setNutrients([...nutriList]));
 	};
 	document
 		.getElementById("createSubmit")

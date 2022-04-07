@@ -1,7 +1,7 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, LinearProgress, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { SimpleRecipe } from "../../api/models";
-import { getFavorites, getUser } from "../../api/requests";
+import { getFavorites } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
@@ -15,8 +15,8 @@ const fakeJSON: SimpleRecipe[] = [];
 for (let i = 0; i < 12; i++) {
 	fakeJSON.push({
 		spoonacularID: 0,
-		cookbookID: "0",
-		name: "Vegan Cheesecake",
+		cookbookID: "624f4f2df4b2bf0444631525",
+		name: "hello",
 		imageURL: "https://source.unsplash.com/random",
 		totalTime: 10,
 		tags: ["dessert", "grass"],
@@ -35,12 +35,11 @@ function Saved() {
 
 	useEffect(() => {
 		if (collection === "Favorites") {
-			// getUser(userID).then((data) => {
-			// 	getFavorites(data.username, searchText).then((recipes) => {
-			// 		setFavRecipes(recipes);
-			// 		setLoading(false);
-			// 	});
-			// });
+			setLoading(true);
+			getFavorites(userID, searchText).then((recipes) => {
+				setFavRecipes(recipes);
+				setLoading(false);
+			});
 		} else if (collection === "My Recipes") {
 			// probably something like getUserRecipes(userID)
 		}
@@ -83,7 +82,7 @@ function Saved() {
 						}}
 					>
 						<MenuSelector
-							getCollection={updateCollection}
+							getCollection={setCollection}
 							props={{ flex: "1" }}
 						/>
 						<SearchBar
@@ -91,7 +90,19 @@ function Saved() {
 							paperProps={{ flex: "2" }}
 						/>
 					</Container>
-					<RecipeGrid recipes={fakeJSON} columns={16} />
+					{console.log(collection)}
+					{loading ? (
+						<LinearProgress />
+					) : (
+						<RecipeGrid
+							recipes={
+								collection === "Favorites"
+									? favRecipes
+									: myRecipes
+							}
+							columns={16}
+						/>
+					)}
 				</Container>
 			</Container>
 		</Box>

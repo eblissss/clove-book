@@ -50,7 +50,7 @@ function LoggedIn() {
 
 				getFavoriteIDs(userID, "").then((data) => {
 					console.log(data);
-					dispatch(setInitialFavorites({ data }));
+					dispatch(setInitialFavorites({ data, userID }));
 				});
 			} else {
 				navigate("/");

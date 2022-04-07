@@ -12,6 +12,7 @@ import {
 	IconButton,
 	Stack,
 	LinearProgress,
+	Tooltip,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -71,9 +72,6 @@ function RecipeModalContent({ recipe }: contentProps) {
 
 	const toggleFav = () => {
 		dispatch(updateFavorite({ id: recipe.cookbookID, set: !isFavorited }));
-		getFavoriteIDs(userID, "").then((data) => {
-			console.log(data);
-		});
 	};
 
 	const deleteDialog = () => {};
@@ -187,41 +185,59 @@ function RecipeModalContent({ recipe }: contentProps) {
 							}}
 						>
 							{isFavorited ? (
-								<Favorited sx={{ fontSize: "50px" }} />
+								<Favorited
+									sx={{
+										color: "primary.contrastText",
+										fontSize: "50px",
+									}}
+								/>
 							) : (
-								<Unfavorited sx={{ fontSize: "50px" }} />
+								<Tooltip title="Add to favorites">
+									<Unfavorited
+										sx={{
+											color: "primary.contrastText",
+											fontSize: "50px",
+										}}
+									/>
+								</Tooltip>
 							)}
 						</IconButton>
 						{/* EDIT AND DELETE MENU */}
 						{canEdit ? (
-							<SpeedDial
-								ariaLabel="editDial"
-								icon={
-									<SpeedDialIcon
-										icon={<MenuIcon />}
-										openIcon={
-											<EditIcon
-												sx={{ fontSize: "50px" }}
-											/>
-										}
-										sx={{ height: "72px", width: "72px" }}
-										onClick={edit}
+							<>
+								<IconButton size="large" sx={{}} onClick={edit}>
+									<EditIcon
+										sx={{ color: "primary.textContrast" }}
 									/>
-								}
-								direction="right"
-							>
-								<SpeedDialAction
-									icon={
-										<DeleteIcon sx={{ fontSize: "50px" }} />
-									}
-									tooltipTitle={"Delete"}
-									sx={{
-										bgcolor: "primary.main",
-									}}
-									onClick={deleteDialog}
-								/>
-							</SpeedDial>
+								</IconButton>
+								<IconButton>
+									<DeleteIcon />
+								</IconButton>
+							</>
 						) : (
+							// <SpeedDial
+
+							// 	icon={
+							// 		<SpeedDialIcon
+							// 			icon={}
+
+							// 			sx={{ height: "72px", width: "72px" }}
+							// 			onClick={edit}
+							// 		/>
+							// 	}
+							// 	direction="right"
+							// >
+							// 	<SpeedDialAction
+							// 		icon={
+							// 			<DeleteIcon sx={{ fontSize: "50px" }} />
+							// 		}
+							// 		tooltipTitle={"Delete"}
+							// 		sx={{
+							// 			bgcolor: "primary.main",
+							// 		}}
+							// 		onClick={deleteDialog}
+							// 	/>
+							// </SpeedDial>
 							<></>
 						)}
 					</Container>

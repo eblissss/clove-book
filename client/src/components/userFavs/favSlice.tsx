@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { enableMapSet } from "immer";
-import { getFavoriteIDs, toggleFavorite } from "../../api/requests";
+import { toggleFavorite } from "../../api/requests";
 import { RootState } from "../../app/store";
 
 enableMapSet();
@@ -33,14 +33,14 @@ export const favoriteSlice = createSlice({
 				state.favoriteSet.delete(action.payload.id);
 			}
 			// API Call
-			console.log("favorite", action.payload.set, action.payload.id);
 			toggleFavorite(state.userID, action.payload.set, action.payload.id);
 		},
 		setInitialFavorites: (
 			state,
-			action: PayloadAction<{ data: string[] }>
+			action: PayloadAction<{ data: string[]; userID: string }>
 		) => {
 			state.favoriteSet = new Set(action.payload.data);
+			state.userID = action.payload.userID;
 		},
 	},
 });

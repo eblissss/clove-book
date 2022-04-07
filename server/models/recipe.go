@@ -52,11 +52,14 @@ type SpoonacularSearchResponse struct {
 }
 
 type SpoonacularRecipe struct {
-	RecipeName    string       `json:"title"`
-	SpoonacularID int64        `json:"id"`
-	ImageURL      string       `json:"image"`
-	TotalTime     int64        `json:"readyInMinutes"`
-	Ingredients   []Ingredient `json:"extendedIngredients"`
+	RecipeName    string          `json:"title"`
+	SpoonacularID int64           `json:"id"`
+	ImageURL      string          `json:"image"`
+	TotalTime     int64           `json:"readyInMinutes"`
+	Ingredients   []Ingredient    `json:"extendedIngredients"`
+	Instructions  []Instruction   `json:"instructions"`
+	Nutrition     RecipeNutrients `json:"nutrients"`
+	Author        string          `json:"sourceName"`
 
 	// there has to be a better way to save tags
 	IsCheap       bool `json:"cheap"`

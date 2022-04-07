@@ -10,6 +10,7 @@ import (
 	"server/lib/creds"
 	"server/models"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -73,13 +74,40 @@ func (r *Client) CreateRecipe(c *gin.Context) {
 		})
 }
 
-// Kate wrote this
+func (r *Client) GetRecipe(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+
+	id := c.Params.ByName("id")
+
+	// Verify user is logged in
+
+	cookie, err := c.Cookie("token")
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+	if _, ok := creds.VerifyToken(c, cookie); !ok {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	// successful parse means it's a spoonacular id
+	if _, err := strconv.ParseInt(id, 10, 32); err == nil {
+		r.getSpoonacularRecipe(c, id)
+		return
+	}
+
+	r.getCookbookRecipe(ctx, c, id)
+}
+
 func (r *Client) SearchRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	MAX_RECIPES := 30
+
 	query, _ := c.GetQuery("query")
-	// pattern := fmt.Sprintf("%s", query)
 
 	cur, err := r.StubCollection.Find(ctx,
 		// still not fuzzy but partial at least
@@ -102,80 +130,61 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 		return
 	}
 
+	cbAmount := len(foundRecipes)
+	if cbAmount < MAX_RECIPES {
+		if query == "" {
+			spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
+			foundRecipes = append(foundRecipes, spoonResults...)
+		} else {
+			spoonResults := r.searchSpoonacularRecipes(c, query, []string{}, MAX_RECIPES-cbAmount)
+			foundRecipes = append(foundRecipes, spoonResults...)
+		}
+	}
+
 	c.JSON(http.StatusOK, foundRecipes)
 }
 
-func (r *Client) GetRecipe(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
-	defer cancel()
-
-	id := c.Params.ByName("id")
-
-	// Verify user is logged in
-
-	cookie, err := c.Cookie("token")
-	if err != nil {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-	if _, ok := creds.VerifyToken(c, cookie); !ok {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-
-	// successful parse means it's a spoonacular id
-	if _, err := strconv.ParseInt(id, 10, 32); err == nil {
-		r.getSpoonacularRecipe(ctx, c, id)
-		return
-	}
-
-	r.getCookbookRecipe(ctx, c, id)
-}
-
-func (r *Client) searchSpoonacularRecipes(ctx context.Context, c *gin.Context, query string, tags []string) {
+func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []string, amount int) []models.RecipeStub {
 	resp, err := http.Get(spoonacularBaseURL + "/recipes/complexSearch?query=" + query +
+		"&number=" + strconv.Itoa(amount) +
 		"&apiKey=" + os.Getenv("API_KEY"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipes"})
-		return
+		return []models.RecipeStub{}
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not read spoonacular response"})
-		return
+		return []models.RecipeStub{}
 	}
 
 	var searchResponse models.SpoonacularSearchResponse
 	json.Unmarshal(body, &searchResponse)
 
-	foundRecipes := fmtSpoonacularSearchRes(searchResponse)
-
-	c.JSON(http.StatusOK, foundRecipes)
+	return fmtSpoonacularSearchRes(searchResponse)
 }
 
-func (r *Client) getRandomSpoonacularRecipes(ctx context.Context, c *gin.Context) {
-	resp, err := http.Get(spoonacularBaseURL + "/recipes/random?apiKey=" +
-		os.Getenv("API_KEY"))
+func (r *Client) getRandomSpoonacularRecipes(c *gin.Context, amount int) []models.RecipeStub {
+	resp, err := http.Get(spoonacularBaseURL + "/recipes/random?number=" + strconv.Itoa(amount) +
+		"&apiKey=" + os.Getenv("API_KEY"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipes"})
-		return
+		return []models.RecipeStub{}
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not read spoonacular response"})
-		return
+		return []models.RecipeStub{}
 	}
 
 	var searchResponse models.SpoonacularSearchResponse
 	json.Unmarshal(body, &searchResponse)
 
-	foundRecipes := fmtSpoonacularSearchRes(searchResponse)
-
-	c.JSON(http.StatusOK, foundRecipes)
+	return fmtSpoonacularSearchRes(searchResponse)
 }
 
 // Format a spoonacular search result into stubs
@@ -198,8 +207,58 @@ func fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse) []model
 	return foundRecipes
 }
 
+func (r *Client) SearchRecipesIngredients(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// MAX_RECIPES := 30
+
+	query, _ := c.GetQuery("query")
+	ingredientsQuery, _ := c.GetQuery("ingredients")
+	ingredients := strings.Split(ingredientsQuery, ",")
+
+	cur, err := r.StubCollection.Find(ctx,
+		bson.M{
+			"name":             primitive.Regex{Pattern: query, Options: "i"},
+			"ingredients.name": bson.M{"$in": ingredients},
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	foundRecipes := make([]models.RecipeStub, 0)
+
+	err = cur.All(ctx, &foundRecipes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Worry about spoonacular later
+	// cbAmount := len(foundRecipes)
+	// if cbAmount < MAX_RECIPES {
+	// 	if query == "" {
+	// 		spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
+	// 		foundRecipes = append(foundRecipes, spoonResults...)
+	// 	} else {
+	// 		spoonResults := r.searchSpoonacularRecipes(c, query, []string{}, MAX_RECIPES-cbAmount)
+	// 		foundRecipes = append(foundRecipes, spoonResults...)
+	// 	}
+	// }
+
+	c.JSON(http.StatusOK, foundRecipes)
+}
+
 // https://spoonacular.com/food-api/docs#Get-Recipe-Information
-func (r *Client) getSpoonacularRecipe(ctx context.Context, c *gin.Context, id string) {
+func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
+	if id == "0" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipe"})
+		return
+	}
+
 	resp, err := http.Get(spoonacularBaseURL + "/recipes/" + id + "/information?apiKey=" +
 		os.Getenv("API_KEY") + "&includeNutrition=true")
 	if err != nil {
@@ -214,52 +273,66 @@ func (r *Client) getSpoonacularRecipe(ctx context.Context, c *gin.Context, id st
 		return
 	}
 
-	var recipe models.SpoonacularRecipe
-	json.Unmarshal(body, &recipe)
+	var spoonRecipe models.SpoonacularRecipe
+	json.Unmarshal(body, &spoonRecipe)
 
-	stub := models.RecipeStub{
-		CookbookID:    primitive.NilObjectID,
-		SpoonacularID: recipe.SpoonacularID,
-		ImageURL:      recipe.ImageURL,
-		RecipeName:    recipe.RecipeName,
-		IsUserRecipe:  false,
-		TotalTime:     recipe.TotalTime,
-		Ingredients:   recipe.Ingredients,
+	recipe := models.Recipe{
+		RecipeStub: models.RecipeStub{
+			CookbookID:    primitive.NilObjectID,
+			SpoonacularID: spoonRecipe.SpoonacularID,
+			ImageURL:      spoonRecipe.ImageURL,
+			RecipeName:    spoonRecipe.RecipeName,
+			IsUserRecipe:  false,
+			TotalTime:     spoonRecipe.TotalTime,
+			Ingredients:   spoonRecipe.Ingredients,
+			Tags:          []string{},
+		},
+		Nutrients:    &spoonRecipe.Nutrition,
+		Author:       spoonRecipe.Author,
+		AuthorID:     primitive.NilObjectID,
+		CookTime:     0,
+		PrepTime:     0,
+		Instructions: spoonRecipe.Instructions,
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
 	}
 
 	// this is dumb there has to be a better way but whatever no one has to know
 	// TODO: standardize tag names?
-	if recipe.IsCheap {
-		stub.Tags = append(stub.Tags, "cheap")
+	if spoonRecipe.IsCheap {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "cheap")
 	}
-	if recipe.IsDairyFree {
-		stub.Tags = append(stub.Tags, "dairy free")
+	if spoonRecipe.IsDairyFree {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "dairy free")
 	}
-	if recipe.IsGlutenFree {
-		stub.Tags = append(stub.Tags, "gluten free")
+	if spoonRecipe.IsGlutenFree {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "gluten free")
 	}
-	if recipe.IsKeto {
-		stub.Tags = append(stub.Tags, "keto")
+	if spoonRecipe.IsKeto {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "keto")
 	}
-	if recipe.IsSustainable {
-		stub.Tags = append(stub.Tags, "sustainable")
+	if spoonRecipe.IsSustainable {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "sustainable")
 	}
-	if recipe.IsVegan {
-		stub.Tags = append(stub.Tags, "vegan")
+	if spoonRecipe.IsVegan {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "vegan")
 	}
-	if recipe.IsVegetarian {
-		stub.Tags = append(stub.Tags, "vegetarian")
+	if spoonRecipe.IsVegetarian {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "vegetarian")
 	}
-	if recipe.IsHealthy {
-		stub.Tags = append(stub.Tags, "healthy")
+	if spoonRecipe.IsHealthy {
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "healthy")
 	}
 
-	c.JSON(http.StatusOK, stub)
+	c.JSON(http.StatusOK, recipe)
 }
 
-func (r *Client) getPopularRecipes(ctx context.Context, c *gin.Context) {
+func (r *Client) GetPopularRecipes(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
 
-	popularIds := [20]string{"0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
+	popularIds := [20]string{"624900e1c116048b1d3750b0", "624905de96a29b2293938153", "62490c15b9e2b95d03d100aa", "624a0cbd8dd7ab1c8e9711b8",
+		"0", "0", "0", "0", "0", "0",
 		"0", "0", "0", "0", "0", "0", "0", "0", "0", "0"}
 
 	objectIds := make([]primitive.ObjectID, len(popularIds))
@@ -271,26 +344,24 @@ func (r *Client) getPopularRecipes(ctx context.Context, c *gin.Context) {
 	}
 
 	// Find instead of findOne
-	res := r.RecipeCollection.FindOne(ctx,
+	cur, err := r.RecipeCollection.Find(ctx,
 		bson.M{"cookbookID": bson.M{"$in": objectIds}},
 	)
-	if res.Err() != nil {
-		if res.Err() == mongo.ErrNoDocuments {
-			c.Status(http.StatusNotFound)
-			return
-		}
-		c.Status(http.StatusInternalServerError)
-		return
-	}
 
-	recipe := &models.Recipe{}
-	err := res.Decode(recipe)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	c.JSON(http.StatusOK, recipe)
+	foundRecipes := make([]models.RecipeStub, 0)
+
+	err = cur.All(ctx, &foundRecipes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, foundRecipes)
 }
 
 func (r *Client) getCookbookRecipe(ctx context.Context, c *gin.Context, id string) {
@@ -346,6 +417,7 @@ func (r *Client) UpdateRecipe(c *gin.Context) {
 		"tags":         recipe.Tags,
 		"ingredients":  recipe.Ingredients,
 		"instructions": recipe.Instructions,
+		"nutrients":    recipe.Nutrients,
 		"updatedAt":    time.Now(),
 	}
 	result, err := r.RecipeCollection.UpdateOne(ctx, bson.M{"cookbookID": cookbookID}, bson.M{"$set": update})
@@ -482,17 +554,6 @@ func (r *Client) UpdateFavorite(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, bson.M{"updated": cookbookID})
-}
-
-func (r *Client) UpdateAllFavorites(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	data := c.Params.ByName("favs")
-	userID := c.Params.ByName("userID")
-
-	r.FavoriteCollection.UpdateOne(ctx, bson.M{"user_id": userID}, bson.M{"favorites": data})
-	c.JSON(http.StatusOK, bson.M{"newFavorites": data})
 }
 
 func (r *Client) ViewFavorites(c *gin.Context) {

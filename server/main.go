@@ -31,11 +31,12 @@ func main() {
 	r.POST("/recipes", c.CreateRecipe)
 	r.GET("/recipes", c.SearchRecipes)
 	r.GET("/recipes/:id", c.GetRecipe)
+	r.GET("/recipes/popular", c.GetPopularRecipes)
+	r.GET("/recipes/ingredients", c.SearchRecipesIngredients)
 	r.PUT("/recipes/:id", c.UpdateRecipe)
 	r.DELETE("/recipes/:id", c.DeleteRecipe)
 	r.PUT("/users/:userID/favorites", c.UpdateFavorite)
 	r.GET("/users/:userID/favorites", c.ViewFavorites)
-	r.PUT("/users/:userID/allfavorites", c.UpdateAllFavorites)
 	// Users
 	r.POST("/users/auth", c.AuthUser)
 	r.GET("/users/refresh", c.RefreshToken)

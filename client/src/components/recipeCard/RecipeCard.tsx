@@ -26,7 +26,6 @@ export function RecipeCard(props: SimpleRecipe) {
 	}
 
 	const cardTagClick = (e: any) => {
-		console.log(e.target.textContent);
 		e.stopPropagation();
 
 		dispatch(addSearchTag(e.target.textContent));

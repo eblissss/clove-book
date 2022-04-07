@@ -3,6 +3,27 @@ import { RootState } from "../../app/store";
 
 import { Ingredient, Instruction, Nutrient } from "../../api/models";
 
+const defaultNutritions: string[] = ["Sugar", "Protein", "Sodium", "Calories"];
+
+const allNutrients = [
+	"Calories",
+	"Fat",
+	"Saturated Fat",
+	"Carbohydrates",
+	"Sugar",
+	"Cholestorol",
+	"Sodium",
+	"Protein",
+	"Fiber",
+];
+
+const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
+	name: name,
+	amount: "",
+	indented: defaultNutritions.includes(name),
+	percentOfDailyNeeds: 0,
+}));
+
 interface Creation {
 	ingredients: Ingredient[];
 	instructions: Instruction[];
@@ -13,7 +34,7 @@ interface Creation {
 const initialState: Creation = {
 	ingredients: [],
 	instructions: [],
-	nutrients: [],
+	nutrients: defaultNutri,
 	tags: [],
 };
 

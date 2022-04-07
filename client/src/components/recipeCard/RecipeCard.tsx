@@ -1,11 +1,9 @@
-import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Typography, alpha } from "@mui/material";
 import React from "react";
-
 import { SimpleRecipe } from "../../api/models";
 import { useAppDispatch } from "../../app/hooks";
 import { openModal, setModal } from "../recipeModal/modalSlice";
 import { addSearchTag } from "../searchBar/searchSlice";
-import { alpha } from "@mui/material";
 import Tag from "../tag/Tag";
 import { palette } from "../../theme";
 

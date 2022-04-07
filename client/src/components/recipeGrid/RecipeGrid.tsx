@@ -11,22 +11,19 @@ interface RecipeGridProps {
 
 function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 	return (
-		<>
-			<Masonry
-				columns={columns}
-				spacing={2}
-				// sx={{
-				// 	mt: "0px",
-				// 	justifyContent: "center",
-				// }}
-			>
-				{recipes?.map((recipe, i) => (
-					<Grid item key={i} xs={"auto"} md={6} lg={4}>
-						<RecipeCard {...recipe} />
-					</Grid>
-				))}
-			</Masonry>
-		</>
+		<Masonry
+			columns={3}
+			spacing={2}
+			sx={{
+				mt: "10px",
+				justifyContent: "top",
+			}}
+		>
+			{recipes?.map((recipe, i) => (
+				<RecipeCard key={i} {...recipe} />
+			))}
+		</Masonry>
+
 		// <Grid
 		// 	container
 		// 	spacing={3}

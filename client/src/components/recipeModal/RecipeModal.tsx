@@ -6,13 +6,13 @@ import {
 	Box,
 	CardMedia,
 	Container,
-	SpeedDialIcon,
-	SpeedDial,
-	SpeedDialAction,
 	IconButton,
-	Stack,
 	LinearProgress,
 	Tooltip,
+	Dialog,
+	DialogTitle,
+	Button,
+	DialogActions,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -22,17 +22,17 @@ import { closeModal, selectModal } from "./modalSlice";
 
 import { Recipe } from "../../api/models";
 import Tag from "../tag/Tag";
-import { getFavoriteIDs, getRecipe } from "../../api/requests";
+import { deleteRecipe, getRecipe } from "../../api/requests";
 
 import {
 	Edit as EditIcon,
 	DeleteForever as DeleteIcon,
-	Menu as MenuIcon,
 	FavoriteBorder as Unfavorited,
 	Favorite as Favorited,
 } from "@mui/icons-material";
 import { store } from "../../app/store";
 import { setRecipe } from "./recipeSlice";
+
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { setCreationEditing } from "../../pages/create/creationUpdateSlice";
@@ -41,14 +41,14 @@ import { selectFavoriteByID, updateFavorite } from "../userFavs/favSlice";
 
 interface contentProps {
 	recipe: Recipe;
+	setOpenDeleteDialog: Function;
 }
 
-function RecipeModalContent({ recipe }: contentProps) {
+function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const [canEdit, setCanEdit] = useState(false);
-	const userID = store.getState().user.user.userID;
 
 	if (recipe == undefined) {
 		recipe = dataA;
@@ -63,18 +63,20 @@ function RecipeModalContent({ recipe }: contentProps) {
 		setCanEdit(recipe.authorID === userID);
 	}, []);
 
-	const edit = () => {
+	const doEdit = () => {
 		dispatch(setRecipe(recipe));
 		dispatch(setCreationEditing(recipe.cookbookID));
 		dispatch(closeModal());
 		navigate("/create");
 	};
 
+	const doDelete = () => {
+		setOpenDeleteDialog(true);
+	};
+
 	const toggleFav = () => {
 		dispatch(updateFavorite({ id: recipe.cookbookID, set: !isFavorited }));
 	};
-
-	const deleteDialog = () => {};
 
 	return (
 		<Box
@@ -181,16 +183,18 @@ function RecipeModalContent({ recipe }: contentProps) {
 							sx={{
 								height: "72px",
 								width: "72px",
-								mr: "1rem",
+								// mr: "1rem",
 							}}
 						>
 							{isFavorited ? (
-								<Favorited
-									sx={{
-										color: "primary.contrastText",
-										fontSize: "50px",
-									}}
-								/>
+								<Tooltip title="Remove from favorites">
+									<Favorited
+										sx={{
+											color: "primary.contrastText",
+											fontSize: "50px",
+										}}
+									/>
+								</Tooltip>
 							) : (
 								<Tooltip title="Add to favorites">
 									<Unfavorited
@@ -205,39 +209,32 @@ function RecipeModalContent({ recipe }: contentProps) {
 						{/* EDIT AND DELETE MENU */}
 						{canEdit ? (
 							<>
-								<IconButton size="large" sx={{}} onClick={edit}>
-									<EditIcon
-										sx={{ color: "primary.textContrast" }}
-									/>
+								<IconButton
+									sx={{
+										height: "72px",
+										width: "72px",
+									}}
+									onClick={doEdit}
+								>
+									<Tooltip title="Edit this recipe">
+										<EditIcon
+											sx={{
+												color: "primary.textContrast",
+											}}
+										/>
+									</Tooltip>
 								</IconButton>
-								<IconButton>
+								<IconButton
+									sx={{
+										height: "72px",
+										width: "72px",
+									}}
+									onClick={doDelete}
+								>
 									<DeleteIcon />
 								</IconButton>
 							</>
 						) : (
-							// <SpeedDial
-
-							// 	icon={
-							// 		<SpeedDialIcon
-							// 			icon={}
-
-							// 			sx={{ height: "72px", width: "72px" }}
-							// 			onClick={edit}
-							// 		/>
-							// 	}
-							// 	direction="right"
-							// >
-							// 	<SpeedDialAction
-							// 		icon={
-							// 			<DeleteIcon sx={{ fontSize: "50px" }} />
-							// 		}
-							// 		tooltipTitle={"Delete"}
-							// 		sx={{
-							// 			bgcolor: "primary.main",
-							// 		}}
-							// 		onClick={deleteDialog}
-							// 	/>
-							// </SpeedDial>
 							<></>
 						)}
 					</Container>
@@ -405,8 +402,34 @@ function RecipeModalContent({ recipe }: contentProps) {
 	);
 }
 
+function DeleteDialog({ id, setOpen }: { id: string; setOpen: Function }) {
+	const dispatch = useDispatch();
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+
+	const deleteDialog = () => {
+		deleteRecipe(id);
+		dispatch(closeModal());
+		setOpen(false);
+	};
+
+	return (
+		<Dialog open={true} onClose={handleClose}>
+			<DialogTitle>Delete recipe permanently?</DialogTitle>
+			<DialogActions>
+				<Button onClick={handleClose}>Cancel</Button>
+				<Button onClick={deleteDialog} variant="outlined" color="error">
+					Delete
+				</Button>
+			</DialogActions>
+		</Dialog>
+	);
+}
+
 const dataA: Recipe = {
-	cookbookID: "0",
+	cookbookID: "000000000000000000000000",
 	spoonacularID: 0,
 	ingredients: [
 		{ name: "Spinach", amount: 1, unit: "cup" },
@@ -439,6 +462,7 @@ function RecipeModal() {
 
 	const [recipe, setRecipe] = useState<Recipe>(dataA);
 	const [loading, setLoading] = useState(true);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
 	useEffect(() => {
 		if (open) {
@@ -470,8 +494,16 @@ function RecipeModal() {
 					<div>
 						{loading ? (
 							<LinearProgress />
+						) : openDeleteDialog ? (
+							<DeleteDialog
+								id={recipe.cookbookID}
+								setOpen={setOpenDeleteDialog}
+							/>
 						) : (
-							<RecipeModalContent recipe={recipe} />
+							<RecipeModalContent
+								recipe={recipe}
+								setOpenDeleteDialog={setOpenDeleteDialog}
+							/>
 						)}
 					</div>
 				</Fade>

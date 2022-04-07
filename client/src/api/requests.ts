@@ -96,6 +96,20 @@ export const getRecipes = (
 export const getRecipe = (id: string): Promise<models.Recipe> =>
 	requests.get(`/recipes/${id}`);
 
+export const getPopularRecipes = (): Promise<models.SimpleRecipe[]> =>
+	requests.get(`/recipes/popular`);
+
+export const searchRecipesIngredients = (
+	query: string,
+	tags: string[],
+	ingredients: string[]
+): Promise<models.SimpleRecipe[]> =>
+	requests.get("/recipes/ingredients", {
+		query: query,
+		tags: tags,
+		ingredients: ingredients,
+	});
+
 export const deleteRecipe = (cookbookID: string) =>
 	requests.delete(`/recipes/${cookbookID}`);
 

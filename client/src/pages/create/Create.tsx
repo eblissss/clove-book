@@ -234,12 +234,13 @@ function Create() {
 						variant="h6"
 						component="h6"
 						fontWeight={700}
-						sx={{ mr: "1rem", flex: 1, textAlign: "right" }}
+						sx={{ mr: "1rem", width: "auto", textAlign: "right" }}
 					>
 						Recipe Name:
 					</Typography>
 					<TextField
 						autoFocus
+						fullWidth
 						id="recipeName"
 						className="recipeInput"
 						placeholder="lentils"
@@ -257,7 +258,6 @@ function Create() {
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
-
 						justifyContent: "space-around",
 					}}
 				>
@@ -265,7 +265,7 @@ function Create() {
 						variant="h6"
 						component="h6"
 						fontWeight={700}
-						sx={{ mr: "1rem", flex: 1, textAlign: "right" }}
+						sx={{ mr: "1rem", width: "auto", textAlign: "right" }}
 					>
 						Image URL:
 					</Typography>

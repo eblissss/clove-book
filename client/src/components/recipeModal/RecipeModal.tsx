@@ -13,9 +13,11 @@ import {
 	DialogTitle,
 	Button,
 	DialogActions,
+	alpha,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
+import { palette } from "../../theme";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { closeModal, selectModal } from "./modalSlice";
@@ -87,7 +89,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				left: "50%",
 				transform: "translate(-50%, -50%)",
 				minWidth: "180px",
-				width: "70%",
+				width: "50%",
 				minHeight: "90px",
 				bgcolor: "primary.light",
 				border: "2px solid #fff",
@@ -104,37 +106,39 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				thumbSize={180}
 				style={{ height: 600, overflowX: "hidden" }}
 			>
-				{/* IMAGE */}
-				<CardMedia
-					component="img"
-					sx={{
-						height: "400px",
-						borderRadius: "20px 20px 0px 0px",
-					}}
-					image={
-						recipe.imageURL
-							? recipe.imageURL
-							: "https://source.unsplash.com/random"
-					}
-					alt="food image"
-				/>
-				{/* TAGS */}
-				<Container
-					disableGutters
-					sx={{
-						position: "absolute",
-						display: "flex",
-						flexWrap: "wrap",
-						top: "350px",
-						left: "10px",
-						width: "80%",
-					}}
-				>
-					{recipe.tags?.map((tag, i) => (
-						<Tag name={tag} key={tag + i} />
-					))}
-				</Container>
+				{" "}
+					{/* IMAGE */}
+					<CardMedia
+						component="img"
+						sx={{
+							height: "400px",
+							borderRadius: "20px 20px 0px 0px",
+						}}
+						image={
+							recipe.imageURL
+								? recipe.imageURL
+								: "https://source.unsplash.com/random"
+						}
+						alt="food image"
+					/>
 
+					{/* TAGS */}
+					<Container
+						disableGutters
+						sx={{
+							position: "absolute",
+							display: "flex",
+							flexWrap: "wrap",
+							top: "350px",
+							left: "10px",
+							width: "80%",
+						}}
+					>
+						{recipe.tags?.map((tag, i) => (
+							<Tag name={tag} key={tag + i} />
+						))}
+					</Container>
+				
 				{/* TITLE AND SUBTITLE */}
 				<Box
 					component="div"
@@ -174,43 +178,30 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							display: "inline-flex",
 							alignItems: "center",
 							justifyContent: "right",
+							width: "250px",
 						}}
 					>
-						<IconButton
-							aria-label="favorite"
-							size="large"
-							onClick={toggleFav}
-							sx={{
-								height: "72px",
-								width: "72px",
-								// mr: "1rem",
-							}}
-						>
-							{isFavorited ? (
-								<Tooltip title="Remove from favorites">
-									<Favorited
-										sx={{
-											color: "primary.contrastText",
-											fontSize: "50px",
-										}}
-									/>
-								</Tooltip>
-							) : (
-								<Tooltip title="Add to favorites">
-									<Unfavorited
-										sx={{
-											color: "primary.contrastText",
-											fontSize: "50px",
-										}}
-									/>
-								</Tooltip>
-							)}
-						</IconButton>
 						{/* EDIT AND DELETE MENU */}
 						{canEdit ? (
 							<>
 								<IconButton
 									sx={{
+										margin: "8px",
+										height: "72px",
+										width: "72px",
+									}}
+									onClick={doDelete}
+								>
+									<DeleteIcon
+										sx={{
+											fontSize: "2em",
+											color: "primary.contrastText",
+										}}
+									/>
+								</IconButton>
+								<IconButton
+									sx={{
+										margin: "8px",
 										height: "72px",
 										width: "72px",
 									}}
@@ -219,27 +210,49 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 									<Tooltip title="Edit this recipe">
 										<EditIcon
 											sx={{
-												color: "primary.textContrast",
+												fontSize: "2em",
+												color: "primary.contrastText",
 											}}
 										/>
 									</Tooltip>
-								</IconButton>
-								<IconButton
-									sx={{
-										height: "72px",
-										width: "72px",
-									}}
-									onClick={doDelete}
-								>
-									<DeleteIcon />
 								</IconButton>
 							</>
 						) : (
 							<></>
 						)}
+						<IconButton
+					aria-label="favorite"
+					size="large"
+					onClick={toggleFav}
+					sx={{
+						height: "72px",
+						width: "72px",
+						margin: "8px",
+						// mr: "1rem",
+					}}
+				>
+					{isFavorited ? (
+						<Tooltip title="Remove from favorites">
+							<Favorited
+								sx={{
+									color: "secondary.main",
+									fontSize: "2em",
+								}}
+							/>
+						</Tooltip>
+					) : (
+						<Tooltip title="Add to favorites">
+							<Unfavorited
+								sx={{
+									color: "primary.contrastText",
+									fontSize: "2em",
+								}}
+							/>
+						</Tooltip>
+					)}
+				</IconButton>
 					</Container>
 				</Box>
-
 				<Container disableGutters sx={{ p: "10px", display: "flex" }}>
 					<Container
 						disableGutters
@@ -320,6 +333,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							>
 								{recipe.nutrients?.good
 									.concat(recipe.nutrients?.bad)
+									.filter((x) => x.amount !== "")
 									.map((nutrient) => (
 										<Typography
 											key={nutrient.name}

@@ -25,84 +25,23 @@ const (
 func TestUsers(t *testing.T) {
 	c, err := routes.NewTest()
 	assert.NoError(t, err)
-	code := ""
-	userID := ""
+	var code string
+	var userID string
 	var token *http.Cookie
 
 	// Auth user
 	t.Run("AuthUser", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		ctx, _ := gin.CreateTestContext(w)
-
-		body, err := json.Marshal(map[string]interface{}{
-			"username": USERNAME,
-			"email":    EMAIL,
-		})
-		assert.NoError(t, err)
-
-		ctx.Request = httptest.NewRequest(
-			http.MethodPost,
-			"/users/auth",
-			io.NopCloser(bytes.NewReader(body)),
-		)
-
-		c.AuthUser(ctx)
-		assert.Equal(t, http.StatusOK, w.Code)
-
-		resp, err := ioutil.ReadAll(w.Result().Body)
-		assert.NoError(t, err)
-		code = strings.Replace(string(resp), "\"", "", -1)
+		code = SetupAuthUser(t, c)
 	})
 
 	// Register user
 	t.Run("RegisterUser", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		ctx, _ := gin.CreateTestContext(w)
-
-		body, err := json.Marshal(map[string]interface{}{
-			"username":  USERNAME,
-			"email":     EMAIL,
-			"firstName": "meme",
-			"lastName":  "machine",
-			"password":  PASSWORD,
-		})
-		assert.NoError(t, err)
-
-		ctx.Request = httptest.NewRequest(
-			http.MethodPost,
-			fmt.Sprintf("/users?code=%s", code),
-			io.NopCloser(bytes.NewReader(body)),
-		)
-
-		c.RegisterUser(ctx)
-		assert.Equal(t, http.StatusOK, w.Code)
-
-		resp, err := ioutil.ReadAll(w.Result().Body)
-		assert.NoError(t, err)
-		r := make(map[string]interface{})
-		json.Unmarshal(resp, &r)
-
-		var ok bool
-		userID, ok = r["userID"].(string)
-		assert.True(t, ok)
+		userID = SetupRegisterUser(t, c, code)
 	})
 
 	// Login user
 	t.Run("LoginUser", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		ctx, _ := gin.CreateTestContext(w)
-
-		assert.NoError(t, err)
-
-		ctx.Request = httptest.NewRequest(
-			http.MethodGet,
-			fmt.Sprintf("/users/login?username=%s&password=%s", USERNAME, PASSWORD),
-			nil,
-		)
-
-		c.LoginUser(ctx)
-		assert.Equal(t, http.StatusOK, w.Code)
-		token = w.Result().Cookies()[0]
+		token = SetupLoginUser(t, c)
 	})
 
 	// Get user
@@ -163,4 +102,77 @@ func TestUsers(t *testing.T) {
 
 		assert.Equal(t, http.StatusOK, w.Code)
 	})
+}
+
+func SetupAuthUser(t *testing.T, c *routes.Client) (code string) {
+	w := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(w)
+
+	body, err := json.Marshal(map[string]interface{}{
+		"username": USERNAME,
+		"email":    EMAIL,
+	})
+	assert.NoError(t, err)
+
+	ctx.Request = httptest.NewRequest(
+		http.MethodPost,
+		"/users/auth",
+		io.NopCloser(bytes.NewReader(body)),
+	)
+
+	c.AuthUser(ctx)
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	resp, err := ioutil.ReadAll(w.Result().Body)
+	assert.NoError(t, err)
+	return strings.Replace(string(resp), "\"", "", -1)
+}
+
+func SetupRegisterUser(t *testing.T, c *routes.Client, code string) (userID string) {
+	w := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(w)
+
+	body, err := json.Marshal(map[string]interface{}{
+		"username":  USERNAME,
+		"email":     EMAIL,
+		"firstName": "meme",
+		"lastName":  "machine",
+		"password":  PASSWORD,
+	})
+	assert.NoError(t, err)
+
+	ctx.Request = httptest.NewRequest(
+		http.MethodPost,
+		fmt.Sprintf("/users?code=%s", code),
+		io.NopCloser(bytes.NewReader(body)),
+	)
+
+	c.RegisterUser(ctx)
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	resp, err := ioutil.ReadAll(w.Result().Body)
+	assert.NoError(t, err)
+	r := make(map[string]interface{})
+	json.Unmarshal(resp, &r)
+
+	var ok bool
+	userID, ok = r["userID"].(string)
+	assert.True(t, ok)
+
+	return userID
+}
+
+func SetupLoginUser(t *testing.T, c *routes.Client) *http.Cookie {
+	w := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(w)
+	ctx.Request = httptest.NewRequest(
+		http.MethodGet,
+		fmt.Sprintf("/users/login?username=%s&password=%s", USERNAME, PASSWORD),
+		nil,
+	)
+
+	c.LoginUser(ctx)
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	return w.Result().Cookies()[0]
 }

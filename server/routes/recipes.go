@@ -26,17 +26,17 @@ func (r *Client) CreateRecipe(c *gin.Context) {
 	defer cancel()
 
 	var recipe models.Recipe
-
 	if err := c.BindJSON(&recipe); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
 		return
 	}
-
 	if err := r.Validator.Struct(recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not be validated"})
 		return
 	}
+
+	// TODO: Verify user is actually the one who made recipe
 
 	recipe.CookbookID = primitive.NewObjectID()
 	recipe.CreatedAt = time.Now()

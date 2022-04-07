@@ -153,6 +153,7 @@ function Create() {
 		// LISTS
 		dispatch(setIngredients(recipeInfo.ingredients));
 		dispatch(setInstructions(recipeInfo.instructions));
+		console.log(recipeInfo.nutrients.good.concat(recipeInfo.nutrients.bad));
 		dispatch(
 			setNutrients(
 				recipeInfo.nutrients.good.concat(recipeInfo.nutrients.bad)

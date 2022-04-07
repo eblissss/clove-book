@@ -23,6 +23,10 @@ export const store = configureStore({
 		recipe: recipeReducer,
 		favorite: favoriteReducer,
 	},
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: false,
+		}),
 });
 
 export type AppDispatch = typeof store.dispatch;

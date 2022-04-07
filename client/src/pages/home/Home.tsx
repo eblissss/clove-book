@@ -9,7 +9,6 @@ import RecipeGrid, {
 	RecipeStack,
 } from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
-import { getRandomRecipes } from "../../api/customRequests";
 import { getRecipes } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import { selectSearch } from "../../components/searchBar/searchSlice";

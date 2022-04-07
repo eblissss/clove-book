@@ -64,7 +64,7 @@ export const toggleFavorite = (
 	requests.put(
 		`/users/${userID}/favorites`,
 		{},
-		{ set: set, recipeID: recipeID }
+		{ set: set, cookbookID: recipeID }
 	);
 };
 

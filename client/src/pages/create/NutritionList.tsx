@@ -21,27 +21,6 @@ import { selectCreation, setNutrients } from "./creationSlice";
 import { Nutrient } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
 
-const defaultNutritions: string[] = ["Sugar", "Protein", "Sodium", "Calories"];
-
-const allNutrients = [
-	"Calories",
-	"Fat",
-	"Saturated Fat",
-	"Carbohydrates",
-	"Sugar",
-	"Cholestorol",
-	"Sodium",
-	"Protein",
-	"Fiber",
-];
-
-const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
-	name: name,
-	amount: "",
-	indented: defaultNutritions.includes(name),
-	percentOfDailyNeeds: 0,
-}));
-
 function NutritionItem({
 	nutrition,
 	remove,
@@ -121,7 +100,7 @@ function NutrientSelector({
 			<Menu
 				id="nutrientMenu"
 				anchorEl={anchorEl}
-				open={open}
+				open={open && items.length > 0}
 				onClose={handleClose}
 				MenuListProps={{
 					"aria-labelledby": "nutrient-button",
@@ -164,7 +143,7 @@ function NutrientSelector({
 function NutritionList() {
 	const dispatch = useDispatch();
 
-	const [nutriList, setNutriList] = useState<Nutrient[]>(defaultNutri);
+	const [nutriList, setNutriList] = useState<Nutrient[]>([]);
 
 	const reduxNutrients = useAppSelector(selectCreation).nutrients;
 	useEffect(() => {
@@ -177,6 +156,8 @@ function NutritionList() {
 				percentOfDailyNeeds: nutrient.percentOfDailyNeeds,
 			});
 		});
+		console.log(reduxNutrients);
+		console.log(nutriList);
 		setNutriList([...newNutrients]);
 	}, [reduxNutrients]);
 

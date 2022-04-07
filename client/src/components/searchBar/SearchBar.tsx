@@ -8,9 +8,7 @@ import { selectSearch, setSearchTags } from "./searchSlice";
 import Tag from "../tag/Tag";
 
 interface searchBarProps {
-	searchFunc: React.ChangeEventHandler<
-		HTMLInputElement | HTMLTextAreaElement
-	>;
+	searchFunc: React.MouseEventHandler<HTMLButtonElement>;
 	paperProps?: any;
 }
 
@@ -51,9 +49,14 @@ export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 				}}
 				placeholder="a lentil dish with plenty of greens..."
 				inputProps={{ "aria-label": "search recipes" }}
-				onChange={searchFunc}
+				// onChange={searchFunc}
 			/>
-			<IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+			<IconButton
+				type="button"
+				sx={{ p: "10px" }}
+				aria-label="search"
+				onClick={searchFunc}
+			>
 				<SearchIcon />
 			</IconButton>
 		</Paper>

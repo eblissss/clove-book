@@ -17,7 +17,7 @@ import {
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { selectCreation, setNutrients } from "./creationSlice";
+import { selectCreationNutrients, setNutrients } from "./creationSlice";
 import { Nutrient } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
 
@@ -145,7 +145,7 @@ function NutritionList() {
 
 	const [nutriList, setNutriList] = useState<Nutrient[]>([]);
 
-	const reduxNutrients = useAppSelector(selectCreation).nutrients;
+	const reduxNutrients = useAppSelector(selectCreationNutrients);
 	useEffect(() => {
 		const newNutrients: Nutrient[] = [];
 		reduxNutrients.forEach((nutrient) => {
@@ -157,7 +157,7 @@ function NutritionList() {
 			});
 		});
 		console.log(reduxNutrients);
-		console.log(nutriList);
+		// console.log(nutriList);
 		setNutriList([...newNutrients]);
 	}, [reduxNutrients]);
 
@@ -174,7 +174,7 @@ function NutritionList() {
 	};
 
 	const saveNutritions = () => {
-		dispatch(setNutrients([...nutriList]));
+		dispatch(setNutrients(nutriList));
 	};
 	document
 		.getElementById("createSubmit")

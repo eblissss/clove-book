@@ -1,5 +1,5 @@
-import { Divider, Grid, Stack } from "@mui/material";
-import React, { useState } from "react";
+import { Divider, Stack } from "@mui/material";
+import React from "react";
 import { SimpleRecipe } from "../../api/models";
 import { RecipeCard } from "../recipeCard/RecipeCard";
 import Masonry from "@mui/lab/Masonry";
@@ -12,7 +12,7 @@ interface RecipeGridProps {
 function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 	return (
 		<Masonry
-			columns={3}
+			columns={columns}
 			spacing={2}
 			sx={{
 				mt: "10px",

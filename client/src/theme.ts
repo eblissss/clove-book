@@ -4,7 +4,7 @@ import WebFont from "webfontloader";
 
 WebFont.load({
 	google: {
-		families: ["Overlock", "Prociono", "Sen"],
+		families: ["Overlock", "Prociono", "Sen", "Libre Baskerville"],
 	},
 });
 
@@ -87,7 +87,20 @@ const theme = createTheme({
 			styleOverrides: {
 				root: {
 					fontFamily: ["sans-serif", "Sen"],
+					position: "relative",
+					zIndex: "tooltip",
 					// color: palette.primary.contrastText,
+				},
+				h3: {
+					fontFamily: ["serif", "Libre Baskerville"],
+				},
+			},
+		},
+		MuiIconButton: {
+			styleOverrides: {
+				root: {
+					position: "relative",
+					//zIndex: "tooltip",
 				},
 			},
 		},

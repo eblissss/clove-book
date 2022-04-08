@@ -5,7 +5,7 @@ import {
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { selectCreation, setIngredients } from "./creationSlice";
+import { selectCreationIngredients, setIngredients } from "./creationSlice";
 import { Ingredient } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
 
@@ -120,7 +120,7 @@ function IngredientList() {
 
 	const [ingStrList, setIngStrList] = useState<IngStr[]>([]);
 
-	const reduxIngredients = useAppSelector(selectCreation).ingredients;
+	const reduxIngredients = useAppSelector(selectCreationIngredients);
 	useEffect(() => {
 		const tempIngStrList: IngStr[] = [];
 		reduxIngredients.forEach((ing) => {

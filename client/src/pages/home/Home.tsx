@@ -9,7 +9,11 @@ import RecipeGrid, {
 	RecipeStack,
 } from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
-import { getPopularRecipes, getRecipes } from "../../api/requests";
+import {
+	getPopularRecipes,
+	getRecipes,
+	searchRecipesIngredients,
+} from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import { selectSearch } from "../../components/searchBar/searchSlice";
 
@@ -56,14 +60,32 @@ function Home() {
 				...searchInfo.searchTags,
 				...searchInfo.filters,
 			];
-			getRecipes(searchVal, combinedTags).then((stuff) =>
-				setRecipes(stuff)
-			);
+			getRecipes(searchVal, combinedTags).then((stuff) => {
+				console.log(searchInfo.sort);
+				if (searchInfo.sort === "alpha") {
+					stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
+				}
+
+				setRecipes(stuff);
+			});
 		}
 	}
 
 	function ingredientSearch(ingredients: string[]) {
-		console.log(ingredients);
+		setSearching(true);
+		const searchVal = (
+			document.getElementById("search") as HTMLInputElement
+		).value;
+		const combinedTags = [...searchInfo.searchTags, ...searchInfo.filters];
+		searchRecipesIngredients(searchVal, combinedTags, ingredients).then(
+			(stuff) => {
+				if (searchInfo.sort === "alpha") {
+					stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
+				}
+
+				setRecipes(stuff);
+			}
+		);
 	}
 
 	return (
@@ -98,7 +120,7 @@ function Home() {
 							Explore New Recipes
 						</Typography>
 					)}
-					<RecipeGrid recipes={recipes} columns={12} />
+					<RecipeGrid recipes={recipes} columns={3} />
 				</Container>
 				<Container
 					sx={{

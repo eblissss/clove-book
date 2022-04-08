@@ -45,10 +45,6 @@ function Saved() {
 		}
 	}, [collection, searchText]);
 
-	function updateCollection(collection: string) {
-		setCollection(collection);
-	}
-
 	function search() {
 		const searchVal = (
 			document.getElementById("search") as HTMLInputElement
@@ -100,7 +96,7 @@ function Saved() {
 									? favRecipes
 									: myRecipes
 							}
-							columns={16}
+							columns={4}
 						/>
 					)}
 				</Container>

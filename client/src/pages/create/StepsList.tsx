@@ -5,10 +5,9 @@ import {
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { selectCreation, setInstructions } from "./creationSlice";
+import { selectCreationInstructions, setInstructions } from "./creationSlice";
 import { Instruction } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
-import { selectCreationUpdate } from "./creationUpdateSlice";
 
 function StepItem({
 	data,
@@ -82,7 +81,7 @@ function StepList() {
 
 	const [stepList, setStepList] = useState<Instruction[]>([]);
 
-	const reduxSteps = useAppSelector(selectCreation).instructions;
+	const reduxSteps = useAppSelector(selectCreationInstructions);
 	useEffect(() => {
 		const newSteps: Instruction[] = [];
 		reduxSteps.forEach((step) => {

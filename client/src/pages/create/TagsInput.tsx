@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
 import Tag from "../../components/tag/Tag";
-import { selectCreation, setRecipeTags } from "./creationSlice";
+import { selectCreationTags, setRecipeTags } from "./creationSlice";
 
 function TagsInput() {
 	const dispatch = useDispatch();
@@ -20,7 +20,7 @@ function TagsInput() {
 		setInput(e.target.value);
 	};
 
-	const reduxTags = useAppSelector(selectCreation).tags;
+	const reduxTags = useAppSelector(selectCreationTags);
 	useEffect(() => {
 		setTags(reduxTags);
 	}, [reduxTags]);

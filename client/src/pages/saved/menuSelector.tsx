@@ -13,10 +13,10 @@ interface SelectorProps {
 	props: any;
 }
 
-const textOptions = ["Favorites", "My Recipes"];
+const textOptions = ["My Recipes", "Favorites"];
 
 function menuSelector({ getCollection, props }: SelectorProps) {
-	const [text, setText] = useState(0);
+	const [text, setText] = useState(1);
 
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -30,9 +30,8 @@ function menuSelector({ getCollection, props }: SelectorProps) {
 	};
 
 	const handleCloseItem = () => {
+		getCollection(textOptions[1 - text]);
 		setText(1 - text);
-		getCollection(textOptions[text]);
-
 		setAnchorEl(null);
 	};
 

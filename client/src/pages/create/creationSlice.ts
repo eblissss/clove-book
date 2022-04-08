@@ -62,5 +62,12 @@ export const { setIngredients, setInstructions, setNutrients, setRecipeTags } =
 	creationSlice.actions;
 
 export const selectCreation = (state: RootState) => state.creation;
+export const selectCreationIngredients = (state: RootState) =>
+	state.creation.ingredients;
+export const selectCreationInstructions = (state: RootState) =>
+	state.creation.instructions;
+export const selectCreationNutrients = (state: RootState) =>
+	state.creation.nutrients;
+export const selectCreationTags = (state: RootState) => state.creation.tags;
 
 export default creationSlice.reducer;

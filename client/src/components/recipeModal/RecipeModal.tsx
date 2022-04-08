@@ -171,28 +171,26 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						disableGutters
 						sx={{
 							ml: "0px",
+							width: "auto",
+							zIndex: "tooltip",
 							// display: "inline-flex",
 							// alignItems: "flex-start",
 							// alignContent:"flex-start",
 							// justifyContent: "flex-start",
-							width: "auto",
 						}}
 					>
 						{/* EDIT AND DELETE MENU */}
 
 						<IconButton
 							aria-label="favorite"
-							size="large"
+							disableRipple
 							onClick={toggleFav}
 							sx={{
-								height: "64px",
-								width: "64px",
-								margin: "8px",
-								// mr: "1rem",
+								variant: "Menu",
 							}}
 						>
 							{isFavorited ? (
-								<Tooltip title="Remove from favorites">
+								<Tooltip title="Unfavorite">
 									<Favorited
 										sx={{
 											color: "secondary.main",
@@ -213,38 +211,30 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						</IconButton>
 						{canEdit ? (
 							<>
-								<IconButton
-									sx={{
-										margin: "8px",
-										height: "64px",
-										width: "64px",
-									}}
-									onClick={doEdit}
-								>
-									<Tooltip title="Edit this recipe">
+								<Tooltip title="Edit recipe">
+									<IconButton disableRipple sx={{variant: "menu",}} onClick={doEdit}>
 										<EditIcon
 											sx={{
 												fontSize: "1.5em",
 												color: "primary.contrastText",
 											}}
 										/>
-									</Tooltip>
-								</IconButton>
-								<IconButton
-									sx={{
-										margin: "8px",
-										height: "64px",
-										width: "64px",
-									}}
-									onClick={doDelete}
-								>
-									<DeleteIcon
-										sx={{
-											fontSize: "1.5em",
-											color: "primary.contrastText",
-										}}
-									/>
-								</IconButton>
+									</IconButton>
+								</Tooltip>
+								<Tooltip title="Delete recipe">
+									<IconButton
+										disableRipple
+										sx={{variant: "menu",}}
+										onClick={doDelete}
+									>
+										<DeleteIcon
+											sx={{
+												fontSize: "1.5em",
+												color: "primary.contrastText",
+											}}
+										/>
+									</IconButton>
+								</Tooltip>
 							</>
 						) : (
 							<></>

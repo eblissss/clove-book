@@ -106,7 +106,7 @@ function Home() {
 				}}
 			>
 				<Container sx={{ flex: "2" }}>
-					<Typography variant="h3" component="h3">
+					<Typography variant="h3" component="h3" sx={{fontFamily: ["serif", "Libre Baskerville"],}}>
 						What are you looking for?
 					</Typography>
 					<SearchBar
@@ -116,7 +116,7 @@ function Home() {
 					{searching ? (
 						<></>
 					) : (
-						<Typography variant="h2" component="h2">
+						<Typography variant="h3" component="h3" sx={{fontFamily: ["serif", "Libre Baskerville"],}}>
 							Explore New Recipes
 						</Typography>
 					)}

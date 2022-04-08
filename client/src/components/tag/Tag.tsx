@@ -20,6 +20,7 @@ function Tag({ onClick, name, props }: tagProps) {
 				borderRadius: "5px",
 				p: "6px",
 				m: "6px",
+				ml: "0px",
 				alignItems: "center",
 				...props,
 			}}

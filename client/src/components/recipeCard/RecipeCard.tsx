@@ -64,32 +64,19 @@ export function RecipeCard(props: SimpleRecipe) {
 			}}
 			onClick={updateSelectedRecipe}
 		>
-			<CardMedia
-				component="img"
-				sx={{
-					height: "200px",
-					pt: "56.25",
-					position: "relative",
-					zIndex: "modal",
-				}}
-				image={
-					props.imageURL
-						? props.imageURL
-						: "https://source.unsplash.com/random"
-				}
-				alt="food image"
-			/>
-
 			<IconButton
+				disableRipple
 				aria-label="favorite"
 				size="large"
 				onClick={toggleFav}
 				sx={{
+					
 					height: "64px",
 					width: "64px",
 					position: "absolute",
 					right: "0",
 					top: "0",
+					zIndex: "drawer",
 				}}
 			>
 				{isFavorited ? (
@@ -112,15 +99,32 @@ export function RecipeCard(props: SimpleRecipe) {
 					</Tooltip>
 				)}
 			</IconButton>
+			<CardMedia
+				component="img"
+				sx={{
+					height: "200px",
+					pt: "56.25",
+					position: "relative",
+					zIndex: "app bar",
+				}}
+				image={
+					props.imageURL
+						? props.imageURL
+						: "https://source.unsplash.com/random"
+				}
+				alt="food image"
+			/>
 
+			{/* TITLE and TAGS */}
 			<CardContent sx={{ position: "relative" }}>
 				<Typography
 					gutterBottom
 					variant="h5"
-					component="h3"
+					component="h5"
 					sx={{
-						zIndex: "tooltip",
+						fontFamily: ["serif", "Libre Baskerville"],
 						color: "primary.contrastText",
+						justifyContent: "center",
 					}}
 				>
 					{props.name}
@@ -131,11 +135,13 @@ export function RecipeCard(props: SimpleRecipe) {
 						position: "absolute",
 						left: "0px",
 						top: "-30px",
-						width: "60px",
-						height: "30px",
+						width: "auto",
+						height: "auto",
 						justifyContent: "center",
+						alignContent: "center",
 						borderRadius: "0 10px 0 0",
 						backgroundColor: alpha(palette.primary.dark, 0.7),
+						
 					}}
 				>
 					<Typography
@@ -144,8 +150,8 @@ export function RecipeCard(props: SimpleRecipe) {
 						component="h5"
 						sx={{
 							color: "primary.contrastText",
-							fontSize: "30px",
 							textAlign: "center",
+							px: "5px",
 						}}
 					>
 						{props.totalTime}m

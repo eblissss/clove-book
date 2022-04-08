@@ -88,20 +88,29 @@ const theme = createTheme({
 				root: {
 					fontFamily: ["sans-serif", "Sen"],
 					position: "relative",
-					zIndex: "tooltip",
-					// color: palette.primary.contrastText,
+					overflowWrap: "break-word",
+					hyphens: "auto",
 				},
-				h3: {
-					fontFamily: ["serif", "Libre Baskerville"],
-				},
+
 			},
 		},
 		MuiIconButton: {
 			styleOverrides: {
 				root: {
+					
 					position: "relative",
-					//zIndex: "tooltip",
+					"&:hover, &.Mui-focusVisible": {
+						backgroundColor: "transparent",
+					},
+					
+					// I want this for just ones with a menu variant
+					"&.Menu": {
+						margin: "16px",
+						height: "64px",
+						width: "64px",
+					},
 				},
+				
 			},
 		},
 		MuiButton: {

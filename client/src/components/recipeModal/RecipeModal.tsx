@@ -158,32 +158,6 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 					>
 						<Container
 							disableGutters
-							sx={{ alignSelf: "flex-start" }}
-						>
-							<Typography
-								variant="h3"
-								component="h3"
-								sx={{
-									color: "primary.contrastText",
-									fontWeight: 700,
-								}}
-							>
-								{recipe.name}
-							</Typography>
-							<Typography
-								variant="h6"
-								component="h6"
-								sx={{ color: "primary.contrastText" }}
-							>
-								Ready in {recipe.totalTime}m {" - "}{" "}
-								{recipe.prepTime}m Prep
-								{" + "}
-								{recipe.cookTime}m Cook
-							</Typography>
-						</Container>
-
-						<Container
-							disableGutters
 							sx={{
 								ml: "-8px",
 								// display: "inline-flex",
@@ -265,6 +239,33 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								<></>
 							)}
 						</Container>
+						<Container
+							disableGutters
+							sx={{ alignSelf: "flex-start" }}
+						>
+							<Typography
+								variant="h3"
+								component="h3"
+								sx={{
+									color: "primary.contrastText",
+									fontWeight: 700,
+								}}
+							>
+								{recipe.name}
+							</Typography>
+							<Typography
+								variant="h6"
+								component="h6"
+								sx={{ color: "primary.contrastText" }}
+							>
+								Ready in {recipe.totalTime}m {" - "}{" "}
+								{recipe.prepTime}m Prep
+								{" + "}
+								{recipe.cookTime}m Cook
+							</Typography>
+						</Container>
+
+						
 					</Box>
 				</Container>
 				<Container disableGutters sx={{ display: "flex" }}>

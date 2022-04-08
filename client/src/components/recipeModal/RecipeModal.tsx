@@ -241,7 +241,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						</Container>
 						<Container
 							disableGutters
-							sx={{ alignSelf: "flex-start" }}
+							sx={{}}
 						>
 							<Typography
 								variant="h3"
@@ -259,9 +259,9 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								sx={{ color: "primary.contrastText" }}
 							>
 								Ready in {recipe.totalTime}m {" - "}{" "}
-								{recipe.prepTime}m Prep
+								{recipe?.prepTime}m Prep
 								{" + "}
-								{recipe.cookTime}m Cook
+								{recipe?.cookTime}m Cook
 							</Typography>
 						</Container>
 
@@ -384,7 +384,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								sx={{
 									backgroundColor: "primary.main",
 									m: "10px",
-									mx: "5px",
+									mr: "5px",
 									p: "12px",
 									borderRadius: "8px",
 									width: "auto",
@@ -403,7 +403,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 										display: "flex",
 										flexWrap: "wrap",
 										width: "auto",
-										p: "-12px",
+										m: "-10px",
 									}}
 								>
 									{recipe.tags?.map((tag, i) => (

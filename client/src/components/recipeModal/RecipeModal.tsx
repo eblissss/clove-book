@@ -107,12 +107,28 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				style={{ height: 600, overflowX: "hidden" }}
 			>
 				{" "}
+				<Container
+					disableGutters
+					sx={{
+						display: "flex",
+						width: "100%",
+						flexAlign: "flex-end",
+					}}
+				>
 					{/* IMAGE */}
+
 					<CardMedia
 						component="img"
 						sx={{
-							height: "400px",
-							borderRadius: "20px 20px 0px 0px",
+							height: "auto",
+							objectFit: "cover",
+							width: "39%",
+							mr: "5px",
+							mb: "0px",
+							maxHeight: "50%",
+							maxWidth: "50%",
+							//mr:"10px",
+							borderRadius: "20px 0px 10px 0px",
 						}}
 						image={
 							recipe.imageURL
@@ -122,145 +138,143 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						alt="food image"
 					/>
 
-					{/* TAGS */}
-					<Container
-						disableGutters
+					{/* TITLE, SUBTITLE, BUTTONS*/}
+					<Box
+						component="div"
 						sx={{
-							position: "absolute",
+							backgroundColor: "primary.dark",
+							top: 0,
+							ml: "5px",
+							p: "10px",
+							borderRadius: "8px",
+							width: "60%",
+							position: "sticky",
 							display: "flex",
-							flexWrap: "wrap",
-							top: "350px",
-							left: "10px",
-							width: "80%",
+							flexDirection: "column",
+							alignItems: "flex-start",
+							justifyContent: "flex-end",
+							
 						}}
 					>
-						{recipe.tags?.map((tag, i) => (
-							<Tag name={tag} key={tag + i} />
-						))}
-					</Container>
-				
-				{/* TITLE AND SUBTITLE */}
-				<Box
-					component="div"
-					sx={{
-						backgroundColor: "primary.dark",
-						top: 0,
-						p: "20px",
-						position: "sticky",
-						display: "flex",
-						flexDirection: "row",
-					}}
-				>
-					<Container disableGutters sx={{}}>
-						<Typography
-							variant="h3"
-							component="h3"
+						<Container
+							disableGutters
+							sx={{ alignSelf: "flex-start" }}
+						>
+							<Typography
+								variant="h3"
+								component="h3"
+								sx={{
+									color: "primary.contrastText",
+									fontWeight: 700,
+								}}
+							>
+								{recipe.name}
+							</Typography>
+							<Typography
+								variant="h6"
+								component="h6"
+								sx={{ color: "primary.contrastText" }}
+							>
+								Ready in {recipe.totalTime}m {" - "}{" "}
+								{recipe.prepTime}m Prep
+								{" + "}
+								{recipe.cookTime}m Cook
+							</Typography>
+						</Container>
+
+						<Container
+							disableGutters
 							sx={{
-								color: "primary.contrastText",
-								fontWeight: 700,
+								ml: "-8px",
+								// display: "inline-flex",
+								// alignItems: "flex-start",
+								// alignContent:"flex-start",
+								// justifyContent: "flex-start",
+								width: "auto",
 							}}
 						>
-							{recipe.name}
-						</Typography>
-						<Typography
-							variant="h6"
-							component="h6"
-							sx={{ color: "primary.contrastText" }}
-						>
-							Ready in {recipe.totalTime}m {" - "}{" "}
-							{recipe.prepTime}m Prep
-							{" + "}
-							{recipe.cookTime}m Cook
-						</Typography>
-					</Container>
-					<Container
-						sx={{
-							display: "inline-flex",
-							alignItems: "center",
-							justifyContent: "right",
-							width: "250px",
-						}}
-					>
-						{/* EDIT AND DELETE MENU */}
-						{canEdit ? (
-							<>
-								<IconButton
-									sx={{
-										margin: "8px",
-										height: "72px",
-										width: "72px",
-									}}
-									onClick={doDelete}
-								>
-									<DeleteIcon
-										sx={{
-											fontSize: "2em",
-											color: "primary.contrastText",
-										}}
-									/>
-								</IconButton>
-								<IconButton
-									sx={{
-										margin: "8px",
-										height: "72px",
-										width: "72px",
-									}}
-									onClick={doEdit}
-								>
-									<Tooltip title="Edit this recipe">
-										<EditIcon
+							{/* EDIT AND DELETE MENU */}
+
+							<IconButton
+								aria-label="favorite"
+								size="large"
+								onClick={toggleFav}
+								sx={{
+									height: "64px",
+									width: "64px",
+									margin: "8px",
+									// mr: "1rem",
+								}}
+							>
+								{isFavorited ? (
+									<Tooltip title="Remove from favorites">
+										<Favorited
 											sx={{
-												fontSize: "2em",
-												color: "primary.contrastText",
+												color: "secondary.main",
+												fontSize: "1.5em",
 											}}
 										/>
 									</Tooltip>
-								</IconButton>
-							</>
-						) : (
-							<></>
-						)}
-						<IconButton
-					aria-label="favorite"
-					size="large"
-					onClick={toggleFav}
-					sx={{
-						height: "72px",
-						width: "72px",
-						margin: "8px",
-						// mr: "1rem",
-					}}
-				>
-					{isFavorited ? (
-						<Tooltip title="Remove from favorites">
-							<Favorited
-								sx={{
-									color: "secondary.main",
-									fontSize: "2em",
-								}}
-							/>
-						</Tooltip>
-					) : (
-						<Tooltip title="Add to favorites">
-							<Unfavorited
-								sx={{
-									color: "primary.contrastText",
-									fontSize: "2em",
-								}}
-							/>
-						</Tooltip>
-					)}
-				</IconButton>
-					</Container>
-				</Box>
-				<Container disableGutters sx={{ p: "10px", display: "flex" }}>
+								) : (
+									<Tooltip title="Add to favorites">
+										<Unfavorited
+											sx={{
+												color: "primary.contrastText",
+												fontSize: "1.5em",
+											}}
+										/>
+									</Tooltip>
+								)}
+							</IconButton>
+							{canEdit ? (
+								<>
+									<IconButton
+										sx={{
+											margin: "8px",
+											height: "64px",
+											width: "64px",
+										}}
+										onClick={doEdit}
+									>
+										<Tooltip title="Edit this recipe">
+											<EditIcon
+												sx={{
+													fontSize: "1.5em",
+													color: "primary.contrastText",
+												}}
+											/>
+										</Tooltip>
+									</IconButton>
+									<IconButton
+										sx={{
+											margin: "8px",
+											height: "64px",
+											width: "64px",
+										}}
+										onClick={doDelete}
+									>
+										<DeleteIcon
+											sx={{
+												fontSize: "1.5em",
+												color: "primary.contrastText",
+											}}
+										/>
+									</IconButton>
+								</>
+							) : (
+								<></>
+							)}
+						</Container>
+					</Box>
+				</Container>
+				<Container disableGutters sx={{ display: "flex" }}>
 					<Container
 						disableGutters
 						sx={{
 							width: "40%",
 							minWidth: "auto",
 							height: "auto",
-							mr: "0",
+							//mr: "10px",
 						}}
 					>
 						{/* REQUIRED INGREDIENTS */}
@@ -271,6 +285,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								p: "12px",
 								pb: "12px",
 								m: "10px",
+								mr: "5px",
 								borderRadius: "8px",
 							}}
 						>
@@ -305,7 +320,12 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								))}
 							</Container>
 						</Box>
+
 						{/* NUTRITION */}
+						{recipe.nutrients?.good
+									.concat(recipe.nutrients?.bad)
+									.filter((x) => x.amount !== "")
+									.length != 0  ? (
 						<Box
 							component="div"
 							sx={{
@@ -313,6 +333,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								p: "12px",
 								pb: "12px",
 								m: "10px",
+								mr: "5px",
 								borderRadius: "8px",
 							}}
 						>
@@ -352,6 +373,46 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 									))}
 							</Container>
 						</Box>
+						) : (
+						<></>)
+						}
+						{/* TAGS */}
+						{recipe.tags?.length != 0  ? (
+							<Container
+								disableGutters
+								sx={{
+									backgroundColor: "primary.main",
+									m: "10px",
+									mx: "5px",
+									p: "12px",
+									borderRadius: "8px",
+									width: "auto",
+								}}
+							>
+								<Typography
+									variant="h6"
+									component="h6"
+									fontWeight={700}
+								>
+									Tags
+								</Typography>
+								<Container
+									disableGutters
+									sx={{
+										display: "flex",
+										flexWrap: "wrap",
+										width: "auto",
+										p: "-12px",
+									}}
+								>
+									{recipe.tags?.map((tag, i) => (
+										<Tag name={tag} key={tag + i} />
+									))}
+								</Container>
+							</Container>
+						) : (
+							<></>
+						)}
 					</Container>
 					{/* INSTRUCTIONS */}
 					<Box
@@ -360,10 +421,11 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							backgroundColor: "primary.main",
 							p: "10px",
 							m: "10px",
+							ml: "5px",
 							borderRadius: "8px",
 							width: "60%",
 							minWidth: "40%",
-							ml: "0",
+							//ml: "0",
 						}}
 					>
 						<Typography

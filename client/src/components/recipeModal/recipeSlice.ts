@@ -17,7 +17,7 @@ const initialState: RecipeState = {
 		],
 		instructions: [],
 		name: "Chicken Paella",
-		savedAt: "5:04 PM, Friday 14th 2021",
+		updatedAt: "5:04 PM, Friday 14th 2021",
 		author: "jo",
 		authorID: "1231",
 		imageURL: "https://source.unsplash.com/random",

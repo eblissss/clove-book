@@ -20,7 +20,7 @@ import {
 	FavoriteBorder as Unfavorited,
 	Favorite as Favorited,
 } from "@mui/icons-material";
-import { positions } from "@mui/system";
+import cloveImg from "../../assets/clove3d.png";
 
 export function RecipeCard(props: SimpleRecipe) {
 	const dispatch = useAppDispatch();
@@ -65,14 +65,12 @@ export function RecipeCard(props: SimpleRecipe) {
 			onClick={updateSelectedRecipe}
 		>
 			<IconButton
-				disableRipple
+				// disableRipple
 				aria-label="favorite"
-				size="large"
 				onClick={toggleFav}
 				sx={{
-					
-					height: "64px",
-					width: "64px",
+					// height: "64px",
+					// width: "64px",
 					position: "absolute",
 					right: "0",
 					top: "0",
@@ -110,7 +108,7 @@ export function RecipeCard(props: SimpleRecipe) {
 				image={
 					props.imageURL
 						? props.imageURL
-						: "https://source.unsplash.com/random"
+						: "https://picsum.photos/400"
 				}
 				alt="food image"
 			/>
@@ -141,7 +139,6 @@ export function RecipeCard(props: SimpleRecipe) {
 						alignContent: "center",
 						borderRadius: "0 10px 0 0",
 						backgroundColor: alpha(palette.primary.dark, 0.7),
-						
 					}}
 				>
 					<Typography

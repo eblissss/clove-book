@@ -23,10 +23,12 @@ for (let i = 0; i < 12; i++) {
 		spoonacularID: 0,
 		cookbookID: "000000000000000000000000",
 		name: "Vegan Cheesecake",
-		imageURL: "https://source.unsplash.com/random",
+		imageURL: "https://picsum.photos/200",
 		totalTime: 10,
 		tags: ["dessert", "grass"],
-		savedAt: "March 4th",
+		updatedAt: "March 4th",
+		ingredients: [],
+		authorID: "000000000000000000000000",
 	});
 }
 
@@ -65,6 +67,9 @@ function Home() {
 				if (searchInfo.sort === "alpha") {
 					stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
 				}
+				if (searchInfo.sort === "newest") {
+					stuff.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+				}
 
 				setRecipes(stuff);
 			});
@@ -77,12 +82,20 @@ function Home() {
 			document.getElementById("search") as HTMLInputElement
 		).value;
 		const combinedTags = [...searchInfo.searchTags, ...searchInfo.filters];
+		const ingredientSet = new Set(ingredients);
 		searchRecipesIngredients(searchVal, combinedTags, ingredients).then(
 			(stuff) => {
-				if (searchInfo.sort === "alpha") {
-					stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
-				}
-
+				stuff.sort((a: SimpleRecipe, b: SimpleRecipe) => {
+					let aCount = 0,
+						bCount = 0;
+					a.ingredients.forEach((ing) => {
+						if (ingredientSet.has(ing.name)) aCount++;
+					});
+					b.ingredients.forEach((ing) => {
+						if (ingredientSet.has(ing.name)) bCount++;
+					});
+					return bCount - aCount;
+				});
 				setRecipes(stuff);
 			}
 		);
@@ -106,7 +119,11 @@ function Home() {
 				}}
 			>
 				<Container sx={{ flex: "2" }}>
-					<Typography variant="h3" component="h3" sx={{fontFamily: ["serif", "Libre Baskerville"],}}>
+					<Typography
+						variant="h3"
+						component="h3"
+						sx={{ fontFamily: ["serif", "Libre Baskerville"] }}
+					>
 						What are you looking for?
 					</Typography>
 					<SearchBar
@@ -116,7 +133,11 @@ function Home() {
 					{searching ? (
 						<></>
 					) : (
-						<Typography variant="h3" component="h3" sx={{fontFamily: ["serif", "Libre Baskerville"],}}>
+						<Typography
+							variant="h3"
+							component="h3"
+							sx={{ fontFamily: ["serif", "Libre Baskerville"] }}
+						>
 							Explore New Recipes
 						</Typography>
 					)}

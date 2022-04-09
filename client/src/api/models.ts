@@ -29,16 +29,16 @@ export interface SimpleRecipe {
 	imageURL?: string;
 	totalTime?: number;
 	tags?: string[];
-	savedAt: string;
+	ingredients: Ingredient[];
+	updatedAt: string;
+	authorID: string;
 }
 
 export interface Recipe extends SimpleRecipe {
 	author: string;
-	authorID: string;
 	cookTime: number;
 	prepTime: number;
 	totalTime: number;
-	ingredients: Ingredient[];
 	instructions: Instruction[];
 	nutrients: RecipeNutrients;
 	createdAt: string;

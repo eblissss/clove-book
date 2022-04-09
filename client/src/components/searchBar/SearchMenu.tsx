@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import React, { useState } from "react";
-import { setSearchFilters, setSearchSort } from "./searchSlice";
-import { useAppDispatch } from "../../app/hooks";
+import { selectSearch, setSearchFilters, setSearchSort } from "./searchSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 function FilterList() {
 	const dispatch = useAppDispatch();
@@ -80,6 +80,8 @@ function FilterList() {
 function SearchMenu() {
 	const dispatch = useAppDispatch();
 
+	const radioValue = useAppSelector(selectSearch).sort;
+
 	// anchor element
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -135,7 +137,7 @@ function SearchMenu() {
 						<FormLabel id="sortButtonsLabel">Sort By</FormLabel>
 						<RadioGroup
 							aria-labelledby="sortButtonsLabel"
-							defaultValue="best"
+							value={radioValue}
 							name="sortButtonsGroup"
 							onChange={radioSelect}
 						>

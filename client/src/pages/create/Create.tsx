@@ -26,6 +26,7 @@ import {
 	setCreationEditing,
 } from "./creationUpdateSlice";
 import {
+	defaultNutri,
 	setIngredients,
 	setInstructions,
 	setNutrients,
@@ -111,12 +112,12 @@ function Create() {
 				authorID: authorID,
 				cookTime: cookTime,
 				cookbookID: recipeInfo.cookbookID,
-				createdAt: createdAt,
+				updatedAt: createdAt,
 				ingredients: ingredients,
 				instructions: instructions,
 				name: name,
 				prepTime: prepTime,
-				savedAt: createdAt,
+				createdAt: createdAt,
 				spoonacularID: 0,
 				totalTime: totalTime,
 				imageURL: imageURL,
@@ -153,12 +154,19 @@ function Create() {
 			"" + recipeInfo.cookTime;
 
 		// LISTS
-		dispatch(setIngredients(recipeInfo.ingredients));
-		dispatch(setInstructions(recipeInfo.instructions));
-		console.log(recipeInfo.nutrients.good.concat(recipeInfo.nutrients.bad));
+		dispatch(
+			setIngredients(recipeInfo.ingredients ? recipeInfo.ingredients : [])
+		);
+		dispatch(
+			setInstructions(
+				recipeInfo.instructions ? recipeInfo.instructions : []
+			)
+		);
 		dispatch(
 			setNutrients(
-				recipeInfo.nutrients.good.concat(recipeInfo.nutrients.bad)
+				recipeInfo.nutrients
+					? recipeInfo.nutrients.good.concat(recipeInfo.nutrients.bad)
+					: defaultNutri
 			)
 		);
 		dispatch(setRecipeTags(recipeInfo.tags!));
@@ -175,7 +183,7 @@ function Create() {
 		// LISTS
 		dispatch(setIngredients([]));
 		dispatch(setInstructions([]));
-		dispatch(setNutrients([]));
+		dispatch(setNutrients(defaultNutri));
 		dispatch(setRecipeTags([]));
 	};
 

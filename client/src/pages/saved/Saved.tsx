@@ -1,7 +1,7 @@
 import { Box, Container, LinearProgress, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { SimpleRecipe } from "../../api/models";
-import { getFavorites } from "../../api/requests";
+import { getFavorites, getUsersRecipes } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
@@ -20,7 +20,9 @@ for (let i = 0; i < 12; i++) {
 		imageURL: "https://source.unsplash.com/random",
 		totalTime: 10,
 		tags: ["dessert", "grass"],
-		savedAt: "March 4th",
+		updatedAt: "March 4th",
+		ingredients: [],
+		authorID: "000000000000000000000000",
 	});
 }
 
@@ -41,7 +43,11 @@ function Saved() {
 				setLoading(false);
 			});
 		} else if (collection === "My Recipes") {
-			// probably something like getUserRecipes(userID)
+			setLoading(true);
+			getUsersRecipes(userID).then((recipes) => {
+				setMyRecipes(recipes);
+				setLoading(false);
+			});
 		}
 	}, [collection, searchText]);
 

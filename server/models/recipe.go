@@ -8,14 +8,12 @@ import (
 
 type Recipe struct {
 	RecipeStub   `bson:",inline"`
-	Nutrients    *RecipeNutrients   `json:"nutrients" bson:"nutrients"`
-	Author       string             `json:"author" bson:"author"`
-	AuthorID     primitive.ObjectID `json:"authorID" bson:"authorID"`
-	CookTime     int64              `json:"cookTime" bson:"cookTime"`
-	PrepTime     int64              `json:"prepTime" bson:"prepTime"`
-	Instructions []Instruction      `json:"instructions" bson:"instructions"`
-	CreatedAt    time.Time          `json:"createdAt" bson:"createdAt"`
-	UpdatedAt    time.Time          `json:"updatedAt" bson:"updatedAt"`
+	Nutrients    *RecipeNutrients `json:"nutrients" bson:"nutrients"`
+	Author       string           `json:"author" bson:"author"`
+	CookTime     int64            `json:"cookTime" bson:"cookTime"`
+	PrepTime     int64            `json:"prepTime" bson:"prepTime"`
+	Instructions []Instruction    `json:"instructions" bson:"instructions"`
+	CreatedAt    time.Time        `json:"createdAt" bson:"createdAt"`
 }
 
 // Recipestub for both user-created and other recipes
@@ -28,6 +26,8 @@ type RecipeStub struct {
 	TotalTime     int64              `json:"totalTime" bson:"totalTime"`
 	Tags          []string           `json:"tags" bson:"tags"`
 	Ingredients   []Ingredient       `json:"ingredients" bson:"ingredients"` // not sure about inclusion
+	AuthorID      primitive.ObjectID `json:"authorID" bson:"authorID"`
+	UpdatedAt     time.Time          `json:"updatedAt" bson:"updatedAt"`
 }
 
 type Ingredient struct {

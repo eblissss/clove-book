@@ -17,7 +17,7 @@ const allNutrients = [
 	"Fiber",
 ];
 
-const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
+export const defaultNutri: Nutrient[] = allNutrients.map((name) => ({
 	name: name,
 	amount: "",
 	indented: defaultNutritions.includes(name),

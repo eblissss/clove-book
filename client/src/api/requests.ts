@@ -99,6 +99,10 @@ export const getRecipe = (id: string): Promise<models.Recipe> =>
 export const getPopularRecipes = (): Promise<models.SimpleRecipe[]> =>
 	requests.get(`/recipes/popular`);
 
+export const getUsersRecipes = (
+	userID: string
+): Promise<models.SimpleRecipe[]> => requests.get(`/users/${userID}/created`);
+
 export const searchRecipesIngredients = (
 	query: string,
 	tags: string[],
@@ -107,7 +111,7 @@ export const searchRecipesIngredients = (
 	requests.get("/recipes/ingredients", {
 		query: query,
 		tags: tags,
-		ingredients: ingredients,
+		ingredients: ingredients.join(","),
 	});
 
 export const deleteRecipe = (cookbookID: string) =>

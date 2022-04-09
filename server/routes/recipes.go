@@ -57,6 +57,8 @@ func (r *Client) CreateRecipe(c *gin.Context) {
 		TotalTime:     recipe.TotalTime,
 		Tags:          recipe.Tags,
 		Ingredients:   recipe.Ingredients,
+		AuthorID:      recipe.AuthorID,
+		UpdatedAt:     recipe.UpdatedAt,
 	}
 
 	_, err = r.StubCollection.InsertOne(ctx, stub)
@@ -201,6 +203,8 @@ func fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse) []model
 			IsUserRecipe:  false,
 			TotalTime:     0,
 			Ingredients:   nil,
+			AuthorID:      primitive.NilObjectID,
+			UpdatedAt:     time.Time{},
 		}
 		foundRecipes = append(foundRecipes, stub)
 	}
@@ -216,6 +220,7 @@ func (r *Client) SearchRecipesIngredients(c *gin.Context) {
 
 	query, _ := c.GetQuery("query")
 	ingredientsQuery, _ := c.GetQuery("ingredients")
+	ingredientsQuery = strings.ToLower(ingredientsQuery)
 	ingredients := strings.Split(ingredientsQuery, ",")
 
 	cur, err := r.StubCollection.Find(ctx,
@@ -249,6 +254,35 @@ func (r *Client) SearchRecipesIngredients(c *gin.Context) {
 	// 		foundRecipes = append(foundRecipes, spoonResults...)
 	// 	}
 	// }
+
+	c.JSON(http.StatusOK, foundRecipes)
+}
+
+func (r *Client) GetUsersRecipes(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	paramId := c.Params.ByName("userID")
+	id, err := primitive.ObjectIDFromHex(paramId)
+
+	cur, err := r.StubCollection.Find(ctx,
+		bson.M{
+			"authorID": id,
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	foundRecipes := make([]models.RecipeStub, 0)
+
+	err = cur.All(ctx, &foundRecipes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, foundRecipes)
 }
@@ -287,15 +321,16 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 			TotalTime:     spoonRecipe.TotalTime,
 			Ingredients:   spoonRecipe.Ingredients,
 			Tags:          []string{},
+			AuthorID:      primitive.NilObjectID,
+			UpdatedAt:     time.Time{},
 		},
-		Nutrients:    &spoonRecipe.Nutrition,
-		Author:       spoonRecipe.Author,
-		AuthorID:     primitive.NilObjectID,
+		Nutrients: &spoonRecipe.Nutrition,
+		Author:    spoonRecipe.Author,
+
 		CookTime:     -1,
 		PrepTime:     -1,
 		Instructions: spoonRecipe.Instructions,
 		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
 	}
 
 	// this is dumb there has to be a better way but whatever no one has to know

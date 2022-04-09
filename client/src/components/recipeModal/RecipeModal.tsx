@@ -104,34 +104,37 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				thumbSize={180}
 				style={{ height: 600, overflowX: "hidden" }}
 			>
-				{/* TITLE, SUBTITLE, BUTTONS*/}
+				{/* TITLE, SUBTITLE, BUTTONS */}
 				<Box
 					component="div"
 					sx={{
 						backgroundColor: "primary.dark",
 						top: 0,
-
-						borderRadius: "20px 20px 0px 0px",
+						//borderRadius: "20px 20px 0px 0px",
 						width: "100%",
-						height: "100%",
+						height: "60%",
 						maxHeight: "70%",
 						// position: "sticky",
 						display: "flex",
 						flexDirection: "column",
-						alignItems: "flex-start",
+						alignItems: "flex-end",
 						justifyContent: "flex-end",
+						overflow: "hidden",
+						position: "relative",
 					}}
 				>
 					<CardMedia
 						component="img"
 						sx={{
 							position: "absolute",
+							justifySelf: "center",
 							height: "100%",
 							//mixBlendMode: "soft-light",
 							opacity: "50%",
 							objectFit: "cover",
 							width: "100%",
 							zIndex: "modal",
+							overflow: "hidden",
 						}}
 						image={
 							recipe.imageURL
@@ -140,12 +143,16 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						}
 						alt="food image"
 					/>
-					<Container disableGutters sx={{ padding: "15px" }}>
+
+					<Container
+						disableGutters
+						sx={{ zIndex: "tooltip", padding: "16px" }}
+					>
 						<Typography
 							variant="h3"
 							component="h3"
 							sx={{
-								zIndex: "tooltip",
+								//zIndex: "tooltip",
 								color: "primary.contrastText",
 								fontWeight: 700,
 							}}
@@ -157,7 +164,6 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							component="h6"
 							sx={{
 								position: "relative",
-								zIndex: "tooltip",
 								color: "primary.contrastText",
 							}}
 						>
@@ -169,53 +175,45 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 					</Container>
 					<Container
 						disableGutters
-						sx={{
-							ml: "0px",
-							width: "auto",
-							zIndex: "tooltip",
-							// display: "inline-flex",
-							// alignItems: "flex-start",
-							// alignContent:"flex-start",
-							// justifyContent: "flex-start",
-						}}
+						sx={{ pl: "16px", zIndex: "tooltip" }}
 					>
 						{/* EDIT AND DELETE MENU */}
-
-						<IconButton
-							aria-label="favorite"
-							disableRipple
-							onClick={toggleFav}
-							sx={{
-								variant: "Menu",
-							}}
+						<Tooltip
+							title={
+								isFavorited ? "Unfavorite" : "Add to favorites"
+							}
 						>
-							{isFavorited ? (
-								<Tooltip title="Unfavorite">
+							<IconButton
+								aria-label="favorite"
+								disableRipple
+								onClick={toggleFav}
+								className="Menu"
+							>
+								{isFavorited ? (
 									<Favorited
 										sx={{
 											color: "secondary.main",
-											fontSize: "1.5em",
 										}}
 									/>
-								</Tooltip>
-							) : (
-								<Tooltip title="Add to favorites">
+								) : (
 									<Unfavorited
 										sx={{
 											color: "primary.contrastText",
-											fontSize: "1.5em",
 										}}
 									/>
-								</Tooltip>
-							)}
-						</IconButton>
+								)}
+							</IconButton>
+						</Tooltip>
 						{canEdit ? (
 							<>
 								<Tooltip title="Edit recipe">
-									<IconButton disableRipple sx={{variant: "menu",}} onClick={doEdit}>
+									<IconButton
+										disableRipple
+										className="Menu"
+										onClick={doEdit}
+									>
 										<EditIcon
 											sx={{
-												fontSize: "1.5em",
 												color: "primary.contrastText",
 											}}
 										/>
@@ -224,12 +222,11 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								<Tooltip title="Delete recipe">
 									<IconButton
 										disableRipple
-										sx={{variant: "menu",}}
+										className="Menu"
 										onClick={doDelete}
 									>
 										<DeleteIcon
 											sx={{
-												fontSize: "1.5em",
 												color: "primary.contrastText",
 											}}
 										/>
@@ -375,7 +372,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 										display: "flex",
 										flexWrap: "wrap",
 										width: "auto",
-										ml: "-10px",
+										// ml: "-10px",
 									}}
 								>
 									{recipe.tags?.map((tag, i) => (
@@ -487,10 +484,10 @@ const dataA: Recipe = {
 	],
 	instructions: [],
 	name: "Chicken Paella",
-	savedAt: "5:04 PM, Friday 14th 2021",
+	updatedAt: "5:04 PM, Friday 14th 2021",
 	author: "jo",
 	authorID: "1231",
-	imageURL: "https://source.unsplash.com/random",
+	imageURL: "https://picsum.photos/200",
 	totalTime: 15,
 	tags: ["chicken", "mars", "vegan"],
 	cookTime: 5,

@@ -51,10 +51,27 @@ func (c *Client) SendPasswordResetCode(toEmail, code string) error {
 	subject := "Reset your password"
 	msg := fmt.Sprintf(
 		`<h1>Hey!</h1>
-		<p>Please reset your password by using the code %s</p>
+		<p>Please click below to reset your password</p>
 		<br/>
-		<p>Amelia</p>`,
-		code)
+		<table width="100%%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td style="border-radius: 2px;" bgcolor="#E5932A">
+							<a href="https://clovebook.com/reset?email=%s&code=%s" target="_blank" style="padding: 8px 12px; border: 1px solid #E5932A; border-radius: 12px; font-family: Helvetica, Arial, sans-serif; font-size: 20px; color: #ffffff; text-decoration: none; font-weight:bold; display: inline-block;">
+								Reset Password
+							</a>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		</table>
+		<p>Amelia, CEO of Back End</p>
+		<img src="https://i.imgur.com/XPU3oT7.png" alt="img" style="width: 200px" />
+		`,
+		toEmail, code)
 	err := c.SendEmail(toEmail, subject, msg)
 	if err != nil {
 		return err
@@ -69,7 +86,9 @@ func (c *Client) SendAuthCode(toEmail, code string) error {
 		`<h1>Hey!</h1>
 		<p>Please verify your email by using the code %s</p>
 		<br/>
-		<p>Amelia</p>`,
+		<p>Amelia</p>
+		<img src="https://i.imgur.com/XPU3oT7.png" alt="img" style="width: 200px" />
+		`,
 		code)
 	err := c.SendEmail(toEmail, subject, msg)
 	if err != nil {

@@ -14,7 +14,7 @@ import ErrorPopup from "../../components/errorPopup/ErrorPopup";
 import { useDispatch } from "react-redux";
 import { setUserID } from "../user/userSlice";
 import { setInitialFavorites } from "../../components/userFavs/favSlice";
-import { getFavoriteIDs } from "../../api/requests";
+import { doRefresh, getFavoriteIDs } from "../../api/requests";
 
 function App() {
 	return (
@@ -60,9 +60,18 @@ function LoggedIn() {
 		} else {
 			navigate("/");
 		}
+		setInterval(newRefresh, 30 * 60 * 1000);
 	}, []);
 
 	return <></>;
 }
+
+const newRefresh = () => {
+	const refresh = localStorage.getItem("refresh");
+	if (refresh !== null) {
+		doRefresh(refresh);
+		console.log("refreshed!");
+	}
+};
 
 export default App;

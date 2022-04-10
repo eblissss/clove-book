@@ -62,6 +62,7 @@ export function ValidForm({ userInfo, setUseValid }: validProps) {
 							(decoded as cbJWT)!.userID
 						);
 						localStorage.setItem("expiry", (decoded as cbJWT)!.exp);
+						localStorage.setItem("refresh", res.refreshToken);
 						dispatch(setUserID(data.userID));
 						navigate("/home");
 					})

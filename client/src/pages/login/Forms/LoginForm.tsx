@@ -27,10 +27,24 @@ interface cbJWT {
 	exp: string;
 }
 
-export function LoginForm() {
+interface loginProps {
+	setUseReset: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export function LoginForm({ setUseReset }: loginProps) {
 	const dispatch = useAppDispatch();
 
 	const navigate = useNavigate();
+
+	const resetPassword = () => {
+		setUseReset(true);
+		dispatch(changeToDawn());
+	};
+
+	const gotoSignup = () => {
+		setUseReset(false);
+		dispatch(changeToDawn());
+	};
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -54,6 +68,7 @@ export function LoginForm() {
 					const expiry: string = (decoded as cbJWT)!.exp;
 					localStorage.setItem("userID", userID);
 					localStorage.setItem("expiry", expiry);
+					localStorage.setItem("refresh", data.refreshToken);
 
 					dispatch(setUserID(userID));
 
@@ -66,8 +81,6 @@ export function LoginForm() {
 				}
 			})
 			.catch((err) => console.log(err));
-
-		// check with backend
 	};
 
 	return (
@@ -148,11 +161,17 @@ export function LoginForm() {
 								className="OnLight"
 								variant="contained"
 								fullWidth
-								onClick={() => {
-									dispatch(changeToDawn());
-								}}
+								onClick={gotoSignup}
 							>
 								Sign up
+							</Button>
+							<Button
+								className="OnLight"
+								variant="contained"
+								fullWidth
+								onClick={resetPassword}
+							>
+								Reset Password
 							</Button>
 						</Grid>
 					</Box>

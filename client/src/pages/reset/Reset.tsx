@@ -8,38 +8,32 @@ import {
 	Typography,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import React, { useEffect, useState } from "react";
-import { getUser, updateUser } from "../../api/requests";
+import React, { useEffect } from "react";
+import { doResetPassword } from "../../api/requests";
 import md5 from "md5";
 import { useNavigate } from "react-router-dom";
-import { User } from "../../api/models";
 import { Link as RouterLink } from "react-router-dom";
 import cloveImg from "../../assets/cloveB.png";
 
-let userID = "";
-let user: User;
+let email = "";
+let code = "";
 
 function Reset() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		// get userID from url
+		// get info from url
 		const url = new URL(window.location.href);
-		if (url.searchParams.has("userID")) {
-			userID = url.searchParams.get("userID")!;
+		if (url.searchParams.has("email")) {
+			email = url.searchParams.get("email")!;
 		} else {
 			navigate("/");
 		}
-		//
-		// access new api endpoint using userID
-		//
-		// api endpoint sends back access token
-		//
-		// getUser(userID).then(userInfo => {
-		//     if (userInfo) {
-		// 	       user = userInfo;
-		// 	}
-		// })
+		if (url.searchParams.has("code")) {
+			code = url.searchParams.get("code")!;
+		} else {
+			navigate("/");
+		}
 	}, []);
 
 	const resetPassword = () => {
@@ -54,12 +48,7 @@ function Reset() {
 			return;
 		}
 
-		const time = new Date().toISOString();
-
-		const newUser: User = { ...user, password: passA, updatedAt: time };
-
-		// API call
-		updateUser(userID, newUser).then(() => {
+		doResetPassword(code, email, passA).then(() => {
 			navigate("/");
 		});
 	};

@@ -11,6 +11,7 @@ import { LoginForm } from "./Forms/LoginForm";
 import { SignupForm } from "./Forms/SignupForm";
 import { ValidForm } from "./Forms/ValidForm";
 import { Link } from "react-router-dom";
+import { ResetForm } from "./Forms/ResetForm";
 
 // This will include both login and signup
 const userInfo: NewUser = {
@@ -37,6 +38,7 @@ export default function Login() {
 
 	const time = useAppSelector(selectTime);
 	const [useValid, setUseValid] = useState(immediateValidate);
+	const [useReset, setUseReset] = useState(false);
 
 	return (
 		<>
@@ -72,7 +74,7 @@ export default function Login() {
 							setUseValid={setUseValid}
 						/>
 					) : (
-						<LoginForm />
+						<LoginForm setUseReset={setUseReset} />
 					)}
 				</Box>
 				<Box
@@ -91,7 +93,14 @@ export default function Login() {
 						top: "-100%",
 					}}
 				>
-					<SignupForm userInfo={userInfo} setUseValid={setUseValid} />
+					{useReset ? (
+						<ResetForm setUseReset={setUseReset} />
+					) : (
+						<SignupForm
+							userInfo={userInfo}
+							setUseValid={setUseValid}
+						/>
+					)}
 				</Box>
 				<Button
 					component={Link}

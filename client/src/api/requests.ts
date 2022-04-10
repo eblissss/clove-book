@@ -149,5 +149,16 @@ export const updateUser = (userID: string, data: models.User) =>
 export const deleteUser = (userID: string) =>
 	requests.delete(`/users/${userID}`);
 
-// export const updateAllFavorites = (userID: string, data: string []) =>
-// 	requests.put(`/users/${userID}/allfavorites`, data)
+export const sendResetEmail = (email: string) =>
+	requests.post("/users/reset", {}, { email: email });
+
+export const doResetPassword = (
+	code: string,
+	email: string,
+	password: string
+) =>
+	requests.put(
+		"/users/reset",
+		{},
+		{ code: code, email: email, password: password }
+	);

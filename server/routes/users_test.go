@@ -28,6 +28,7 @@ func TestUsers(t *testing.T) {
 	var code string
 	var userID string
 	var token *http.Cookie
+	var passResetCode string
 
 	// Auth user
 	t.Run("AuthUser", func(t *testing.T) {
@@ -82,6 +83,37 @@ func TestUsers(t *testing.T) {
 
 		c.UpdateUser(ctx)
 
+		assert.Equal(t, http.StatusOK, w.Code)
+	})
+
+	t.Run("EmailPasswordReset", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		ctx, _ := gin.CreateTestContext(w)
+
+		ctx.Request = httptest.NewRequest(
+			http.MethodPost,
+			fmt.Sprintf("/users/reset?email=%s", EMAIL),
+			nil,
+		)
+
+		c.EmailPasswordReset(ctx)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		resp, err := ioutil.ReadAll(w.Result().Body)
+		assert.NoError(t, err)
+		passResetCode = strings.Replace(string(resp), "\"", "", -1)
+	})
+
+	t.Run("ResetPassword", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		ctx, _ := gin.CreateTestContext(w)
+		ctx.Request = httptest.NewRequest(
+			http.MethodGet,
+			fmt.Sprintf("/users/reset?email=%s&password=%s&code=%s", EMAIL, "new-password", passResetCode),
+			nil,
+		)
+
+		c.ResetPassword(ctx)
 		assert.Equal(t, http.StatusOK, w.Code)
 	})
 

@@ -74,6 +74,128 @@ func (r *Client) AuthUser(c *gin.Context) {
 	})
 }
 
+func (r *Client) EmailPasswordReset(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+
+	authUser := &models.AuthUser{}
+
+	var ok bool
+	authUser.Email, ok = c.GetQuery("email")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query val 'email' not supplied"})
+		return
+	}
+
+	// Email not found
+	if res := r.UserCollection.FindOne(ctx, bson.M{
+		"email": authUser.Email,
+	}); res.Err() != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("email doesn't exist: %s", authUser.Email)})
+		return
+	}
+
+	// Delete existing authUser for user
+	r.ResetPasswordCollection.DeleteMany(ctx, bson.M{
+		"email": authUser.Email,
+	})
+
+	authUser.Code, authUser.Expires = generateRandomCode()
+
+	// Add AuthUser
+	if _, err := r.ResetPasswordCollection.InsertOne(ctx, *authUser); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user was not added to reset pass base"})
+		fmt.Println(err)
+		return
+	}
+
+	// Test cases return code instead of emailing
+	if r.IsTest {
+		c.JSON(http.StatusOK, authUser.Code)
+		return
+	}
+
+	// Send Email
+	if err := r.MailClient.SendPasswordResetCode(authUser.Email, fmt.Sprint(authUser.Code)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not send reset code"})
+		fmt.Println(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"expires": authUser.Expires,
+	})
+}
+
+func (r *Client) ResetPassword(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Validate auth code
+	authCode, ok := c.GetQuery("code")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query val 'code' not supplied"})
+		return
+	}
+	email, ok := c.GetQuery("email")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query val 'email' not supplied"})
+		return
+	}
+	password, ok := c.GetQuery("password")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query val 'password' not supplied"})
+		return
+	}
+
+	res := r.ResetPasswordCollection.FindOne(ctx, bson.M{
+		"email": email,
+	})
+	if res.Err() != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Err().Error()})
+	}
+
+	authUser := &models.AuthUser{}
+	if err := res.Decode(authUser); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+	// Token expired
+	if time.Now().After(authUser.Expires) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "token expired"})
+		return
+	}
+	// Incorrect code
+	if authUser.Code != authCode {
+		c.JSON(http.StatusConflict, gin.H{"error": "incorrect code"})
+		return
+	}
+
+	// Update password
+	updateRes, err := r.UserCollection.UpdateOne(ctx,
+		bson.M{"email": email},
+		bson.M{"$set": bson.M{
+			"password":  password,
+			"updatedAt": time.Now().UTC(),
+		}},
+	)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if updateRes.MatchedCount == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "email not found"})
+	}
+
+	// Delete auth code entry
+	r.ResetPasswordCollection.DeleteMany(ctx, bson.M{
+		"email": email,
+	})
+
+	c.Status(http.StatusOK)
+}
+
 func (r *Client) RefreshToken(c *gin.Context) {
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

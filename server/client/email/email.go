@@ -47,6 +47,22 @@ func (c *Client) SendEmail(toEmail, subject, msg string) error {
 	return nil
 }
 
+func (c *Client) SendPasswordResetCode(toEmail, code string) error {
+	subject := "Reset your password"
+	msg := fmt.Sprintf(
+		`<h1>Hey!</h1>
+		<p>Please reset your password by using the code %s</p>
+		<br/>
+		<p>Amelia</p>`,
+		code)
+	err := c.SendEmail(toEmail, subject, msg)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *Client) SendAuthCode(toEmail, code string) error {
 	subject := "Authenticate your account"
 	msg := fmt.Sprintf(

@@ -17,11 +17,12 @@ import (
 )
 
 type Client struct {
-	UserCollection     *mongo.Collection
-	AuthUserCollection *mongo.Collection
-	RecipeCollection   *mongo.Collection
-	StubCollection     *mongo.Collection
-	FavoriteCollection *mongo.Collection
+	UserCollection          *mongo.Collection
+	AuthUserCollection      *mongo.Collection
+	ResetPasswordCollection *mongo.Collection
+	RecipeCollection        *mongo.Collection
+	StubCollection          *mongo.Collection
+	FavoriteCollection      *mongo.Collection
 	// SpoonClient        *spoonacular.Client
 	MailClient *email.Client
 	Validator  *validator.Validate
@@ -35,6 +36,7 @@ func New() *Client {
 	recipeCollection := OpenCollection(mongoClient, "recipes")
 	stubCollection := OpenCollection(mongoClient, "stubs")
 	favoriteCollection := OpenCollection(mongoClient, "favorites")
+	resetPasswordCollection := OpenCollection(mongoClient, "reset_password")
 	validate := validator.New()
 
 	// spoonClient := spoonacular.New()
@@ -44,13 +46,14 @@ func New() *Client {
 	GuaranteeTextIndex(recipeCollection, "name")
 
 	return &Client{
-		UserCollection:     userCollection,
-		AuthUserCollection: authUserCollection,
-		RecipeCollection:   recipeCollection,
-		StubCollection:     stubCollection,
-		FavoriteCollection: favoriteCollection,
-		MailClient:         mailClient,
-		Validator:          validate,
+		UserCollection:          userCollection,
+		AuthUserCollection:      authUserCollection,
+		ResetPasswordCollection: resetPasswordCollection,
+		RecipeCollection:        recipeCollection,
+		StubCollection:          stubCollection,
+		FavoriteCollection:      favoriteCollection,
+		MailClient:              mailClient,
+		Validator:               validate,
 		// SpoonClient:        spoonClient,
 	}
 }
@@ -82,6 +85,11 @@ func NewTest() (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	resetPasswordCollection := OpenCollection(mongoClient, "TEST_users")
+	err = resetPasswordCollection.Drop(context.Background())
+	if err != nil {
+		return nil, err
+	}
 	validate := validator.New()
 
 	// spoonClient := spoonacular.New()
@@ -91,14 +99,15 @@ func NewTest() (*Client, error) {
 	GuaranteeTextIndex(recipeCollection, "name")
 
 	return &Client{
-		UserCollection:     userCollection,
-		AuthUserCollection: authUserCollection,
-		RecipeCollection:   recipeCollection,
-		StubCollection:     stubCollection,
-		FavoriteCollection: favoriteCollection,
-		MailClient:         mailClient,
-		Validator:          validate,
-		IsTest:             true,
+		UserCollection:          userCollection,
+		AuthUserCollection:      authUserCollection,
+		ResetPasswordCollection: resetPasswordCollection,
+		RecipeCollection:        recipeCollection,
+		StubCollection:          stubCollection,
+		FavoriteCollection:      favoriteCollection,
+		MailClient:              mailClient,
+		Validator:               validate,
+		IsTest:                  true,
 		// SpoonClient:        spoonClient,
 	}, nil
 }

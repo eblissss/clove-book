@@ -46,6 +46,8 @@ func main() {
 	r.GET("/users/logout", c.LogoutUser)
 	r.GET("/users/:userID", c.GetUser)
 	r.PUT("/users/:userID", c.UpdateUser)
+	r.POST("/users/reset", c.EmailPasswordReset)
+	r.PUT("/users/reset", c.ResetPassword)
 	r.DELETE("/users/:userID", c.DeleteUser)
 
 	// Test

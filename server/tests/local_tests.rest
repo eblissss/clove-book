@@ -45,6 +45,14 @@ Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjY3JhemVkI
 DELETE http://localhost:8000/users/623fce4643d2b1a22ae74415 HTTP/1.1
 Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFjY3JhemVkIiwidXNlcklEIjoiNjIzYTgxM2JhM2ZlZTU3NmNkMDkxNTVlIiwiZXhwIjoxNjQ4MzEyMTA2LCJpYXQiOjE2NDgzMTE4MDZ9.5WxAszXEEyC9AH02Cn9D5kFKgGBeH8tRgiMuL4LXGz8; Path=/; Domain=clovebook.com; Max-Age=1648319006; HttpOnly; Secure
 
+### Email Password Reset
+
+POST http://localhost:8000/users/reset?email=accrazed@gmail.com HTTP/1.1
+
+### Password Reset
+
+PUT http://localhost:8000/users/reset?email=accrazed@gmail.com&password=potato&code=790451 HTTP/1.1
+
 
 ### SAMPLE
 POST localhost:8000/users/login?username=accrazed&password=123456789 HTTP/1.1

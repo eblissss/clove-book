@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { Box, Container, Typography } from "@mui/material";
 import { TabBar } from "../../components/tabBar/TabBar";
 import SearchBar from "../../components/searchBar/SearchBar";

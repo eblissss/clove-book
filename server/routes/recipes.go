@@ -222,11 +222,12 @@ func (r *Client) SearchRecipesIngredients(c *gin.Context) {
 	ingredientsQuery, _ := c.GetQuery("ingredients")
 	ingredientsQuery = strings.ToLower(ingredientsQuery)
 	ingredients := strings.Split(ingredientsQuery, ",")
+	ingredientRegex := strings.Join(ingredients, "|")
 
 	cur, err := r.StubCollection.Find(ctx,
 		bson.M{
 			"name":             primitive.Regex{Pattern: query, Options: "i"},
-			"ingredients.name": bson.M{"$in": ingredients},
+			"ingredients.name": primitive.Regex{Pattern: ingredientRegex, Options: "i"},
 		},
 	)
 

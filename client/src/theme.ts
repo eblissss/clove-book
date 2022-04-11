@@ -63,7 +63,7 @@ export const palette = {
 		contrastText: "#fff",
 	},
 	error: {
-		main: red.A400,
+		main: "#EE733C",
 	},
 	contrastThreshold: 3,
 	tonalOffset: 0.2,
@@ -240,13 +240,16 @@ const theme = createTheme({
 					"&.Round": {
 						border: "0px solid",
 						borderColor: palette.primary.main,
-						borderRadius: "10px",
-						backgroundColor: "#ffffff",
 						boxSizing: "border-box",
 						margin: "5px",
 						mx: "5px",
-
 						"& .MuiOutlinedInput-root": {
+							required: "true",
+							backgroundColor: "#ffffff",
+							borderRadius: "10px",
+							"& input": {
+								fontFamily: ["sans-serif", "Sen"],
+							},
 							"& fieldset": {
 								color: "#ffffff",
 								border: "none",
@@ -261,6 +264,12 @@ const theme = createTheme({
 							"&:Mui-focused fieldset": {
 								border: "1px solid",
 							},
+						},
+						"& label": {
+							fontFamily: ["sans-serif", "Sen"],
+						},
+						"& p.Mui-error": {
+							fontSize: "12px",
 						},
 					},
 				},

@@ -121,7 +121,8 @@ export function LoginForm({ setUseReset }: loginProps) {
 								<TextField
 									className="Round"
 									fullWidth
-									id="username"
+									//id="username"
+									id="outlined-error-helper-text"
 									label="Username"
 									name="username"
 									autoComplete="username"
@@ -131,7 +132,8 @@ export function LoginForm({ setUseReset }: loginProps) {
 								<TextField
 									className="Round"
 									fullWidth
-									id="password"
+									//id="password"
+									id="outlined-error-helper-text"
 									label="Password"
 									name="password"
 									type="password"

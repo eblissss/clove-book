@@ -39,7 +39,7 @@ function FilterList() {
 		setChecked(newChecked);
 	};
 
-	const options = ["Vegan", "Gluten", "Mayo", "Leaf"];
+	const options = ["Gluten-Free", "Dairy-Free", "Vegan", "Vegetarian"];
 	return (
 		<List disablePadding>
 			<FormLabel

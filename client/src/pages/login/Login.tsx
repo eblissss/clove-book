@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 
 import Scene from "../../components/scene/Scene";

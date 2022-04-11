@@ -87,8 +87,9 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				left: "50%",
 				transform: "translate(-50%, -50%)",
 				minWidth: "180px",
-				width: "50%",
-				maxHeight: "90%",
+				width: "60%",
+				height: "80%",
+				maxHeight: "100%",
 				bgcolor: "primary.light",
 				border: "2px solid #fff",
 				borderRadius: "20px",
@@ -102,7 +103,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				renderTrackHorizontal={() => <div></div>}
 				renderThumbHorizontal={() => <div></div>}
 				thumbSize={180}
-				style={{ height: 600, overflowX: "hidden" }}
+				style={{ height: "100%", overflowX: "hidden" }}
 			>
 				{/* TITLE, SUBTITLE, BUTTONS */}
 				<Box
@@ -114,6 +115,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						width: "100%",
 						height: "60%",
 						maxHeight: "70%",
+						minHeight: "160px",
 						// position: "sticky",
 						display: "flex",
 						flexDirection: "column",
@@ -128,7 +130,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						sx={{
 							position: "absolute",
 							justifySelf: "center",
-							height: "100%",
+							height: "450px",
 							//mixBlendMode: "soft-light",
 							opacity: "50%",
 							objectFit: "cover",
@@ -175,7 +177,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 					</Container>
 					<Container
 						disableGutters
-						sx={{ pl: "16px", zIndex: "tooltip" }}
+						sx={{ pl: "16px", zIndex: "tooltip", pb: "16px" }}
 					>
 						{/* EDIT AND DELETE MENU */}
 						<Tooltip
@@ -188,10 +190,15 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								disableRipple
 								onClick={toggleFav}
 								className="Menu"
+								sx={{
+									margin: "0px",
+								}}
 							>
 								{isFavorited ? (
 									<Favorited
 										sx={{
+											margin: "0px",
+											borderWidth: "0",
 											color: "secondary.main",
 										}}
 									/>
@@ -244,6 +251,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						sx={{
 							width: "40%",
 							minWidth: "auto",
+							minHeight: "40%",
 							height: "auto",
 							//mr: "10px",
 						}}

@@ -45,7 +45,7 @@ export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 					ml: 1,
 					flex: 1,
 					color: "primary.light",
-					fontFamily: ["Sen"],
+					fontFamily: ["Helvetica Neue", "Sen"],
 				}}
 				placeholder="a lentil dish with plenty of greens..."
 				inputProps={{ "aria-label": "search recipes" }}

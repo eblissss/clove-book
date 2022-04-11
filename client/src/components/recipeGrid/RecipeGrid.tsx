@@ -13,7 +13,7 @@ function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 	return (
 		<Masonry
 			columns={columns}
-			spacing={2}
+			spacing={3}
 			sx={{
 				mt: "10px",
 				justifyContent: "top",
@@ -23,22 +23,6 @@ function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 				<RecipeCard key={i} {...recipe} />
 			))}
 		</Masonry>
-
-		// <Grid
-		// 	container
-		// 	spacing={3}
-		// 	columns={columns}
-		// 	sx={{
-		// 		mt: "0px",
-		// 		justifyContent: "center",
-		// 	}}
-		// >
-		// 	{recipes?.map((recipe, i) => (
-		// 		<Grid item key={i} xs={"auto"} md={6} lg={4}>
-		// 			<RecipeCard {...recipe} />
-		// 		</Grid>
-		// 	))}
-		// </Grid>
 	);
 }
 

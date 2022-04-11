@@ -101,6 +101,9 @@ const theme = createTheme({
 					"&.Menu": {
 						// height: "64px",
 						// width: "64px",
+						borderRadius: "0px",
+						border: "unset",
+						margin: "0px",
 						"& svg": {
 							fontSize: "2.5rem",
 						},

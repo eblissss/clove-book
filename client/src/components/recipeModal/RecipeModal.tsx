@@ -13,6 +13,7 @@ import {
 	DialogTitle,
 	Button,
 	DialogActions,
+	Checkbox,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -49,7 +50,9 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 	const navigate = useNavigate();
 
 	const [canEdit, setCanEdit] = useState(false);
+	const [selectedIng, setSelectedIng] = useState<number[]>([]);
 
+	const label = { inputProps: { "aria-label": "Ingredient checkbox" } };
 	if (recipe == undefined) {
 		recipe = dataA;
 	}
@@ -148,7 +151,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 
 					<Container
 						disableGutters
-						sx={{ zIndex: "tooltip", padding: "16px" }}
+						sx={{ zIndex: "tooltip", pl: "32px" }}
 					>
 						<Typography
 							variant="h3"
@@ -165,19 +168,16 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							variant="h6"
 							component="h6"
 							sx={{
-								position: "relative",
+								//position: "relative",
 								color: "primary.contrastText",
 							}}
 						>
-							Ready in {recipe.totalTime}m
-							{recipe.prepTime === -1
-								? ""
-								: ` - ${recipe.prepTime}m Prep + ${recipe.cookTime}m Cook`}
+							By {recipe.author} – Ready in {recipe.totalTime}m
 						</Typography>
 					</Container>
 					<Container
 						disableGutters
-						sx={{ pl: "16px", zIndex: "tooltip", pb: "16px" }}
+						sx={{ pl: "24px", zIndex: "tooltip", pb: "16px" }}
 					>
 						{/* EDIT AND DELETE MENU */}
 						<Tooltip
@@ -253,7 +253,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							minWidth: "auto",
 							minHeight: "40%",
 							height: "auto",
-							//mr: "10px",
+							py: "16px",
+							pl: "16px",
 						}}
 					>
 						{/* REQUIRED INGREDIENTS */}
@@ -261,10 +262,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							component="div"
 							sx={{
 								backgroundColor: "primary.main",
-								p: "12px",
-								pb: "12px",
-								m: "10px",
-								mr: "5px",
+								p: "16px",
+								mb: "8px",
 								borderRadius: "8px",
 							}}
 						>
@@ -275,23 +274,49 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							>
 								Ingredients
 							</Typography>
-							<Container
-								disableGutters
-								sx={{
-									borderLeft: "2px solid",
-									borderColor: "primary.dark",
-									pl: "5px",
-								}}
-							>
-								{recipe.ingredients?.map((ingredient) => (
+							<Container disableGutters>
+								{recipe.ingredients?.map((ingredient, i) => (
 									<Typography
 										key={ingredient.name}
 										variant="body1"
 										component="h5"
+										color={
+											selectedIng.indexOf(i) > -1
+												? "primary.contrastText"
+												: "primary.darkContrastText"
+										}
 										sx={{
 											p: "1px",
 										}}
 									>
+										<Checkbox
+											{...label}
+											sx={{ mt: "-4px" }}
+											onChange={() => {
+												if (
+													selectedIng.indexOf(i) ===
+													-1
+												) {
+													setSelectedIng([
+														...selectedIng,
+														i,
+													]);
+												} else {
+													const tmpSelectedIng = [
+														...selectedIng,
+													];
+													tmpSelectedIng.splice(
+														tmpSelectedIng.indexOf(
+															i
+														),
+														1
+													);
+													setSelectedIng(
+														tmpSelectedIng
+													);
+												}
+											}}
+										/>
 										{ingredient.name}: {ingredient.amount}
 										{"\u00A0"}
 										{ingredient.unit}
@@ -308,10 +333,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								component="div"
 								sx={{
 									backgroundColor: "primary.main",
-									p: "12px",
-									pb: "12px",
-									m: "10px",
-									mr: "5px",
+									p: "16px",
+									mb: "8px",
 									borderRadius: "8px",
 								}}
 							>
@@ -319,6 +342,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 									variant="h6"
 									component="h6"
 									fontWeight={700}
+									sx={{}}
 								>
 									Nutrition Information
 								</Typography>
@@ -360,9 +384,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								disableGutters
 								sx={{
 									backgroundColor: "primary.main",
-									m: "10px",
-									mr: "5px",
-									p: "12px",
+									p: "16px",
 									borderRadius: "8px",
 									width: "auto",
 								}}
@@ -397,19 +419,31 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						component="div"
 						sx={{
 							backgroundColor: "primary.main",
-							p: "10px",
-							m: "10px",
-							ml: "5px",
+							p: "16px",
+							m: "16px",
+							ml: "8px",
 							borderRadius: "8px",
 							width: "60%",
 							minWidth: "40%",
-							//ml: "0",
 						}}
 					>
 						<Typography
 							variant="h6"
 							component="h6"
+							sx={{
+								position: "relative",
+								color: "primary.contrastText",
+							}}
+						>
+							{recipe.prepTime === -1
+								? ""
+								: `${recipe.prepTime}m Prep Time – ${recipe.cookTime}m Cook Time`}
+						</Typography>
+						<Typography
+							variant="h6"
+							component="h6"
 							fontWeight={700}
+							sx={{ height: "2em" }}
 						>
 							Instructions
 						</Typography>
@@ -422,7 +456,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 									variant="body1"
 									component="h5"
 									sx={{
-										p: "1px",
+										height: "2em",
+										//p: "1px",
 									}}
 								>
 									{i + 1}. {instruction.description}

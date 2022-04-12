@@ -51,7 +51,7 @@ func main() {
 	r.DELETE("/users/:userID", c.DeleteUser)
 
 	// Test
-	r.GET("/test", routes.Test)
+	r.GET("/test", c.Test)
 
 	//this runs the server and allows it to listen to requests.
 	r.Run(":" + port)

@@ -17,9 +17,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var spoonacularBaseURL = "https://api.spoonacular.com"
+var spoonacularBaseURL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
 
 func (r *Client) CreateRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -27,7 +28,6 @@ func (r *Client) CreateRecipe(c *gin.Context) {
 
 	var recipe models.Recipe
 	if err := c.BindJSON(&recipe); err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not fit into recipe struct"})
 		return
 	}
@@ -107,16 +107,19 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// MAX_RECIPES := 30
+	MAX_RECIPES := 30
 
 	query, _ := c.GetQuery("query")
+
+	options := new(options.FindOptions)
+	options.SetLimit(int64(MAX_RECIPES))
 
 	cur, err := r.StubCollection.Find(ctx,
 		// still not fuzzy but partial at least
 		bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}}},
-
 		// this is an order of magnitude faster but not fuzzy or partial
 		// bson.M{"$text": bson.M{"$search": query}},
+		options,
 	)
 
 	if err != nil {
@@ -133,24 +136,30 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	}
 
 	// UNCOMMENT TO SEARCH SPOONACULAR
-	// cbAmount := len(foundRecipes)
-	// if cbAmount < MAX_RECIPES {
-	// 	if query == "" {
-	// 		spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
-	// 		foundRecipes = append(foundRecipes, spoonResults...)
-	// 	} else {
-	// 		spoonResults := r.searchSpoonacularRecipes(c, query, []string{}, MAX_RECIPES-cbAmount)
-	// 		foundRecipes = append(foundRecipes, spoonResults...)
-	// 	}
-	// }
+	cbAmount := len(foundRecipes)
+	if cbAmount < MAX_RECIPES {
+		if query == "" {
+			spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
+			foundRecipes = append(foundRecipes, spoonResults...)
+		} else {
+			spoonResults := r.searchSpoonacularRecipes(c, query, []string{}, MAX_RECIPES-cbAmount)
+			foundRecipes = append(foundRecipes, spoonResults...)
+		}
+	}
 
 	c.JSON(http.StatusOK, foundRecipes)
 }
 
 func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []string, amount int) []models.RecipeStub {
-	resp, err := http.Get(spoonacularBaseURL + "/recipes/complexSearch?query=" + query +
-		"&number=" + strconv.Itoa(amount) +
-		"&apiKey=" + os.Getenv("API_KEY"))
+	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/complexSearch?query="+query+
+		"&number="+strconv.Itoa(amount), nil)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error creating spoonacular request"})
+		return []models.RecipeStub{}
+	}
+	req.Header.Set("X-RapidAPI-Key", os.Getenv("API_KEY"))
+	resp, err := http.DefaultClient.Do(req)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipes"})
 		return []models.RecipeStub{}
@@ -166,12 +175,17 @@ func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []s
 	var searchResponse models.SpoonacularSearchResponse
 	json.Unmarshal(body, &searchResponse)
 
-	return fmtSpoonacularSearchRes(searchResponse)
+	return r.fmtSpoonacularSearchRes(searchResponse)
 }
 
 func (r *Client) getRandomSpoonacularRecipes(c *gin.Context, amount int) []models.RecipeStub {
-	resp, err := http.Get(spoonacularBaseURL + "/recipes/random?number=" + strconv.Itoa(amount) +
-		"&apiKey=" + os.Getenv("API_KEY"))
+	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/random?number="+strconv.Itoa(amount), nil)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error creating spoonacular request"})
+		return []models.RecipeStub{}
+	}
+	req.Header.Set("X-RapidAPI-Key", os.Getenv("API_KEY"))
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipes"})
 		return []models.RecipeStub{}
@@ -184,19 +198,29 @@ func (r *Client) getRandomSpoonacularRecipes(c *gin.Context, amount int) []model
 		return []models.RecipeStub{}
 	}
 
-	var searchResponse models.SpoonacularSearchResponse
+	var searchResponse models.SpoonacularRandomResponse
 	json.Unmarshal(body, &searchResponse)
 
-	return fmtSpoonacularSearchRes(searchResponse)
+	searchRes := models.SpoonacularSearchResponse{
+		Recipes: searchResponse.Recipes,
+	}
+
+	return r.fmtSpoonacularSearchRes(searchRes)
 }
 
 // Format a spoonacular search result into stubs
-func fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse) []models.RecipeStub {
+func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse) []models.RecipeStub {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	foundRecipes := make([]models.RecipeStub, len(searchRes.Recipes))
+	var foundRecipesInterface []interface{}
+
+	spoonoid, err := primitive.ObjectIDFromHex("100000000000000000000000")
 
 	for _, recipe := range searchRes.Recipes {
 		stub := models.RecipeStub{
-			CookbookID:    primitive.NilObjectID,
+			CookbookID:    spoonoid,
 			SpoonacularID: recipe.SpoonacularID,
 			ImageURL:      recipe.ImageURL,
 			RecipeName:    recipe.RecipeName,
@@ -207,6 +231,14 @@ func fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse) []model
 			UpdatedAt:     time.Time{},
 		}
 		foundRecipes = append(foundRecipes, stub)
+		foundRecipesInterface = append(foundRecipesInterface, stub)
+	}
+
+	fmt.Println(foundRecipesInterface)
+
+	_, err = r.StubCollection.InsertMany(ctx, foundRecipesInterface)
+	if err != nil {
+		fmt.Println("Couldn't insert stubs", err)
 	}
 
 	return foundRecipes
@@ -295,8 +327,13 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 		return
 	}
 
-	resp, err := http.Get(spoonacularBaseURL + "/recipes/" + id + "/information?apiKey=" +
-		os.Getenv("API_KEY") + "&includeNutrition=true")
+	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/"+id+"/information?includeNutrition=true", nil)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error creating spoonacular request"})
+		return
+	}
+	req.Header.Set("X-RapidAPI-Key", os.Getenv("API_KEY"))
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipe"})
 		return

@@ -169,7 +169,7 @@ function Home() {
 						>
 							Featured Dishes
 						</Typography>
-						<RecipeStack recipes={popularRecipes} />
+						<RecipeStack recipes={popularRecipes} columns={0} />
 					</Container>
 				</Container>
 			</Container>

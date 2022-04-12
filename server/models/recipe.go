@@ -51,6 +51,10 @@ type SpoonacularSearchResponse struct {
 	Recipes []SpoonacularSearchRecipe `json:"results"`
 }
 
+type SpoonacularRandomResponse struct {
+	Recipes []SpoonacularSearchRecipe `json:"recipes"`
+}
+
 type SpoonacularRecipe struct {
 	RecipeName    string          `json:"title"`
 	SpoonacularID int64           `json:"id"`

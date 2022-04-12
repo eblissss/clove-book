@@ -1,7 +1,7 @@
 import { Box, Container, LinearProgress, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { SimpleRecipe } from "../../api/models";
-import { getFavorites } from "../../api/requests";
+import { getUsersRecipes } from "../../api/requests";
 import { useAppSelector } from "../../app/hooks";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
@@ -26,7 +26,7 @@ for (let i = 0; i < 12; i++) {
 }
 
 function Saved() {
-	const [favRecipes, setFavRecipes] = useState<SimpleRecipe[]>(fakeJSON);
+	const [myRecipes, setMyRecipes] = useState<SimpleRecipe[]>(fakeJSON);
 	const [loading, setLoading] = useState(true);
 
 	const userID = useAppSelector(selectUser).userID;
@@ -41,8 +41,8 @@ function Saved() {
 		).value;
 
 		setLoading(true);
-		getFavorites(userID, searchVal).then((recipes) => {
-			setFavRecipes(recipes);
+		getUsersRecipes(userID).then((recipes) => {
+			setMyRecipes(recipes);
 			setLoading(false);
 		});
 	}
@@ -55,7 +55,7 @@ function Saved() {
 			}}
 		>
 			<RecipeModal />
-			<TabBar tab="saved" />
+			<TabBar tab="album" />
 			<Container
 				id="BACKGROUND"
 				sx={{
@@ -80,7 +80,7 @@ function Saved() {
 					{loading ? (
 						<LinearProgress />
 					) : (
-						<RecipeGrid recipes={favRecipes} columns={4} />
+						<RecipeGrid recipes={myRecipes} columns={4} />
 					)}
 				</Container>
 			</Container>

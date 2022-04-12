@@ -1,15 +1,25 @@
 import { Divider, Stack } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { SimpleRecipe } from "../../api/models";
 import { RecipeCard } from "../recipeCard/RecipeCard";
 import Masonry from "@mui/lab/Masonry";
 
 interface RecipeGridProps {
 	recipes: SimpleRecipe[];
-	columns?: number;
+	columns: number;
 }
 
 function RecipeGrid({ recipes, columns }: RecipeGridProps) {
+	// const [columnsReal, setColumns] = useState(3);
+
+	// resizes but laggy
+	// function updateColumns() {
+	// 	const newCols = window.innerWidth / 500;
+	// 	setColumns(columns + newCols);
+	// }
+
+	// window.onresize = updateColumns;
+
 	return (
 		<Masonry
 			columns={columns}

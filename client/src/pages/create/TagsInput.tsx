@@ -33,7 +33,7 @@ function TagsInput() {
 		?.addEventListener("click", saveTags);
 
 	const updateTags = (e: any) => {
-		const updateKey = e.key === "," || e.key === " ";
+		const updateKey = e.key === "," || e.key === "Enter";
 		const backKey = e.key === "Backspace";
 
 		if (updateKey && input.length && !tags.includes(input)) {

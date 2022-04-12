@@ -12,6 +12,9 @@ interface searchBarProps {
 	paperProps?: any;
 }
 
+let typingTimer: number;
+const doneTypingInterval = 400;
+
 export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 	const dispatch = useAppDispatch();
 
@@ -22,6 +25,13 @@ export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 		dispatch(
 			setSearchTags(tags.filter((tag) => tag !== e.target.textContent))
 		);
+	};
+
+	const countdownSearch: React.ChangeEventHandler<
+		HTMLInputElement | HTMLTextAreaElement
+	> = (e) => {
+		clearTimeout(typingTimer);
+		typingTimer = setTimeout(searchFunc, doneTypingInterval);
 	};
 
 	return (
@@ -49,7 +59,7 @@ export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 				}}
 				placeholder="a lentil dish with plenty of greens..."
 				inputProps={{ "aria-label": "search recipes" }}
-				// onChange={searchFunc}
+				onChange={countdownSearch}
 			/>
 			<IconButton
 				type="button"

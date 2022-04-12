@@ -9,6 +9,7 @@ import Saved from "../saved/Saved";
 import Create from "../create/Create";
 import User from "../user/User";
 import Reset from "../reset/Reset";
+import Album from "../album/Album";
 
 import ErrorPopup from "../../components/errorPopup/ErrorPopup";
 import { useDispatch } from "react-redux";
@@ -28,6 +29,7 @@ function App() {
 				<Route path="/login" element={<Login />} />
 				<Route path="/home" element={<Home />} />
 				<Route path="/saved" element={<Saved />} />
+				<Route path="/album" element={<Album />} />
 				<Route path="/create" element={<Create />} />
 				<Route path="/user" element={<User />} />
 				<Route path="/reset" element={<Reset />} />

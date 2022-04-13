@@ -20,10 +20,14 @@ import {
 	FavoriteBorder as Unfavorited,
 	Favorite as Favorited,
 } from "@mui/icons-material";
-import cloveImg from "../../assets/clove3d.png";
 
 export function RecipeCard(props: SimpleRecipe) {
 	const dispatch = useAppDispatch();
+
+	const recipeID =
+		props.cookbookID === "100000000000000000000000"
+			? "" + props.spoonacularID
+			: props.cookbookID;
 
 	function updateSelectedRecipe() {
 		if (props.cookbookID >= "0") {
@@ -38,13 +42,16 @@ export function RecipeCard(props: SimpleRecipe) {
 		dispatch(openModal());
 	}
 
-	const isFavorited: boolean = useAppSelector(
-		selectFavoriteByID(props.cookbookID)
-	);
+	const isFavorited: boolean = useAppSelector(selectFavoriteByID(recipeID));
 
 	const toggleFav = (e: any) => {
 		e.stopPropagation();
-		dispatch(updateFavorite({ id: props.cookbookID, set: !isFavorited }));
+		dispatch(
+			updateFavorite({
+				id: recipeID,
+				set: !isFavorited,
+			})
+		);
 	};
 
 	const cardTagClick = (e: any) => {

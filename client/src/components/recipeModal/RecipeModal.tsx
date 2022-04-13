@@ -49,6 +49,11 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
+	const recipeID =
+		recipe.cookbookID === "100000000000000000000000"
+			? "" + recipe.spoonacularID
+			: recipe.cookbookID;
+
 	const [canEdit, setCanEdit] = useState(false);
 	const [selectedIng, setSelectedIng] = useState<number[]>([]);
 
@@ -57,9 +62,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 		recipe = dataA;
 	}
 
-	const isFavorited: boolean = useAppSelector(
-		selectFavoriteByID(recipe.cookbookID)
-	);
+	const isFavorited: boolean = useAppSelector(selectFavoriteByID(recipeID));
 
 	useEffect(() => {
 		const userID = store.getState().user.user.userID;
@@ -78,7 +81,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 	};
 
 	const toggleFav = () => {
-		dispatch(updateFavorite({ id: recipe.cookbookID, set: !isFavorited }));
+		dispatch(updateFavorite({ id: recipeID, set: !isFavorited }));
 	};
 
 	return (

@@ -675,20 +675,28 @@ func (r *Client) GetManyRecipes(c *gin.Context, ids []string, query string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// this only does our cookbook database right now
-
-	objectIds := make([]primitive.ObjectID, len(ids))
+	cbIds := make([]primitive.ObjectID, len(ids))
+	spIds := make([]int64, len(ids))
 	for i := range ids {
 		id, err := primitive.ObjectIDFromHex(ids[i])
 		if err == nil {
-			objectIds = append(objectIds, id)
+			cbIds = append(cbIds, id)
+		} else {
+			idInt, err := strconv.Atoi(ids[i])
+			if err != nil {
+				fmt.Println("yeah atoi failed lol")
+			}
+			spIds = append(spIds, int64(idInt))
 		}
 	}
 
 	cur, err := r.StubCollection.Find(ctx,
 		bson.M{
-			"name":       primitive.Regex{Pattern: query, Options: "i"},
-			"cookbookID": bson.M{"$in": objectIds},
+			"name": primitive.Regex{Pattern: query, Options: "i"},
+			"$or": []interface{}{
+				bson.M{"cookbookID": bson.M{"$in": cbIds}},
+				bson.M{"spoonacularID": bson.M{"$in": spIds}},
+			},
 		},
 	)
 

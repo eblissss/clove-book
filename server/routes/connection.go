@@ -23,6 +23,7 @@ type Client struct {
 	RecipeCollection        *mongo.Collection
 	StubCollection          *mongo.Collection
 	FavoriteCollection      *mongo.Collection
+	CookbookCollection      *mongo.Collection
 	// SpoonClient        *spoonacular.Client
 	MailClient *email.Client
 	Validator  *validator.Validate
@@ -37,6 +38,7 @@ func New() *Client {
 	stubCollection := OpenCollection(mongoClient, "stubs")
 	favoriteCollection := OpenCollection(mongoClient, "favorites")
 	resetPasswordCollection := OpenCollection(mongoClient, "reset_password")
+	cookbookCollection := OpenCollection(mongoClient, "cookbook")
 	validate := validator.New()
 
 	// spoonClient := spoonacular.New()
@@ -52,6 +54,7 @@ func New() *Client {
 		RecipeCollection:        recipeCollection,
 		StubCollection:          stubCollection,
 		FavoriteCollection:      favoriteCollection,
+		CookbookCollection:      cookbookCollection,
 		MailClient:              mailClient,
 		Validator:               validate,
 		// SpoonClient:        spoonClient,

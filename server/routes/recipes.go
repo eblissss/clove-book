@@ -427,7 +427,7 @@ func (r *Client) GetPopularRecipes(c *gin.Context) {
 	}
 
 	// Find instead of findOne
-	cur, err := r.RecipeCollection.Find(ctx,
+	cur, err := r.CookbookCollection.Find(ctx,
 		bson.M{"cookbookID": bson.M{"$in": objectIds}},
 	)
 
@@ -449,7 +449,7 @@ func (r *Client) GetPopularRecipes(c *gin.Context) {
 
 func (r *Client) getCookbookRecipe(ctx context.Context, c *gin.Context, id string) {
 	objID, _ := primitive.ObjectIDFromHex(id)
-	res := r.RecipeCollection.FindOne(ctx, bson.M{
+	res := r.CookbookCollection.FindOne(ctx, bson.M{
 		"cookbookID": objID,
 	})
 
@@ -503,7 +503,7 @@ func (r *Client) UpdateRecipe(c *gin.Context) {
 		"nutrients":    recipe.Nutrients,
 		"updatedAt":    time.Now(),
 	}
-	result, err := r.RecipeCollection.UpdateOne(ctx, bson.M{"cookbookID": cookbookID}, bson.M{"$set": update})
+	result, err := r.CookbookCollection.UpdateOne(ctx, bson.M{"cookbookID": cookbookID}, bson.M{"$set": update})
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be updated"})
@@ -542,7 +542,7 @@ func (r *Client) DeleteRecipe(c *gin.Context) {
 	param := c.Params.ByName("id")
 	cookbookID, _ := primitive.ObjectIDFromHex(param)
 
-	recipeDeleted, err := r.RecipeCollection.DeleteOne(ctx, bson.M{"cookbookID": cookbookID})
+	recipeDeleted, err := r.CookbookCollection.DeleteOne(ctx, bson.M{"cookbookID": cookbookID})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be deleted"})
 		return

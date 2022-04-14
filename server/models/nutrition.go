@@ -10,6 +10,11 @@ type RecipeNutrients struct {
 	Nutrients []NutritionDetail `json:"nutrients"`
 }
 
+type OldRecipeNutrients struct {
+	Bad  []NutritionDetail `json:"bad" bson:"bad"`
+	Good []NutritionDetail `json:"good" bson:"good"`
+}
+
 type NutritionDetail struct {
 	Name                string  `json:"name"`
 	Amount              string  `json:"amount"`

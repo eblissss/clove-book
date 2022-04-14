@@ -329,9 +329,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						</Box>
 
 						{/* NUTRITION */}
-						{recipe.nutrients?.good
-							.concat(recipe.nutrients?.bad)
-							.filter((x) => x.amount !== "").length != 0 ? (
+						{recipe.nutrients?.filter((x) => x.amount !== "")
+							.length !== 0 ? (
 							<Box
 								component="div"
 								sx={{
@@ -357,9 +356,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 										pl: "5px",
 									}}
 								>
-									{recipe.nutrients?.good
-										.concat(recipe.nutrients?.bad)
-										.filter((x) => x.amount !== "")
+									{recipe.nutrients
+										?.filter((x) => x.amount !== "")
 										.map((nutrient) => (
 											<Typography
 												key={nutrient.name}
@@ -539,10 +537,7 @@ const dataA: Recipe = {
 	cookTime: 5,
 	prepTime: 10,
 	createdAt: "5:04 PM, Friday 14th 2021",
-	nutrients: {
-		good: [],
-		bad: [],
-	},
+	nutrients: [],
 };
 
 function RecipeModal() {

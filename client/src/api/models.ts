@@ -40,7 +40,7 @@ export interface Recipe extends SimpleRecipe {
 	prepTime: number;
 	totalTime: number;
 	instructions: Instruction[];
-	nutrients: RecipeNutrients;
+	nutrients: Nutrient[];
 	createdAt: string;
 }
 
@@ -59,9 +59,4 @@ export interface Nutrient {
 	amount: string;
 	indented: boolean;
 	percentOfDailyNeeds: number;
-}
-
-export interface RecipeNutrients {
-	bad: Nutrient[];
-	good: Nutrient[];
 }

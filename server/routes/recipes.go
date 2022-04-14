@@ -94,13 +94,14 @@ func (r *Client) GetRecipe(c *gin.Context) {
 		return
 	}
 
-	// successful parse means it's a spoonacular id
-	if _, err := strconv.ParseInt(id, 10, 32); err == nil {
-		r.getSpoonacularRecipe(c, id)
+	// Cookbook Ids must be 24 digits, spoonacular ids will never be objectid length
+	_, err = primitive.ObjectIDFromHex(id)
+	if err == nil {
+		r.getCookbookRecipe(ctx, c, id)
 		return
 	}
 
-	r.getCookbookRecipe(ctx, c, id)
+	r.getSpoonacularRecipe(c, id)
 }
 
 func (r *Client) SearchRecipes(c *gin.Context) {
@@ -327,6 +328,8 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 		return
 	}
 
+	fmt.Println(spoonacularBaseURL + "/recipes/" + id + "/information?includeNutrition=true")
+
 	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/"+id+"/information?includeNutrition=true", nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Error creating spoonacular request"})
@@ -349,9 +352,13 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 	var spoonRecipe models.SpoonacularRecipe
 	json.Unmarshal(body, &spoonRecipe)
 
+	fmt.Println(spoonRecipe)
+
+	spoonoid, err := primitive.ObjectIDFromHex("100000000000000000000000")
+
 	recipe := models.Recipe{
 		RecipeStub: models.RecipeStub{
-			CookbookID:    primitive.NilObjectID,
+			CookbookID:    spoonoid,
 			SpoonacularID: spoonRecipe.SpoonacularID,
 			ImageURL:      spoonRecipe.ImageURL,
 			RecipeName:    spoonRecipe.RecipeName,
@@ -362,7 +369,7 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 			AuthorID:      primitive.NilObjectID,
 			UpdatedAt:     time.Time{},
 		},
-		Nutrients: &spoonRecipe.Nutrition,
+		Nutrients: spoonRecipe.Nutrition.Nutrients,
 		Author:    spoonRecipe.Author,
 
 		CookTime:     -1,
@@ -397,6 +404,8 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 	if spoonRecipe.IsHealthy {
 		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "healthy")
 	}
+
+	// TODO: update stub if possible
 
 	c.JSON(http.StatusOK, recipe)
 }

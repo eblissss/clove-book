@@ -3,13 +3,11 @@ import { RootState } from "../../app/store";
 
 export interface ModalState {
 	id: string;
-	isCookbookID: boolean;
 	isOpen: boolean;
 }
 
 const initialState: ModalState = {
 	id: "",
-	isCookbookID: true,
 	isOpen: false,
 };
 
@@ -18,12 +16,8 @@ export const modalSlice = createSlice({
 	initialState,
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
-		setModal: (
-			state,
-			action: PayloadAction<{ id: string; isCookbookID: boolean }>
-		) => {
+		setModal: (state, action: PayloadAction<{ id: string }>) => {
 			state.id = action.payload.id;
-			state.isCookbookID = action.payload.isCookbookID;
 		},
 		openModal: (state) => {
 			state.isOpen = true;

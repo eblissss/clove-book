@@ -30,15 +30,7 @@ export function RecipeCard(props: SimpleRecipe) {
 			: props.cookbookID;
 
 	function updateSelectedRecipe() {
-		if (props.cookbookID >= "0") {
-			dispatch(setModal({ id: props.cookbookID, isCookbookID: true }));
-		} else {
-			console.log(props.spoonacularID);
-			dispatch(
-				setModal({ id: "" + props.spoonacularID, isCookbookID: false })
-			);
-		}
-
+		dispatch(setModal({ id: recipeID }));
 		dispatch(openModal());
 	}
 

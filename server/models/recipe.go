@@ -8,12 +8,12 @@ import (
 
 type Recipe struct {
 	RecipeStub   `bson:",inline"`
-	Nutrients    *RecipeNutrients `json:"nutrients" bson:"nutrients"`
-	Author       string           `json:"author" bson:"author"`
-	CookTime     int64            `json:"cookTime" bson:"cookTime"`
-	PrepTime     int64            `json:"prepTime" bson:"prepTime"`
-	Instructions []Instruction    `json:"instructions" bson:"instructions"`
-	CreatedAt    time.Time        `json:"createdAt" bson:"createdAt"`
+	Nutrients    []NutritionDetail `json:"nutrients" bson:"nutrients"`
+	Author       string            `json:"author" bson:"author"`
+	CookTime     int64             `json:"cookTime" bson:"cookTime"`
+	PrepTime     int64             `json:"prepTime" bson:"prepTime"`
+	Instructions []Instruction     `json:"instructions" bson:"instructions"`
+	CreatedAt    time.Time         `json:"createdAt" bson:"createdAt"`
 }
 
 // Recipestub for both user-created and other recipes
@@ -56,14 +56,14 @@ type SpoonacularRandomResponse struct {
 }
 
 type SpoonacularRecipe struct {
-	RecipeName    string          `json:"title"`
-	SpoonacularID int64           `json:"id"`
-	ImageURL      string          `json:"image"`
-	TotalTime     int64           `json:"readyInMinutes"`
-	Ingredients   []Ingredient    `json:"extendedIngredients"`
-	Instructions  []Instruction   `json:"instructions"`
-	Nutrition     RecipeNutrients `json:"nutrients"`
-	Author        string          `json:"sourceName"`
+	RecipeName    string           `json:"title"`
+	SpoonacularID int64            `json:"id"`
+	ImageURL      string           `json:"image"`
+	TotalTime     int64            `json:"readyInMinutes"`
+	Ingredients   []Ingredient     `json:"extendedIngredients"`
+	Instructions  []Instruction    `json:"instructions"`
+	Nutrition     *RecipeNutrients `json:"nutrition"`
+	Author        string           `json:"sourceName"`
 
 	// there has to be a better way to save tags
 	IsCheap       bool `json:"cheap"`

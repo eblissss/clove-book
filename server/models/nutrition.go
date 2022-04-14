@@ -1,12 +1,13 @@
 package models
 
 type RecipeNutrients struct {
-	Calories string             `json:"calories"`
-	Carbs    string             `json:"carbs"`
-	Fat      string             `json:"fat"`
-	Protein  string             `json:"protein"`
-	Bad      []*NutritionDetail `json:"bad"`
-	Good     []*NutritionDetail `json:"good"`
+	// Calories string `json:"calories"`
+	// Carbs    string `json:"carbs"`
+	// Fat      string `json:"fat"`
+	// Protein  string `json:"protein"`
+	// Bad      []*NutritionDetail `json:"bad"`
+	// Good     []*NutritionDetail `json:"good"`
+	Nutrients []NutritionDetail `json:"nutrients"`
 }
 
 type NutritionDetail struct {

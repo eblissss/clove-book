@@ -26,10 +26,7 @@ const initialState: RecipeState = {
 		cookTime: 5,
 		prepTime: 10,
 		createdAt: "5:04 PM, Friday 14th 2021",
-		nutrients: {
-			good: [],
-			bad: [],
-		},
+		nutrients: [],
 	},
 };
 

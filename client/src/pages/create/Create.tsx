@@ -11,7 +11,7 @@ import { Cancel as CancelIcon } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 
 import { TabBar } from "../../components/tabBar/TabBar";
-import { Recipe, RecipeNutrients } from "../../api/models";
+import { Recipe } from "../../api/models";
 import IngredientList from "./IngredientList";
 import StepList from "./StepsList";
 import NutritionList from "./NutritionList";
@@ -78,32 +78,6 @@ function Create() {
 		const nutrients = creationStuff.nutrients;
 		const tags = creationStuff.tags;
 
-		const nutrition: RecipeNutrients = {
-			good: [],
-			bad: [],
-		};
-		nutrients.forEach((nutrient) => {
-			switch (nutrient.name) {
-				case "Calories":
-				case "Fat":
-					nutrition.bad.push(nutrient);
-					break;
-				case "Saturated Fat":
-				case "Carbohydrates":
-				case "Sugar":
-				case "Cholestorol":
-				case "Sodium":
-					nutrition.bad.push(nutrient);
-					break;
-				case "Protein":
-				case "Fiber":
-					nutrition.good.push(nutrient);
-					break;
-				default:
-					break;
-			}
-		});
-
 		getUser(user.userID).then((res) => {
 			const author = res.username;
 
@@ -122,7 +96,7 @@ function Create() {
 				totalTime: totalTime,
 				imageURL: imageURL,
 				tags: tags,
-				nutrients: nutrition,
+				nutrients: nutrients,
 			};
 			console.log(data);
 
@@ -164,9 +138,7 @@ function Create() {
 		);
 		dispatch(
 			setNutrients(
-				recipeInfo.nutrients
-					? recipeInfo.nutrients.good.concat(recipeInfo.nutrients.bad)
-					: defaultNutri
+				recipeInfo.nutrients ? recipeInfo.nutrients : defaultNutri
 			)
 		);
 		dispatch(setRecipeTags(recipeInfo.tags!));

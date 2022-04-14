@@ -190,6 +190,7 @@ const theme = createTheme({
 		MuiTextField: {
 			styleOverrides: {
 				root: {
+					width: "100%",
 					"& .MuiInputBase-multiline": {
 						padding: "10px 12px",
 						borderRadius: "15px",
@@ -208,7 +209,7 @@ const theme = createTheme({
 							borderBottom: `0px solid ${palette.primary.dark}`,
 						},
 						"&.MuiFilledInput-underline:after": {
-							borderBottom: `3px solid ${palette.primary.dark}`,
+							borderBottom: `0px solid ${palette.primary.dark}`,
 						},
 					},
 					"&.recipeInput": {

@@ -42,7 +42,7 @@ func (r *Client) CreateRecipe(c *gin.Context) {
 	recipe.CreatedAt = time.Now()
 	recipe.UpdatedAt = time.Now()
 
-	_, err := r.RecipeCollection.InsertOne(ctx, recipe)
+	_, err := r.CookbookCollection.InsertOne(ctx, recipe)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Recipe could not be added"})
 		return
@@ -108,7 +108,7 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	MAX_RECIPES := 30
+	SUBMAX_RECIPES := 12
 
 	query, _ := c.GetQuery("query")
 
@@ -118,10 +118,15 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 		tags = []string{}
 	}
 
-	fmt.Println(tags)
+	offsetQuery, isOffset := c.GetQuery("offset")
+	offset := int64(0)
+	if isOffset {
+		offset, _ = strconv.ParseInt(offsetQuery, 10, 64)
+	}
 
 	options := new(options.FindOptions)
-	options.SetLimit(int64(MAX_RECIPES))
+	options.SetLimit(int64(SUBMAX_RECIPES))
+	options.SetSkip(offset)
 
 	// still not fuzzy but partial at least
 	search := bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}}}
@@ -151,12 +156,12 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	}
 
 	cbAmount := len(foundRecipes)
-	if cbAmount < MAX_RECIPES {
+	if cbAmount < SUBMAX_RECIPES {
 		if query == "" {
-			spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
+			spoonResults := r.getRandomSpoonacularRecipes(c, SUBMAX_RECIPES-cbAmount)
 			foundRecipes = append(foundRecipes, spoonResults...)
 		} else {
-			spoonResults := r.searchSpoonacularRecipes(c, query, tags, MAX_RECIPES-cbAmount)
+			spoonResults := r.searchSpoonacularRecipes(c, query, tags, SUBMAX_RECIPES-cbAmount)
 			foundRecipes = append(foundRecipes, spoonResults...)
 		}
 	}

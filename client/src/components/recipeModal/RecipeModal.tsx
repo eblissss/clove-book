@@ -553,6 +553,7 @@ function RecipeModal() {
 
 	useEffect(() => {
 		if (open) {
+			setLoading(true);
 			getRecipe("" + modalInfo.id).then((data) => {
 				console.log(data);
 				if (data !== undefined && data.name !== "") {

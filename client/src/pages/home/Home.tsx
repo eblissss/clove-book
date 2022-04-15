@@ -41,7 +41,7 @@ function Home() {
 
 	// TODO replace [] with combined tags
 	useEffect(() => {
-		getRecipes("", []).then((stuff) => setRecipes(stuff));
+		getRecipes("", "").then((stuff) => setRecipes(stuff));
 		getPopularRecipes().then((data) => setPopularRecipes(data));
 	}, []);
 
@@ -61,7 +61,7 @@ function Home() {
 				...searchInfo.searchTags,
 				...searchInfo.filters,
 			];
-			getRecipes(searchVal, combinedTags).then((stuff) => {
+			getRecipes(searchVal, combinedTags.join(",")).then((stuff) => {
 				console.log(searchInfo.sort);
 				if (searchInfo.sort === "alpha") {
 					stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -82,22 +82,24 @@ function Home() {
 		).value;
 		const combinedTags = [...searchInfo.searchTags, ...searchInfo.filters];
 		const ingredientSet = new Set(ingredients);
-		searchRecipesIngredients(searchVal, combinedTags, ingredients).then(
-			(stuff) => {
-				stuff.sort((a: SimpleRecipe, b: SimpleRecipe) => {
-					let aCount = 0,
-						bCount = 0;
-					a.ingredients.forEach((ing) => {
-						if (ingredientSet.has(ing.name)) aCount++;
-					});
-					b.ingredients.forEach((ing) => {
-						if (ingredientSet.has(ing.name)) bCount++;
-					});
-					return bCount - aCount;
+		searchRecipesIngredients(
+			searchVal,
+			combinedTags.join(","),
+			ingredients
+		).then((stuff) => {
+			stuff.sort((a: SimpleRecipe, b: SimpleRecipe) => {
+				let aCount = 0,
+					bCount = 0;
+				a.ingredients.forEach((ing) => {
+					if (ingredientSet.has(ing.name)) aCount++;
 				});
-				setRecipes(stuff);
-			}
-		);
+				b.ingredients.forEach((ing) => {
+					if (ingredientSet.has(ing.name)) bCount++;
+				});
+				return bCount - aCount;
+			});
+			setRecipes(stuff);
+		});
 	}
 
 	return (

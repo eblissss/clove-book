@@ -22,11 +22,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 function FilterList() {
 	const dispatch = useAppDispatch();
 
-	const [checked, setChecked] = React.useState([""]);
+	const reduxChecked = useAppSelector(selectSearch).filters;
+	const [checked, setChecked] = useState(reduxChecked);
 
 	const handleToggle = (value: string) => () => {
-		dispatch(setSearchFilters([...checked]));
-
 		const currentIndex = checked.indexOf(value);
 		const newChecked = [...checked];
 
@@ -37,9 +36,10 @@ function FilterList() {
 		}
 
 		setChecked(newChecked);
+		dispatch(setSearchFilters([...newChecked]));
 	};
 
-	const options = ["Gluten-Free", "Dairy-Free", "Vegan", "Vegetarian"];
+	const options = ["Gluten Free", "Dairy Free", "Vegan", "Vegetarian"];
 	return (
 		<List disablePadding>
 			<FormLabel

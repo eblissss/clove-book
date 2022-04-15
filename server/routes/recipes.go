@@ -113,7 +113,7 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	query, _ := c.GetQuery("query")
 
 	tagsQuery, _ := c.GetQuery("tags")
-	tags := strings.Split(tagsQuery, ",")
+	tags := strings.Split(strings.ToLower(tagsQuery), ",")
 	if len(tagsQuery) == 0 {
 		tags = []string{}
 	}
@@ -126,7 +126,6 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 	// still not fuzzy but partial at least
 	search := bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}}}
 	if len(tags) > 0 {
-		fmt.Println(len(tags))
 		search = bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}},
 			{Key: "tags", Value: bson.M{"$all": tags}}}
 	}
@@ -176,9 +175,9 @@ func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []s
 			isVegan = true
 		} else if a == "vegetarian" {
 			isVegetarian = true
-		} else if a == "gluten-free" {
+		} else if a == "gluten free" {
 			isGlutenFree = true
-		} else if a == "dairy-free" {
+		} else if a == "dairy free" {
 			isDairyFree = true
 		}
 	}
@@ -261,7 +260,7 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	foundRecipes := make([]models.RecipeStub, len(searchRes.Recipes))
+	foundRecipes := make([]models.RecipeStub, 0)
 	var foundRecipesInterface []interface{}
 
 	spoonoid, err := primitive.ObjectIDFromHex("100000000000000000000000")
@@ -273,7 +272,7 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 			ImageURL:      recipe.ImageURL,
 			RecipeName:    recipe.RecipeName,
 			IsUserRecipe:  false,
-			TotalTime:     0,
+			TotalTime:     1,
 			Ingredients:   nil,
 			AuthorID:      primitive.NilObjectID,
 			UpdatedAt:     time.Time{},

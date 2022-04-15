@@ -1,16 +1,20 @@
 package routes
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (r *Client) Test(c *gin.Context) {
-	// ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	// defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
 
-	// r.StubCollection.DeleteMany(ctx, bson.M{"cookbookID": primitive.NilObjectID})
+	r.StubCollection.DeleteMany(ctx, bson.M{"cookbookID": primitive.NilObjectID})
 
 	c.JSON(http.StatusOK, "Hi :)")
 }

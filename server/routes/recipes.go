@@ -239,7 +239,7 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 
 	_, err = r.StubCollection.InsertMany(ctx, foundRecipesInterface)
 	if err != nil {
-		fmt.Println("Couldn't insert stubs", err)
+		fmt.Println("Couldn't insert stubs, try again ", err)
 	}
 
 	return foundRecipes
@@ -384,10 +384,10 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "cheap")
 	}
 	if spoonRecipe.IsDairyFree {
-		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "dairy free")
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "dairy-free")
 	}
 	if spoonRecipe.IsGlutenFree {
-		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "gluten free")
+		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "gluten-free")
 	}
 	if spoonRecipe.IsKeto {
 		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "keto")

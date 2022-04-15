@@ -24,7 +24,7 @@ function IngredientPanel({ searchFunc, boxProps }: PanelProps) {
 				backgroundColor: "primary.main",
 				borderRadius: "15px",
 				textAlign: "center",
-				p: "20px",
+				p: "15px 28px",
 				maxWidth: "300px",
 				...boxProps,
 			}}

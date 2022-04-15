@@ -157,6 +157,7 @@ function Home() {
 						sx={{
 							mt: "20px",
 							p: "15px 28px",
+							pb: "28px",
 							borderRadius: "15px",
 							backgroundColor: "primary.main",
 							maxWidth: "300px",

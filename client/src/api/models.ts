@@ -42,6 +42,7 @@ export interface Recipe extends SimpleRecipe {
 	instructions: Instruction[];
 	nutrients: Nutrient[];
 	createdAt: string;
+	url?: string;
 }
 
 export interface Userpass {

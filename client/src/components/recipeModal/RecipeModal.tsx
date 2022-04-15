@@ -40,6 +40,8 @@ import { setCreationEditing } from "../../pages/create/creationUpdateSlice";
 import { openError, setError } from "../errorPopup/errorSlice";
 import { selectFavoriteByID, updateFavorite } from "../userFavs/favSlice";
 
+import { decimalToFraction } from "./UnitFormat";
+
 interface contentProps {
 	recipe: Recipe;
 	setOpenDeleteDialog: Function;
@@ -53,6 +55,9 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 		recipe.cookbookID === "100000000000000000000000"
 			? "" + recipe.spoonacularID
 			: recipe.cookbookID;
+
+	const formatAmounts = true;
+	//recipe.cookbookID === "100000000000000000000000" ? true : false;
 
 	const [canEdit, setCanEdit] = useState(false);
 	const [selectedIng, setSelectedIng] = useState<number[]>([]);
@@ -145,7 +150,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							overflow: "hidden",
 						}}
 						image={
-							recipe.imageURL
+							recipe.imageURL && recipe.imageURL != ""
 								? recipe.imageURL
 								: "https://source.unsplash.com/random"
 						}
@@ -320,7 +325,12 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 												}
 											}}
 										/>
-										{ingredient.name}: {ingredient.amount}
+										{ingredient.name}:{" "}
+										{formatAmounts
+											? decimalToFraction(
+													ingredient.amount
+											  ).display
+											: ingredient.amount}
 										{"\u00A0"}
 										{ingredient.unit}
 									</Typography>
@@ -428,7 +438,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							minWidth: "40%",
 						}}
 					>
-						<Typography
+						{/* <Typography
 							variant="h6"
 							component="h6"
 							sx={{
@@ -439,7 +449,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							{recipe.prepTime === -1
 								? ""
 								: `${recipe.prepTime}m Prep Time – ${recipe.cookTime}m Cook Time`}
-						</Typography>
+						</Typography> */}
 						<Typography
 							variant="h6"
 							component="h6"
@@ -457,7 +467,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 									variant="body1"
 									component="h5"
 									sx={{
-										height: "2em",
+										pb: "10px",
+										//height: "2em",
 										//p: "1px",
 									}}
 								>
@@ -474,15 +485,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								}}
 							>
 								{}
-								1. go frick yourself. 2. these are instructions.
-								3. Non etiam tempor id arcu magna ante eget. Nec
-								per posuere cubilia cras porttitor condimentum
-								orci suscipit. Leo maecenas in tristique,
-								himenaeos elementum placerat. Taciti rutrum
-								nostra, eget cursus velit ultricies. Quam
-								molestie tellus himenaeos cubilia congue vivamus
-								ultricies. Interdum praesent ut penatibus fames
-								eros ad consectetur sed.
+								{recipe.url}
 							</Typography>
 						)}
 					</Box>

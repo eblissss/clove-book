@@ -15,6 +15,18 @@ interface IngStr {
 	unit: string;
 }
 
+const parseFract = (amt: string): number => {
+	var y = amt.split(" ");
+	var z;
+	if (y.length > 1) {
+		z = y[1].split("/");
+		return +y[0] + +z[0] / +z[1];
+	} else {
+		z = y[0].split("/");
+		return z.length > 1 ? +z[0] / +z[1] : +z[0];
+	}
+};
+
 function IngredientItem({
 	data,
 	id,
@@ -183,7 +195,7 @@ function IngredientList() {
 		ingStrList.forEach((ing) => {
 			ingList.push({
 				name: ing.name,
-				amount: parseInt(ing.amount),
+				amount: parseFract(ing.amount),
 				unit: ing.unit,
 			});
 		});

@@ -14,6 +14,7 @@ type Recipe struct {
 	PrepTime     int64             `json:"prepTime" bson:"prepTime"`
 	Instructions []Instruction     `json:"instructions" bson:"instructions"`
 	CreatedAt    time.Time         `json:"createdAt" bson:"createdAt"`
+	Url          string            `json:"url" bson:"url"`
 }
 
 type OldRecipe struct {
@@ -82,7 +83,7 @@ type SpoonacularRecipe struct {
 	Instructions  []SpoonInstructions `json:"analyzedInstructions"`
 	Nutrition     *RecipeNutrients    `json:"nutrition"`
 	Author        string              `json:"sourceName"`
-
+	Url           string              `json:"url"`
 	// there has to be a better way to save tags
 	IsCheap       bool `json:"cheap"`
 	IsDairyFree   bool `json:"dairyFree"`

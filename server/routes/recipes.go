@@ -421,6 +421,7 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 			AuthorID:      primitive.NilObjectID,
 			UpdatedAt:     time.Time{},
 		},
+		Url:       spoonRecipe.Url,
 		Nutrients: spoonRecipe.Nutrition.Nutrients,
 		Author:    spoonRecipe.Author,
 

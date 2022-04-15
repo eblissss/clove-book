@@ -51,6 +51,14 @@ type Instruction struct {
 	// TODO: add array of ingredients?
 }
 
+type SpoonInstructions struct {
+	StepList []SpoonStep `json:"steps"`
+}
+
+type SpoonStep struct {
+	Description string `json:"step"`
+}
+
 type SpoonacularSearchRecipe struct {
 	RecipeName    string `json:"title"`
 	SpoonacularID int64  `json:"id"`
@@ -66,14 +74,14 @@ type SpoonacularRandomResponse struct {
 }
 
 type SpoonacularRecipe struct {
-	RecipeName    string           `json:"title"`
-	SpoonacularID int64            `json:"id"`
-	ImageURL      string           `json:"image"`
-	TotalTime     int64            `json:"readyInMinutes"`
-	Ingredients   []Ingredient     `json:"extendedIngredients"`
-	Instructions  []Instruction    `json:"instructions"`
-	Nutrition     *RecipeNutrients `json:"nutrition"`
-	Author        string           `json:"sourceName"`
+	RecipeName    string              `json:"title"`
+	SpoonacularID int64               `json:"id"`
+	ImageURL      string              `json:"image"`
+	TotalTime     int64               `json:"readyInMinutes"`
+	Ingredients   []Ingredient        `json:"extendedIngredients"`
+	Instructions  []SpoonInstructions `json:"analyzedInstructions"`
+	Nutrition     *RecipeNutrients    `json:"nutrition"`
+	Author        string              `json:"sourceName"`
 
 	// there has to be a better way to save tags
 	IsCheap       bool `json:"cheap"`

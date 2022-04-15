@@ -89,7 +89,7 @@ export const addRecipe = (
 
 export const getRecipes = (
 	query: string,
-	tags: string[]
+	tags: string
 ): Promise<models.SimpleRecipe[]> =>
 	requests.get("/recipes", { query: query, tags: tags });
 
@@ -105,7 +105,7 @@ export const getUsersRecipes = (
 
 export const searchRecipesIngredients = (
 	query: string,
-	tags: string[],
+	tags: string,
 	ingredients: string[]
 ): Promise<models.SimpleRecipe[]> =>
 	requests.get("/recipes/ingredients", {

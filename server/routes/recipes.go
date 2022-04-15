@@ -112,12 +112,26 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 
 	query, _ := c.GetQuery("query")
 
+	tagsQuery, _ := c.GetQuery("tags")
+	tags := strings.Split(strings.ToLower(tagsQuery), ",")
+	if len(tagsQuery) == 0 {
+		tags = []string{}
+	}
+
+	fmt.Println(tags)
+
 	options := new(options.FindOptions)
 	options.SetLimit(int64(MAX_RECIPES))
 
+	// still not fuzzy but partial at least
+	search := bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}}}
+	if len(tags) > 0 {
+		search = bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}},
+			{Key: "tags", Value: bson.M{"$all": tags}}}
+	}
+
 	cur, err := r.StubCollection.Find(ctx,
-		// still not fuzzy but partial at least
-		bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}}},
+		search,
 		// this is an order of magnitude faster but not fuzzy or partial
 		// bson.M{"$text": bson.M{"$search": query}},
 		options,
@@ -136,14 +150,13 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 		return
 	}
 
-	// UNCOMMENT TO SEARCH SPOONACULAR
 	cbAmount := len(foundRecipes)
 	if cbAmount < MAX_RECIPES {
 		if query == "" {
 			spoonResults := r.getRandomSpoonacularRecipes(c, MAX_RECIPES-cbAmount)
 			foundRecipes = append(foundRecipes, spoonResults...)
 		} else {
-			spoonResults := r.searchSpoonacularRecipes(c, query, []string{}, MAX_RECIPES-cbAmount)
+			spoonResults := r.searchSpoonacularRecipes(c, query, tags, MAX_RECIPES-cbAmount)
 			foundRecipes = append(foundRecipes, spoonResults...)
 		}
 	}
@@ -152,8 +165,41 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 }
 
 func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []string, amount int) []models.RecipeStub {
+
+	isVegan := false
+	isVegetarian := false
+	isGlutenFree := false
+	isDairyFree := false
+	for _, a := range tags {
+		if a == "vegan" {
+			isVegan = true
+		} else if a == "vegetarian" {
+			isVegetarian = true
+		} else if a == "gluten free" {
+			isGlutenFree = true
+		} else if a == "dairy free" {
+			isDairyFree = true
+		}
+	}
+
+	diet := ""
+	if isVegan {
+		diet = "&diet=vegan"
+	} else if isVegetarian {
+		diet = "&diet=vegetarian"
+	}
+
+	intolerances := ""
+	if isGlutenFree && isDairyFree {
+		intolerances = "&intolerances=gluten,dairy"
+	} else if isGlutenFree {
+		intolerances = "&intolerances=gluten"
+	} else if isGlutenFree {
+		intolerances = "&intolerances=dairy"
+	}
+
 	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/complexSearch?query="+query+
-		"&number="+strconv.Itoa(amount), nil)
+		"&number="+strconv.Itoa(amount)+diet+intolerances, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Error creating spoonacular request"})
 		return []models.RecipeStub{}
@@ -214,7 +260,7 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	foundRecipes := make([]models.RecipeStub, len(searchRes.Recipes))
+	foundRecipes := make([]models.RecipeStub, 0)
 	var foundRecipesInterface []interface{}
 
 	spoonoid, err := primitive.ObjectIDFromHex("100000000000000000000000")
@@ -226,7 +272,7 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 			ImageURL:      recipe.ImageURL,
 			RecipeName:    recipe.RecipeName,
 			IsUserRecipe:  false,
-			TotalTime:     0,
+			TotalTime:     1,
 			Ingredients:   nil,
 			AuthorID:      primitive.NilObjectID,
 			UpdatedAt:     time.Time{},
@@ -234,8 +280,6 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 		foundRecipes = append(foundRecipes, stub)
 		foundRecipesInterface = append(foundRecipesInterface, stub)
 	}
-
-	fmt.Println(foundRecipesInterface)
 
 	_, err = r.StubCollection.InsertMany(ctx, foundRecipesInterface)
 	if err != nil {
@@ -323,12 +367,13 @@ func (r *Client) GetUsersRecipes(c *gin.Context) {
 
 // https://spoonacular.com/food-api/docs#Get-Recipe-Information
 func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	if id == "0" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not get spoonacular recipe"})
 		return
 	}
-
-	fmt.Println(spoonacularBaseURL + "/recipes/" + id + "/information?includeNutrition=true")
 
 	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/"+id+"/information?includeNutrition=true", nil)
 	if err != nil {
@@ -352,9 +397,16 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 	var spoonRecipe models.SpoonacularRecipe
 	json.Unmarshal(body, &spoonRecipe)
 
-	fmt.Println(spoonRecipe)
-
 	spoonoid, err := primitive.ObjectIDFromHex("100000000000000000000000")
+
+	newInstructions := []models.Instruction{}
+	if len(spoonRecipe.Instructions) > 0 {
+		for _, ins := range spoonRecipe.Instructions[0].StepList {
+			newInstructions = append(newInstructions, models.Instruction{
+				Description: ins.Description,
+			})
+		}
+	}
 
 	recipe := models.Recipe{
 		RecipeStub: models.RecipeStub{
@@ -374,7 +426,7 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 
 		CookTime:     -1,
 		PrepTime:     -1,
-		Instructions: spoonRecipe.Instructions,
+		Instructions: newInstructions,
 		CreatedAt:    time.Now(),
 	}
 
@@ -405,7 +457,22 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 		recipe.RecipeStub.Tags = append(recipe.RecipeStub.Tags, "healthy")
 	}
 
-	// TODO: update stub if possible
+	updateStub := bson.M{
+		"imageURL":    recipe.RecipeStub.ImageURL,
+		"name":        recipe.RecipeStub.RecipeName,
+		"totalTime":   recipe.RecipeStub.TotalTime,
+		"tags":        recipe.RecipeStub.Tags,
+		"ingredients": recipe.RecipeStub.Ingredients,
+	}
+	_, err = r.StubCollection.UpdateOne(ctx, bson.M{
+		"cookbookID":    recipe.RecipeStub.CookbookID,
+		"spoonacularID": recipe.RecipeStub.SpoonacularID},
+		bson.M{"$set": updateStub})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Stub could not be updated"})
+		return
+	}
 
 	c.JSON(http.StatusOK, recipe)
 }

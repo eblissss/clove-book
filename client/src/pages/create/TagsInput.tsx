@@ -70,7 +70,7 @@ function TagsInput() {
 				onChange={updateInput}
 				onKeyDown={updateTags}
 				id="recipeTags"
-				placeholder="lentils"
+				placeholder="lentils, vegan, healthy"
 				value={input}
 				sx={{
 					flex: 4,

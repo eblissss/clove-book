@@ -205,7 +205,7 @@ function Create() {
 						backgroundColor: "primary.main",
 						p: "6px 10px",
 						m: "20px",
-						borderRadius: "8px",
+						borderRadius: "6px",
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
@@ -236,7 +236,7 @@ function Create() {
 						backgroundColor: "primary.main",
 						p: "6px 10px",
 						m: "20px",
-						borderRadius: "8px",
+						borderRadius: "6px",
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
@@ -265,7 +265,7 @@ function Create() {
 						backgroundColor: "primary.main",
 						p: "6px 10px",
 						m: "20px",
-						borderRadius: "8px",
+						borderRadius: "6px",
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
@@ -352,14 +352,6 @@ function Create() {
 						</Typography>
 						<TagsInput />
 					</Container>
-					<Typography
-						variant="h6"
-						component="h6"
-						fontWeight={700}
-						sx={{ ml: "22%", flex: 1 }}
-					>
-						Press Enter or , to delimit tags
-					</Typography>
 				</Box>
 
 				<Button

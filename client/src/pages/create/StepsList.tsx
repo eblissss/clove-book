@@ -120,7 +120,7 @@ function StepList() {
 				backgroundColor: "primary.main",
 				p: "6px 10px",
 				m: "20px",
-				borderRadius: "8px",
+				borderRadius: "6px",
 				display: "flex",
 				flexDirection: "column",
 				alignItems: "left",

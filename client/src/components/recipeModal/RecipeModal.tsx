@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { closeModal, selectModal } from "./modalSlice";
+import { closeModal, selectModal, setDeleted } from "./modalSlice";
 
 import { Recipe } from "../../api/models";
 import Tag from "../tag/Tag";
@@ -34,7 +34,6 @@ import {
 import { store } from "../../app/store";
 import { setRecipe } from "./recipeSlice";
 
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { setCreationEditing } from "../../pages/create/creationUpdateSlice";
 import { openError, setError } from "../errorPopup/errorSlice";
@@ -48,7 +47,7 @@ interface contentProps {
 }
 
 function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	const recipeID =
@@ -456,7 +455,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							fontWeight={700}
 							sx={{ height: "2em" }}
 						>
-							Instructions
+							{recipe.url ? recipe.url : "Instructions"}
 						</Typography>
 
 						{recipe.instructions !== null &&
@@ -483,10 +482,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								sx={{
 									p: "1px",
 								}}
-							>
-								{}
-								{recipe.url}
-							</Typography>
+							></Typography>
 						)}
 					</Box>
 				</Container>
@@ -496,7 +492,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 }
 
 function DeleteDialog({ id, setOpen }: { id: string; setOpen: Function }) {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const handleClose = () => {
 		setOpen(false);
@@ -504,6 +500,7 @@ function DeleteDialog({ id, setOpen }: { id: string; setOpen: Function }) {
 
 	const deleteDialog = () => {
 		deleteRecipe(id);
+		dispatch(setDeleted(true));
 		dispatch(closeModal());
 		setOpen(false);
 	};

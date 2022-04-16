@@ -1,12 +1,12 @@
 import { Paper, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../app/hooks";
 import { useAppSelector } from "../../app/hooks";
 import Tag from "../../components/tag/Tag";
 import { selectCreationTags, setRecipeTags } from "./creationSlice";
 
 function TagsInput() {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const [tags, setTags] = useState<string[]>([]);
 	const [input, setInput] = useState("");

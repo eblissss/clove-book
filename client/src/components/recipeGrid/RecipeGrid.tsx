@@ -1,4 +1,4 @@
-import { Divider, Stack } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import React, { useState } from "react";
 import { SimpleRecipe } from "../../api/models";
 import { RecipeCard } from "../recipeCard/RecipeCard";
@@ -21,18 +21,21 @@ function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 	// window.onresize = updateColumns;
 
 	return (
-		<Masonry
-			columns={columns}
-			spacing={3}
-			sx={{
-				mt: "10px",
-				justifyContent: "top",
-			}}
-		>
-			{recipes?.map((recipe, i) => (
-				<RecipeCard key={i} {...recipe} />
-			))}
-		</Masonry>
+		<Box component="div" sx={{ marginRight: "-1.35em" }}>
+			<Masonry
+				columns={columns}
+				spacing={3}
+				sx={{
+					mt: "10px",
+					justifyContent: "flex-start",
+					alignItems: "top",
+				}}
+			>
+				{recipes?.map((recipe, i) => (
+					<RecipeCard key={i} {...recipe} />
+				))}
+			</Masonry>
+		</Box>
 	);
 }
 

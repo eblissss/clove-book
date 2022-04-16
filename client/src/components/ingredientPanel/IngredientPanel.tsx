@@ -42,7 +42,7 @@ function IngredientPanel({ searchFunc, boxProps }: PanelProps) {
 				multiline
 				minRows={12}
 				id="ingredientField"
-				placeholder="Lentils"
+				placeholder="one ingredient per line"
 				variant="filled"
 			></TextField>
 			<Button

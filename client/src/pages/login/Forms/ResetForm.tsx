@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { sendResetEmail } from "../../../api/requests";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../app/hooks";
 import { changeToNoon } from "../../../components/scene/sceneSlice";
 
 interface resetProps {
@@ -20,7 +20,7 @@ interface resetProps {
 
 export function ResetForm({ setUseReset }: resetProps) {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const [emailSent, setEmailSent] = useState(false);
 

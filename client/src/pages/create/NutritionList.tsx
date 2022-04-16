@@ -16,7 +16,7 @@ import {
 	AddCircle as AddCircleIcon,
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../app/hooks";
 import { selectCreationNutrients, setNutrients } from "./creationSlice";
 import { Nutrient } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
@@ -141,7 +141,7 @@ function NutrientSelector({
 }
 
 function NutritionList() {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const [nutriList, setNutriList] = useState<Nutrient[]>([]);
 

@@ -4,7 +4,7 @@ import {
 	RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../app/hooks";
 import { selectCreationIngredients, setIngredients } from "./creationSlice";
 import { Ingredient } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
@@ -128,7 +128,7 @@ function IngredientItem({
 
 let autoSelect = "";
 function IngredientList() {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const [ingStrList, setIngStrList] = useState<IngStr[]>([]);
 

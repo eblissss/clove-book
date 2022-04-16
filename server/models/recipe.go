@@ -83,7 +83,7 @@ type SpoonacularRecipe struct {
 	Instructions  []SpoonInstructions `json:"analyzedInstructions"`
 	Nutrition     *RecipeNutrients    `json:"nutrition"`
 	Author        string              `json:"sourceName"`
-	Url           string              `json:"url"`
+	Url           string              `json:"sourceUrl"`
 	// there has to be a better way to save tags
 	IsCheap       bool `json:"cheap"`
 	IsDairyFree   bool `json:"dairyFree"`

@@ -2,8 +2,12 @@ import { Box, Container, LinearProgress, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { SimpleRecipe } from "../../api/models";
 import { getUsersRecipes } from "../../api/requests";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
+import {
+	selectModal,
+	setDeleted,
+} from "../../components/recipeModal/modalSlice";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
 import SearchBar from "../../components/searchBar/SearchBar";
 
@@ -26,20 +30,28 @@ for (let i = 0; i < 12; i++) {
 }
 
 function Saved() {
+	const dispatch = useAppDispatch();
+
 	const [myRecipes, setMyRecipes] = useState<SimpleRecipe[]>(fakeJSON);
 	const [loading, setLoading] = useState(true);
 
 	const userID = useAppSelector(selectUser).userID;
+	const didDelete = useAppSelector(selectModal).deleted;
 
 	useEffect(() => {
-		search();
-	}, []);
+		if (userID !== "0") {
+			search();
+		}
+	}, [userID]);
+
+	useEffect(() => {
+		if (didDelete) {
+			setTimeout(search, 100);
+			dispatch(setDeleted(false));
+		}
+	}, [didDelete]);
 
 	function search() {
-		const searchVal = (
-			document.getElementById("search") as HTMLInputElement
-		).value;
-
 		setLoading(true);
 		getUsersRecipes(userID).then((recipes) => {
 			setMyRecipes(recipes);
@@ -59,28 +71,22 @@ function Saved() {
 			<Container
 				id="BACKGROUND"
 				sx={{
-					p: "30px",
+					p: "30px 30px",
 					display: "flex",
 					minHeight: "calc(100vh - 59px)",
 				}}
 			>
-				<Container sx={{ flex: "2" }}>
-					<Container
-						sx={{
-							display: "flex",
-							flexDirection: "row",
-							justifyContent: "space-between",
-						}}
-					>
-						<SearchBar
-							searchFunc={search}
-							paperProps={{ flex: "2" }}
-						/>
-					</Container>
+				<Container
+					disableGutters
+					sx={{ flex: "2", width: "140px", p: "0px 80px" }}
+				>
 					{loading ? (
 						<LinearProgress />
 					) : (
-						<RecipeGrid recipes={myRecipes} columns={4} />
+						<RecipeGrid
+							recipes={myRecipes}
+							columns={Math.min(myRecipes.length, 4)}
+						/>
 					)}
 				</Container>
 			</Container>

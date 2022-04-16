@@ -13,7 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { doLogin, doRegister } from "../../../api/requests";
 import { NewUser } from "../../../api/models";
 import { setUserID } from "../../user/userSlice";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../app/hooks";
 import { decodeToken } from "react-jwt";
 
 interface validProps {
@@ -36,7 +36,7 @@ const removeStorage = () => {
 };
 
 export function ValidForm({ userInfo, setUseValid }: validProps) {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

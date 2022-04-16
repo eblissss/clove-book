@@ -4,7 +4,7 @@ import {
 	RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../app/hooks";
 import { selectCreationInstructions, setInstructions } from "./creationSlice";
 import { Instruction } from "../../api/models";
 import { useAppSelector } from "../../app/hooks";
@@ -77,7 +77,7 @@ function StepItem({
 }
 
 function StepList() {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const [stepList, setStepList] = useState<Instruction[]>([]);
 

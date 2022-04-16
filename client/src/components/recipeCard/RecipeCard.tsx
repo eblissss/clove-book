@@ -2,6 +2,7 @@ import {
 	Box,
 	Card,
 	CardContent,
+	Container,
 	CardMedia,
 	Typography,
 	alpha,
@@ -57,19 +58,21 @@ export function RecipeCard(props: SimpleRecipe) {
 				position: "relative",
 				display: "flex",
 				flexDirection: "column",
-				borderRadius: "20px",
+				borderRadius: "15px",
 				backgroundColor: "primary.dark",
 				maxWidth: "100%",
+				transition: ".2s ease-out",
+				"&:hover": {
+					boxShadow: "0 3px 10px rgba(0,0,0,.4)",
+					transform: "translate3d(0,-2px,0)",
+				},
 			}}
 			onClick={updateSelectedRecipe}
 		>
 			<IconButton
-				// disableRipple
 				aria-label="favorite"
 				onClick={toggleFav}
 				sx={{
-					// height: "64px",
-					// width: "64px",
 					position: "absolute",
 					right: "0",
 					top: "0",
@@ -96,13 +99,18 @@ export function RecipeCard(props: SimpleRecipe) {
 					</Tooltip>
 				)}
 			</IconButton>
+
 			<CardMedia
 				component="img"
 				sx={{
-					height: "200px",
+					borderRadius: "15px",
+					height: "auto",
 					pt: "56.25",
+					// p: "10px",
 					position: "relative",
 					zIndex: "app bar",
+					maxHeight: "300px",
+					boxShadow: "0 0px 8px rgba(0,0,0,.2)",
 				}}
 				image={
 					props.imageURL

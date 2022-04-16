@@ -36,14 +36,32 @@ function Home() {
 	const [recipes, setRecipes] = useState<SimpleRecipe[]>(fakeJSON);
 	const [popularRecipes, setPopularRecipes] =
 		useState<SimpleRecipe[]>(fakeJSON);
+	const [offset, setOffset] = useState(0);
 
 	const searchInfo = useAppSelector(selectSearch);
 
-	// TODO replace [] with combined tags
 	useEffect(() => {
-		getRecipes("", "").then((stuff) => setRecipes(stuff));
+		getRecipes("", "", 0).then((stuff) => setRecipes(stuff));
 		getPopularRecipes().then((data) => setPopularRecipes(data));
 	}, []);
+
+	useEffect(() => {
+		const tempRecipes = [...recipes];
+
+		if (searchInfo.sort === "alpha") {
+			tempRecipes.sort((a, b) =>
+				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+			);
+		}
+		if (searchInfo.sort === "newest") {
+			tempRecipes.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+		}
+		if (searchInfo.sort === "best") {
+			tempRecipes.sort((a, b) => Math.random() - 0.5);
+		}
+
+		setRecipes(tempRecipes);
+	}, [searchInfo.sort]);
 
 	// should probably cap search to every 200ms or so
 	function search() {
@@ -52,28 +70,47 @@ function Home() {
 		).value;
 		console.log(searchVal);
 
-		if (searchVal === "") {
-			setSearching(false);
-			setRecipes(fakeJSON);
-		} else {
-			setSearching(true);
-			const combinedTags = [
-				...searchInfo.searchTags,
-				...searchInfo.filters,
-			];
-			getRecipes(searchVal, combinedTags.join(",")).then((stuff) => {
-				console.log(searchInfo.sort);
-				if (searchInfo.sort === "alpha") {
-					stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
-				}
-				if (searchInfo.sort === "newest") {
-					stuff.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
-				}
-
-				setRecipes(stuff);
-			});
-		}
+		setSearching(true);
+		const combinedTags = [...searchInfo.searchTags, ...searchInfo.filters];
+		getRecipes(searchVal, combinedTags.join(","), 0).then((stuff) => {
+			console.log(searchInfo.sort);
+			if (searchInfo.sort === "alpha") {
+				stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
+			}
+			if (searchInfo.sort === "newest") {
+				stuff.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+			}
+			setOffset(offset + stuff.length);
+			setRecipes(stuff);
+		});
 	}
+
+	function getMoreRecipes() {
+		const searchVal = (
+			document.getElementById("search") as HTMLInputElement
+		).value;
+		console.log(searchVal);
+
+		setSearching(true);
+		const combinedTags = [...searchInfo.searchTags, ...searchInfo.filters];
+		getRecipes(searchVal, combinedTags.join(","), offset).then((stuff) => {
+			console.log(searchInfo.sort);
+			if (searchInfo.sort === "alpha") {
+				stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
+			}
+			if (searchInfo.sort === "newest") {
+				stuff.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+			}
+			setOffset(offset + stuff.length);
+			setRecipes([...recipes, ...stuff]);
+		});
+	}
+
+	window.onscroll = function (e: any) {
+		if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+			getMoreRecipes();
+		}
+	};
 
 	function ingredientSearch(ingredients: string[]) {
 		setSearching(true);

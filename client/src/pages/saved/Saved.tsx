@@ -64,8 +64,12 @@ function Saved() {
 					minHeight: "calc(100vh - 59px)",
 				}}
 			>
-				<Container sx={{ flex: "2" }}>
+				<Container
+					disableGutters
+					sx={{ flex: "2", width: "140px", p: "0px 80px" }}
+				>
 					<Container
+						disableGutters
 						sx={{
 							display: "flex",
 							flexDirection: "row",

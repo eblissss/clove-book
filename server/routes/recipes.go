@@ -346,7 +346,10 @@ func (r *Client) GetUsersRecipes(c *gin.Context) {
 	defer cancel()
 
 	paramId := c.Params.ByName("userID")
-	id, err := primitive.ObjectIDFromHex(paramId)
+	id, err1 := primitive.ObjectIDFromHex(paramId)
+	if err1 != nil || id.IsZero() {
+		c.JSON(http.StatusGatewayTimeout, gin.H{"error": err1.Error()})
+	}
 
 	cur, err := r.StubCollection.Find(ctx,
 		bson.M{

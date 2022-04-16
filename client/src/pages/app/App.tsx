@@ -12,7 +12,7 @@ import Reset from "../reset/Reset";
 import Album from "../album/Album";
 
 import ErrorPopup from "../../components/errorPopup/ErrorPopup";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../app/hooks";
 import { setUserID } from "../user/userSlice";
 import { setInitialFavorites } from "../../components/userFavs/favSlice";
 import { doRefresh, getFavoriteIDs } from "../../api/requests";
@@ -41,7 +41,7 @@ function App() {
 
 // This keeps us logged in after refreshing or whatever
 function LoggedIn() {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {

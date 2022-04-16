@@ -20,7 +20,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../user/userSlice";
 import { store } from "../../app/store";
 import CreateSuccess from "./CreateSuccess";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../app/hooks";
 import {
 	selectCreationUpdate,
 	setCreationEditing,
@@ -36,7 +36,7 @@ import TagsInput from "./TagsInput";
 import { selectRecipe } from "../../components/recipeModal/recipeSlice";
 
 function Create() {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const user = useAppSelector(selectUser);
 	const editing = useAppSelector(selectCreationUpdate).editing;
@@ -330,20 +330,36 @@ function Create() {
 						m: "20px",
 						borderRadius: "8px",
 						display: "flex",
-						alignItems: "center",
+						flexDirection: "column",
 						width: "100%",
-						justifyContent: "space-around",
 					}}
 				>
+					<Container
+						disableGutters
+						sx={{
+							display: "flex",
+							justifyContent: "space-around",
+							alignItems: "center",
+						}}
+					>
+						<Typography
+							variant="h6"
+							component="h6"
+							fontWeight={700}
+							sx={{ mr: "1rem", flex: 1 }}
+						>
+							Tags:
+						</Typography>
+						<TagsInput />
+					</Container>
 					<Typography
 						variant="h6"
 						component="h6"
 						fontWeight={700}
-						sx={{ mr: "1rem", flex: 1 }}
+						sx={{ ml: "22%", flex: 1 }}
 					>
-						Tags:
+						Press Enter or , to delimit tags
 					</Typography>
-					<TagsInput />
 				</Box>
 
 				<Button

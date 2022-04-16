@@ -3,7 +3,7 @@ import { RootState } from "../../app/store";
 
 import { Ingredient, Instruction, Nutrient } from "../../api/models";
 
-const defaultNutritions: string[] = ["Sugar", "Protein", "Sodium", "Calories"];
+const defaultNutritions: string[] = ["Calories"];
 
 const allNutrients = [
 	"Calories",

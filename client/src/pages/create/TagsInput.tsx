@@ -55,7 +55,7 @@ function TagsInput() {
 		<Paper
 			component="div"
 			sx={{
-				p: "2px 4px",
+				p: "2px 6px",
 				display: "flex",
 				alignItems: "center",
 				backgroundColor: "primary.dark",

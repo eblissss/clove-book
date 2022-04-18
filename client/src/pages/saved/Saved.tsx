@@ -1,4 +1,4 @@
-import { Box, Container, LinearProgress, Typography } from "@mui/material";
+import { Box, Container, LinearProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { SimpleRecipe } from "../../api/models";
 import { getFavorites } from "../../api/requests";
@@ -6,6 +6,7 @@ import { useAppSelector } from "../../app/hooks";
 import RecipeGrid from "../../components/recipeGrid/RecipeGrid";
 import RecipeModal from "../../components/recipeModal/RecipeModal";
 import SearchBar from "../../components/searchBar/SearchBar";
+import { selectSearch } from "../../components/searchBar/searchSlice";
 
 import { TabBar } from "../../components/tabBar/TabBar";
 import { selectUser } from "../user/userSlice";
@@ -31,9 +32,35 @@ function Saved() {
 
 	const userID = useAppSelector(selectUser).userID;
 
+	const searchInfo = useAppSelector(selectSearch);
+
 	useEffect(() => {
 		search();
 	}, []);
+
+	useEffect(() => {
+		setLoading(true);
+		sortRecipes(favRecipes);
+	}, [searchInfo.sort]);
+
+	const sortRecipes = (reccies: SimpleRecipe[]) => {
+		const tempRecipes = [...reccies];
+
+		if (searchInfo.sort === "alpha") {
+			tempRecipes.sort((a, b) =>
+				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+			);
+		}
+		if (searchInfo.sort === "newest") {
+			tempRecipes.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+		}
+		if (searchInfo.sort === "best") {
+			tempRecipes.sort((a, b) => Math.random() - 0.5);
+		}
+
+		setFavRecipes(tempRecipes);
+		setLoading(false);
+	};
 
 	function search() {
 		const searchVal = (
@@ -42,8 +69,7 @@ function Saved() {
 
 		setLoading(true);
 		getFavorites(userID, searchVal).then((recipes) => {
-			setFavRecipes(recipes);
-			setLoading(false);
+			sortRecipes(recipes);
 		});
 	}
 

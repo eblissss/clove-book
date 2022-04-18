@@ -44,6 +44,7 @@ function StepItem({
 		>
 			{added ? (
 				<RemoveCircleIcon
+					className="DarkOnHover"
 					sx={{ color: "primary.dark", fontSize: "32px" }}
 					onClick={() => {
 						doDel(id);
@@ -51,6 +52,7 @@ function StepItem({
 				/>
 			) : (
 				<AddCircleIcon
+					className="DarkOnHover"
 					sx={{ color: "primary.dark", fontSize: "32px" }}
 					onClick={spawnStep}
 				/>

@@ -33,6 +33,7 @@ function NutritionItem({
 	return (
 		<Container disableGutters sx={{ display: "flex", alignItems: "top" }}>
 			<RemoveCircleIcon
+				className="DarkOnHover"
 				sx={{ color: "primary.dark", fontSize: "32px", mt: "10px" }}
 				onClick={() => {
 					remove(false, nutrition);
@@ -123,7 +124,7 @@ function NutrientSelector({
 									onClick={handleToggle(nutri)}
 								>
 									<ListItemIcon>
-										<AddCircleIcon />
+										<AddCircleIcon className="DarkOnHover" />
 									</ListItemIcon>
 
 									<ListItemText

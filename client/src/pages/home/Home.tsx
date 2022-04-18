@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, LinearProgress, Typography } from "@mui/material";
 import { TabBar } from "../../components/tabBar/TabBar";
 import SearchBar from "../../components/searchBar/SearchBar";
 import IngredientPanel from "../../components/ingredientPanel/IngredientPanel";
@@ -31,22 +31,31 @@ for (let i = 0; i < 12; i++) {
 	});
 }
 
+let scrollTimer: NodeJS.Timeout;
+const doneScrollInterval = 400;
+
 function Home() {
 	const [searching, setSearching] = useState(false);
 	const [recipes, setRecipes] = useState<SimpleRecipe[]>(fakeJSON);
 	const [popularRecipes, setPopularRecipes] =
 		useState<SimpleRecipe[]>(fakeJSON);
 	const [offset, setOffset] = useState(0);
+	const [loading, setLoading] = useState(true);
 
 	const searchInfo = useAppSelector(selectSearch);
 
 	useEffect(() => {
-		getRecipes("", "", 0).then((stuff) => setRecipes(stuff));
+		search();
 		getPopularRecipes().then((data) => setPopularRecipes(data));
 	}, []);
 
 	useEffect(() => {
-		const tempRecipes = [...recipes];
+		setLoading(true);
+		sortRecipes(recipes);
+	}, [searchInfo.sort]);
+
+	const sortRecipes = (reccies: SimpleRecipe[]) => {
+		const tempRecipes = [...reccies];
 
 		if (searchInfo.sort === "alpha") {
 			tempRecipes.sort((a, b) =>
@@ -61,27 +70,20 @@ function Home() {
 		}
 
 		setRecipes(tempRecipes);
-	}, [searchInfo.sort]);
+		setLoading(false);
+	};
 
-	// should probably cap search to every 200ms or so
 	function search() {
+		setLoading(true);
 		const searchVal = (
 			document.getElementById("search") as HTMLInputElement
 		).value;
-		console.log(searchVal);
 
 		setSearching(true);
 		const combinedTags = [...searchInfo.searchTags, ...searchInfo.filters];
 		getRecipes(searchVal, combinedTags.join(","), 0).then((stuff) => {
-			console.log(searchInfo.sort);
-			if (searchInfo.sort === "alpha") {
-				stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
-			}
-			if (searchInfo.sort === "newest") {
-				stuff.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
-			}
 			setOffset(offset + stuff.length);
-			setRecipes(stuff);
+			sortRecipes(stuff);
 		});
 	}
 
@@ -89,18 +91,10 @@ function Home() {
 		const searchVal = (
 			document.getElementById("search") as HTMLInputElement
 		).value;
-		console.log(searchVal);
 
 		setSearching(true);
 		const combinedTags = [...searchInfo.searchTags, ...searchInfo.filters];
 		getRecipes(searchVal, combinedTags.join(","), offset).then((stuff) => {
-			console.log(searchInfo.sort);
-			if (searchInfo.sort === "alpha") {
-				stuff.sort((a, b) => (a.name > b.name ? 1 : -1));
-			}
-			if (searchInfo.sort === "newest") {
-				stuff.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
-			}
 			setOffset(offset + stuff.length);
 			setRecipes([...recipes, ...stuff]);
 		});
@@ -108,11 +102,13 @@ function Home() {
 
 	window.onscroll = function (e: any) {
 		if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
-			getMoreRecipes();
+			clearTimeout(scrollTimer);
+			scrollTimer = setTimeout(getMoreRecipes, doneScrollInterval);
 		}
 	};
 
 	function ingredientSearch(ingredients: string[]) {
+		setLoading(true);
 		setSearching(true);
 		const searchVal = (
 			document.getElementById("search") as HTMLInputElement
@@ -136,6 +132,7 @@ function Home() {
 				return bCount - aCount;
 			});
 			setRecipes(stuff);
+			setLoading(false);
 		});
 	}
 
@@ -179,7 +176,11 @@ function Home() {
 							Explore New Recipes
 						</Typography>
 					)}
-					<RecipeGrid recipes={recipes} columns={3} />
+					{loading ? (
+						<LinearProgress />
+					) : (
+						<RecipeGrid recipes={recipes} columns={3} />
+					)}
 				</Container>
 				<Container
 					sx={{

@@ -62,6 +62,7 @@ function IngredientItem({
 		>
 			{added ? (
 				<RemoveCircleIcon
+					className="DarkOnHover"
 					sx={{ color: "primary.dark", fontSize: "32px" }}
 					onClick={() => {
 						doDel(id);
@@ -69,6 +70,7 @@ function IngredientItem({
 				/>
 			) : (
 				<AddCircleIcon
+					className="DarkOnHover"
 					sx={{ color: "primary.dark", fontSize: "32px" }}
 					onClick={spawnIng}
 				/>

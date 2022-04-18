@@ -46,7 +46,7 @@ export const palette = {
 		main: "#a7bfc2",
 		light: "#e1eaeb",
 		dark: "#607173",
-		darker: "#4f3c2f",
+		darker: "#465253",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
 		lightContrastText: "#493520",
 		contrastText: "#E8E5D1",
@@ -293,6 +293,15 @@ const theme = createTheme({
 				root: {
 					textTransform: "initial",
 					fontSize: "1rem",
+				},
+			},
+		},
+		MuiSvgIcon: {
+			styleOverrides: {
+				root: {
+					"&.DarkOnHover:hover": {
+						color: palette.primary.darker,
+					},
 				},
 			},
 		},

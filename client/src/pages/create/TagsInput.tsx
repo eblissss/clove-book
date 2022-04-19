@@ -74,7 +74,6 @@ function TagsInput() {
 				value={input}
 				sx={{
 					flex: 4,
-
 					"& .MuiInputBase-root": {
 						"& input": {
 							color: "primary.contrastText",

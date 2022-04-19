@@ -17,11 +17,11 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
-
+import { palette } from "../../theme";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { closeModal, selectModal, setDeleted } from "./modalSlice";
 
-import { Recipe } from "../../api/models";
+import { Recipe, Nutrient } from "../../api/models";
 import Tag from "../tag/Tag";
 import { deleteRecipe, getRecipe } from "../../api/requests";
 
@@ -87,6 +87,80 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 	const toggleFav = () => {
 		dispatch(updateFavorite({ id: recipeID, set: !isFavorited }));
 	};
+
+	const importantNutrients = [
+		"Calories",
+		"Calcium",
+		"Carbohydrates",
+		"Sugar",
+		"Fiber",
+		"Cholesterol",
+		"Fat",
+		"Sodium",
+		"Saturated Fat",
+		"Vitamin C",
+		"Protein",
+		"Vitamin B",
+	];
+
+	interface NutritionProps {
+		nutrients: Nutrient[];
+	}
+
+	class NutritionFacts extends React.Component<NutritionProps, {}> {
+		render() {
+			return (
+				<Box
+					component="div"
+					sx={{
+						backgroundColor: "primary.main",
+						p: "16px",
+						mb: "8px",
+						borderRadius: "8px",
+					}}
+				>
+					<Typography className="blockLabels">Nutrition</Typography>
+					<Container style={{ display: "flex" }}>
+						{this.props.nutrients.map((nutrient, i) =>
+							!importantNutrients.includes(nutrient.name) ||
+							(nutrient?.percentOfDailyNeeds === 0 &&
+								nutrient.amount === "") ? (
+								<></>
+							) : (
+								<Typography
+									key={"nutri" + i}
+									variant="h3"
+									component="h3"
+								>
+									{nutrient.name}:
+									{nutrient.amount != "" ? (
+										<Typography>
+											{" "}
+											{nutrient.amount}
+										</Typography>
+									) : (
+										<></>
+									)}{" "}
+									{/* Includes Daily Value for spoon recipes */}
+									{nutrient.percentOfDailyNeeds > 1 ? (
+										<Typography>
+											(
+											{Math.round(
+												nutrient?.percentOfDailyNeeds
+											)}
+											% of DV)
+										</Typography>
+									) : (
+										""
+									)}
+								</Typography>
+							)
+						)}
+					</Container>
+				</Box>
+			);
+		}
+	}
 
 	return (
 		<Box
@@ -340,90 +414,48 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						{/* NUTRITION */}
 						{recipe.nutrients?.filter((x) => x.amount !== "")
 							.length !== 0 ? (
-							<Box
-								component="div"
-								sx={{
-									backgroundColor: "primary.main",
-									p: "16px",
-									mb: "8px",
-									borderRadius: "8px",
-								}}
-							>
-								<Typography
-									variant="h6"
-									component="h6"
-									fontWeight={700}
-									sx={{}}
-								>
-									Nutrition Information
-								</Typography>
-								<Container
-									disableGutters
-									sx={{
-										borderLeft: "2px solid",
-										borderColor: "primary.dark",
-										pl: "5px",
-									}}
-								>
-									{recipe.nutrients
-										?.filter((x) => x.amount !== "")
-										.map((nutrient) => (
-											<Typography
-												key={nutrient.name}
-												variant="body1"
-												component="h5"
-												sx={{
-													p: "1px",
-												}}
-											>
-												{nutrient.name}:{" "}
-												{nutrient.amount.replace(
-													/\s/g,
-													"\u00A0"
-												)}
-											</Typography>
-										))}
-								</Container>
-							</Box>
-						) : (
-							<></>
-						)}
-						{/* TAGS */}
-						{recipe.tags?.length != 0 ? (
-							<Container
-								disableGutters
-								sx={{
-									backgroundColor: "primary.main",
-									p: "16px",
-									borderRadius: "8px",
-									width: "auto",
-								}}
-							>
-								<Typography
-									variant="h6"
-									component="h6"
-									fontWeight={700}
-								>
-									Tags
-								</Typography>
-								<Container
-									disableGutters
-									sx={{
-										display: "flex",
-										flexWrap: "wrap",
-										width: "auto",
-										// ml: "-10px",
-									}}
-								>
-									{recipe.tags?.map((tag, i) => (
-										<Tag name={tag} key={tag + i} />
-									))}
-								</Container>
-							</Container>
+							<NutritionFacts nutrients={recipe.nutrients} />
 						) : (
 							<></>
 						)}
 					</Container>
+
+					{/* TAGS */}
+					{recipe.tags?.length != 0 ? (
+						<Container
+							disableGutters
+							sx={{
+								backgroundColor: "primary.main",
+								p: "16px",
+								borderRadius: "8px",
+								width: "auto",
+							}}
+						>
+							<Typography
+								variant="h6"
+								component="h6"
+								fontWeight={700}
+							>
+								Tags
+							</Typography>
+							<Container
+								disableGutters
+								sx={{
+									display: "flex",
+									flexWrap: "wrap",
+									width: "auto",
+									// ml: "-10px",
+								}}
+							>
+								{recipe.tags?.map((tag, i) => (
+									<Tag name={tag} key={tag + i} />
+								))}
+							</Container>
+						</Container>
+					) : (
+						<></>
+					)}
+
 					{/* INSTRUCTIONS */}
 					<Box
 						component="div"

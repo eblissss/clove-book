@@ -43,19 +43,19 @@ Light Background Clove: (orange) #E5932A
 */
 export const palette = {
 	primary: {
-		main: "#a7bfc2",
-		light: "#e1eaeb",
-		dark: "#607173",
+		main: "#DBD7CA",
+		light: "#FaEFEA",
+		dark: "#8b8a6c",
 		darker: "#465253",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
-		lightContrastText: "#493520",
-		contrastText: "#E8E5D1",
+		lightContrastText: "#303020",
+		contrastText: "#FaEFEA",
 	},
 	secondary: {
 		main: "#E5932A", // Green
 		yellow: "#FACF50",
 		moss: "#82916B",
-		lightContrastText: "#452400",
+		lightContrastText: "#302430",
 		contrastText: "#ffffff",
 	},
 	tertiary: {
@@ -211,6 +211,11 @@ const theme = createTheme({
 						"&.MuiFilledInput-underline:after": {
 							borderBottom: `0px solid ${palette.primary.dark}`,
 						},
+					},
+					"&.blockLabels": {
+						fontSize: 28,
+						height: "auto",
+						paddingTop: 3,
 					},
 					"&.recipeInput": {
 						border: `0px solid`,

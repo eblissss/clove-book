@@ -722,7 +722,7 @@ func (r *Client) ViewFavorites(c *gin.Context) {
 
 	if res.Err() != nil {
 		if res.Err() == mongo.ErrNoDocuments {
-			c.Status(http.StatusNotFound)
+			c.JSON(http.StatusOK, []string{})
 			return
 		} else {
 			c.Status(http.StatusInternalServerError)

@@ -14,6 +14,7 @@ import {
 	Button,
 	DialogActions,
 	Checkbox,
+	Link,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -119,40 +120,32 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						borderRadius: "8px",
 					}}
 				>
-					<Typography className="blockLabels">Nutrition</Typography>
-					<Container style={{ display: "flex" }}>
+					<Container disableGutters style={{}}>
+						<Typography
+							variant="h6"
+							component="h6"
+							fontWeight={700}
+						>
+							Nutrition
+						</Typography>
 						{this.props.nutrients.map((nutrient, i) =>
 							!importantNutrients.includes(nutrient.name) ||
-							(nutrient?.percentOfDailyNeeds === 0 &&
-								nutrient.amount === "") ? (
+							(nutrient?.percentOfDailyNeeds < 1 &&
+								(nutrient.amount as string) === "") ? (
 								<></>
 							) : (
 								<Typography
 									key={"nutri" + i}
-									variant="h3"
-									component="h3"
+									variant="body1"
+									component="h5"
 								>
-									{nutrient.name}:
-									{nutrient.amount != "" ? (
-										<Typography>
-											{" "}
-											{nutrient.amount}
-										</Typography>
-									) : (
-										<></>
-									)}{" "}
 									{/* Includes Daily Value for spoon recipes */}
-									{nutrient.percentOfDailyNeeds > 1 ? (
-										<Typography>
-											(
-											{Math.round(
-												nutrient?.percentOfDailyNeeds
-											)}
-											% of DV)
-										</Typography>
-									) : (
-										""
-									)}
+									{`${nutrient.name}: ${nutrient.amount}` +
+										(nutrient.percentOfDailyNeeds > 1
+											? `${Math.round(
+													nutrient?.percentOfDailyNeeds
+											  )}% DV`
+											: "")}
 								</Typography>
 							)
 						)}
@@ -330,8 +323,9 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 					<Container
 						disableGutters
 						sx={{
-							width: "40%",
-							minWidth: "auto",
+							width: "45%",
+							minWidth: "35%",
+							flex: 2,
 							minHeight: "40%",
 							height: "auto",
 							py: "16px",
@@ -372,7 +366,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 									>
 										<Checkbox
 											{...label}
-											sx={{ mt: "-4px" }}
+											sx={{ mt: "-4px", ml: "-8px" }}
 											onChange={() => {
 												if (
 													selectedIng.indexOf(i) ===
@@ -412,64 +406,73 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						</Box>
 
 						{/* NUTRITION */}
-						{recipe.nutrients?.filter((x) => x.amount !== "")
-							.length !== 0 ? (
-							<NutritionFacts nutrients={recipe.nutrients} />
+						<Box component="div">
+							{recipe.nutrients?.filter((x) => x.amount !== "")
+								.length === 0 ? (
+								<NutritionFacts nutrients={recipe.nutrients} />
+							) : (
+								<></>
+							)}
+						</Box>
+
+						{/* TAGS */}
+						{recipe.tags?.length != 0 ? (
+							<Container
+								disableGutters
+								sx={{
+									backgroundColor: "primary.main",
+									p: "16px",
+									borderRadius: "8px",
+									width: "auto",
+								}}
+							>
+								<Typography
+									variant="h6"
+									component="h6"
+									fontWeight={700}
+								>
+									Tags
+								</Typography>
+								<Container
+									disableGutters
+									sx={{
+										display: "flex",
+										flexWrap: "wrap",
+										width: "auto",
+										// ml: "-10px",
+									}}
+								>
+									{recipe.tags?.map((tag, i) => (
+										<Tag name={tag} key={tag + i} />
+									))}
+								</Container>
+							</Container>
 						) : (
 							<></>
 						)}
 					</Container>
-
-					{/* TAGS */}
-					{recipe.tags?.length != 0 ? (
-						<Container
-							disableGutters
+					{/* INSTRUCTIONS */}
+					<Container
+						disableGutters
+						sx={{
+							display: "flex",
+							flex: 3,
+							flexDirection: "column",
+							padding: "16px",
+							pl: "8px",
+							width: "auto",
+						}}
+					>
+						{/* right panels */}
+						<Box
+							component="div"
 							sx={{
 								backgroundColor: "primary.main",
 								p: "16px",
 								borderRadius: "8px",
-								width: "auto",
 							}}
 						>
-							<Typography
-								variant="h6"
-								component="h6"
-								fontWeight={700}
-							>
-								Tags
-							</Typography>
-							<Container
-								disableGutters
-								sx={{
-									display: "flex",
-									flexWrap: "wrap",
-									width: "auto",
-									// ml: "-10px",
-								}}
-							>
-								{recipe.tags?.map((tag, i) => (
-									<Tag name={tag} key={tag + i} />
-								))}
-							</Container>
-						</Container>
-					) : (
-						<></>
-					)}
-
-					{/* INSTRUCTIONS */}
-					<Box
-						component="div"
-						sx={{
-							backgroundColor: "primary.main",
-							p: "16px",
-							m: "16px",
-							ml: "8px",
-							borderRadius: "8px",
-							width: "60%",
-							minWidth: "40%",
-						}}
-					>
-						{/* <Typography
+							{/* <Typography
 							variant="h6"
 							component="h6"
 							sx={{
@@ -481,42 +484,75 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								? ""
 								: `${recipe.prepTime}m Prep Time – ${recipe.cookTime}m Cook Time`}
 						</Typography> */}
-						<Typography
-							variant="h6"
-							component="h6"
-							fontWeight={700}
-							sx={{ height: "2em" }}
-						>
-							{recipe.url ? recipe.url : "Instructions"}
-						</Typography>
 
-						{recipe.instructions !== null &&
-						recipe.instructions.length > 0 ? (
-							recipe.instructions?.map((instruction, i) => (
+							{recipe.instructions !== null &&
+							recipe.instructions.length > 0 ? (
+								<Container disableGutters>
+									<Typography
+										variant="h6"
+										component="h6"
+										fontWeight={700}
+									>
+										Instructions
+									</Typography>
+									{recipe.instructions?.map(
+										(instruction, i) => (
+											<Typography
+												key={"instruction-" + i}
+												variant="body1"
+												component="h5"
+												sx={{
+													pb: "10px",
+													//height: "2em",
+													//p: "1px",
+												}}
+											>
+												{i + 1}.{" "}
+												{instruction.description}
+											</Typography>
+										)
+									)}
+								</Container>
+							) : (
+								<></>
+							)}
+						</Box>
+
+						{recipe.url ? (
+							<Box
+								component="div"
+								sx={{
+									backgroundColor: "primary.main",
+									p: "16px",
+									mt: "8px",
+									borderRadius: "8px",
+									width: "100%",
+								}}
+							>
 								<Typography
-									key={"instruction-" + i}
+									key="text"
 									variant="body1"
 									component="h5"
 									sx={{
-										pb: "10px",
-										//height: "2em",
-										//p: "1px",
+										p: "1px",
 									}}
 								>
-									{i + 1}. {instruction.description}
+									<Link
+										href={recipe.url}
+										underline="always"
+										sx={{
+											color: "secondary.dark",
+											fontWeight: "bold",
+										}}
+									>
+										Go to Original Recipe
+									</Link>
 								</Typography>
-							))
+							</Box>
 						) : (
-							<Typography
-								key="text"
-								variant="body1"
-								component="h5"
-								sx={{
-									p: "1px",
-								}}
-							></Typography>
+							<></>
 						)}
-					</Box>
+					</Container>
 				</Container>
 			</Scrollbars>
 		</Box>

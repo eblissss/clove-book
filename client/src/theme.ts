@@ -45,14 +45,15 @@ export const palette = {
 	primary: {
 		main: "#DBD7CA",
 		light: "#FaEFEA",
-		dark: "#8b8a6c",
-		darker: "#465253",
+		dark: "#82916B",
+		darker: "#566253",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
 		lightContrastText: "#303020",
 		contrastText: "#FaEFEA",
 	},
 	secondary: {
 		main: "#E5932A", // Green
+		dark: "#80431A",
 		yellow: "#FACF50",
 		moss: "#82916B",
 		lightContrastText: "#302430",
@@ -134,7 +135,7 @@ const theme = createTheme({
 						},
 					},
 					"&.OnLight": {
-						backgroundColor: palette.primary.main,
+						backgroundColor: palette.primary.dark,
 						color: palette.primary.contrastText,
 						textAlign: "center",
 						borderRadius: "100px",
@@ -142,7 +143,7 @@ const theme = createTheme({
 						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
 
 						"&:hover": {
-							backgroundColor: palette.primary.dark,
+							backgroundColor: palette.primary.main,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
 						},
@@ -178,7 +179,7 @@ const theme = createTheme({
 						padding: "10px 25px",
 						transition: "transform 150ms, box-shadow 150ms",
 						"&:hover": {
-							backgroundColor: palette.secondary.moss,
+							backgroundColor: palette.secondary.dark,
 							color: palette.secondary.yellow,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",

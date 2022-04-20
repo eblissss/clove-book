@@ -29,6 +29,7 @@ function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 					mt: "10px",
 					justifyContent: "flex-start",
 					alignItems: "top",
+					overflow: "hidden",
 				}}
 			>
 				{recipes?.map((recipe, i) => (

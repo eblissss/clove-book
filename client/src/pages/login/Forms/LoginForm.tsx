@@ -163,6 +163,7 @@ export function LoginForm({ setUseReset }: loginProps) {
 								className="OnLight"
 								variant="contained"
 								fullWidth
+								sx={{ color: "primary.lightContrastText" }}
 								onClick={gotoSignup}
 							>
 								Sign up

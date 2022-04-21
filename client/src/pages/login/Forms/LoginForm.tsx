@@ -89,7 +89,7 @@ export function LoginForm({ setUseReset }: loginProps) {
 				<Box
 					component="div"
 					sx={{
-						bgcolor: "primary.light",
+						backgroundColor: "primary.light",
 						marginTop: "8px",
 						display: "flex",
 						flexDirection: "column",
@@ -103,7 +103,11 @@ export function LoginForm({ setUseReset }: loginProps) {
 					}}
 				>
 					<Avatar
-						sx={{ m: 1, bgcolor: "secondary.main", margin: "10px" }}
+						sx={{
+							m: 1,
+							bgcolor: "secondary.main",
+							margin: "10px",
+						}}
 					>
 						<LockOutlinedIcon />
 					</Avatar>

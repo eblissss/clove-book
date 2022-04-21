@@ -44,12 +44,12 @@ Light Background Clove: (orange) #E5932A
 export const palette = {
 	primary: {
 		main: "#DBD7CA",
-		light: "#FaEFEA",
+		light: "#FAF4EB",
 		dark: "#82916B",
 		darker: "#566253",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
 		lightContrastText: "#303020",
-		contrastText: "#FaEFEA",
+		contrastText: "#FAF4EB",
 	},
 	secondary: {
 		main: "#E5932A", // Green
@@ -143,7 +143,7 @@ const theme = createTheme({
 						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
 
 						"&:hover": {
-							backgroundColor: palette.primary.main,
+							backgroundColor: palette.primary.darker,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
 						},

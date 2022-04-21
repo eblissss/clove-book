@@ -23,7 +23,7 @@ import (
 const spoonacularBaseURL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
 
 const SUBMAX_RECIPES = 12
-const MAX_RECIPES = 100
+const SPOON_GRAB_AMT = 50
 
 func (r *Client) CreateRecipe(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -125,20 +125,6 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 		offset, _ = strconv.ParseInt(offsetQuery, 10, 64)
 	}
 
-	if int(offset) >= MAX_RECIPES {
-		c.JSON(http.StatusOK, []models.RecipeStub{})
-		return
-	}
-
-	limit := int64(SUBMAX_RECIPES)
-	if int64(SUBMAX_RECIPES) > int64(MAX_RECIPES)-offset {
-		limit = int64(MAX_RECIPES) - offset
-	}
-
-	options := new(options.FindOptions)
-	options.SetLimit(limit)
-	options.SetSkip(offset)
-
 	// still not fuzzy but partial at least
 	search := bson.D{{Key: "name", Value: primitive.Regex{Pattern: query, Options: "i"}}}
 	if len(tags) > 0 {
@@ -146,12 +132,29 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 			{Key: "tags", Value: bson.M{"$all": tags}}}
 	}
 
-	cur, err := r.StubCollection.Find(ctx,
-		search,
-		// this is an order of magnitude faster but not fuzzy or partial
-		// bson.M{"$text": bson.M{"$search": query}},
-		options,
-	)
+	opts := new(options.CountOptions)
+	opts.SetLimit(SUBMAX_RECIPES)
+	opts.SetSkip(offset)
+
+	dbAmount, err := r.StubCollection.CountDocuments(ctx, search, opts)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if dbAmount < SUBMAX_RECIPES {
+		if query == "" {
+			r.getRandomSpoonacularRecipes(c, SPOON_GRAB_AMT)
+		} else {
+			r.searchSpoonacularRecipes(c, query, tags, SPOON_GRAB_AMT)
+		}
+	}
+
+	options := new(options.FindOptions)
+	options.SetLimit(SUBMAX_RECIPES)
+	options.SetSkip(offset)
+
+	cur, err := r.StubCollection.Find(ctx, search, options)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -166,23 +169,10 @@ func (r *Client) SearchRecipes(c *gin.Context) {
 		return
 	}
 
-	cbAmount := len(foundRecipes)
-	if cbAmount < int(limit) {
-		if query == "" {
-			spoonResults := r.getRandomSpoonacularRecipes(
-				c, MAX_RECIPES-int(offset)-cbAmount, SUBMAX_RECIPES-cbAmount)
-			foundRecipes = append(foundRecipes, spoonResults...)
-		} else {
-			spoonResults := r.searchSpoonacularRecipes(
-				c, query, tags, MAX_RECIPES-int(offset)-cbAmount, SUBMAX_RECIPES-cbAmount)
-			foundRecipes = append(foundRecipes, spoonResults...)
-		}
-	}
-
 	c.JSON(http.StatusOK, foundRecipes)
 }
 
-func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []string, amount int, retAmt int) []models.RecipeStub {
+func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []string, amount int) []models.RecipeStub {
 
 	isVegan := false
 	isVegetarian := false
@@ -240,10 +230,10 @@ func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []s
 	var searchResponse models.SpoonacularSearchResponse
 	json.Unmarshal(body, &searchResponse)
 
-	return r.fmtSpoonacularSearchRes(searchResponse, retAmt)
+	return r.fmtSpoonacularSearchRes(searchResponse)
 }
 
-func (r *Client) getRandomSpoonacularRecipes(c *gin.Context, amount int, retAmt int) []models.RecipeStub {
+func (r *Client) getRandomSpoonacularRecipes(c *gin.Context, amount int) []models.RecipeStub {
 	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/random?number="+strconv.Itoa(amount), nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Error creating spoonacular request"})
@@ -270,11 +260,11 @@ func (r *Client) getRandomSpoonacularRecipes(c *gin.Context, amount int, retAmt 
 		Recipes: searchResponse.Recipes,
 	}
 
-	return r.fmtSpoonacularSearchRes(searchRes, retAmt)
+	return r.fmtSpoonacularSearchRes(searchRes)
 }
 
 // Format a spoonacular search result into stubs
-func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse, retAmt int) []models.RecipeStub {
+func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse) []models.RecipeStub {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -312,12 +302,7 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 		fmt.Println("Couldn't insert stubs", err)
 	}
 
-	amount := len(foundRecipes)
-	if len(foundRecipes) > retAmt {
-		amount = retAmt
-	}
-
-	return foundRecipes[:amount]
+	return foundRecipes
 }
 
 func (r *Client) SearchRecipesIngredients(c *gin.Context) {
@@ -330,12 +315,36 @@ func (r *Client) SearchRecipesIngredients(c *gin.Context) {
 	ingredients := strings.Split(ingredientsQuery, ",")
 	ingredientRegex := strings.Join(ingredients, "|")
 
-	cur, err := r.StubCollection.Find(ctx,
-		bson.M{
-			"name":             primitive.Regex{Pattern: query, Options: "i"},
-			"ingredients.name": primitive.Regex{Pattern: ingredientRegex, Options: "i"},
-		},
-	)
+	offsetQuery, isOffset := c.GetQuery("offset")
+	offset := int64(0)
+	if isOffset {
+		offset, _ = strconv.ParseInt(offsetQuery, 10, 64)
+	}
+
+	search := bson.M{
+		"name":             primitive.Regex{Pattern: query, Options: "i"},
+		"ingredients.name": primitive.Regex{Pattern: ingredientRegex, Options: "i"},
+	}
+
+	opts := new(options.CountOptions)
+	opts.SetLimit(SUBMAX_RECIPES)
+	opts.SetSkip(offset)
+
+	dbAmount, err := r.StubCollection.CountDocuments(ctx, search, opts)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if dbAmount < SUBMAX_RECIPES {
+		r.getIngredientSpoonacularRecipes(c, SPOON_GRAB_AMT)
+	}
+
+	options := new(options.FindOptions)
+	options.SetLimit(SUBMAX_RECIPES)
+	options.SetSkip(offset)
+
+	cur, err := r.StubCollection.Find(ctx, search, options)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -350,17 +359,10 @@ func (r *Client) SearchRecipesIngredients(c *gin.Context) {
 		return
 	}
 
-	cbAmount := len(foundRecipes)
-	if cbAmount < int(SUBMAX_RECIPES) {
-		spoonResults := r.getIngredientSpoonacularRecipes(
-			c, SUBMAX_RECIPES-cbAmount, SUBMAX_RECIPES-cbAmount)
-		foundRecipes = append(foundRecipes, spoonResults...)
-	}
-
 	c.JSON(http.StatusOK, foundRecipes)
 }
 
-func (r *Client) getIngredientSpoonacularRecipes(c *gin.Context, amount int, retAmt int) []models.RecipeStub {
+func (r *Client) getIngredientSpoonacularRecipes(c *gin.Context, amount int) []models.RecipeStub {
 	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/findByIngredients?number="+
 		strconv.Itoa(amount)+"sort=max-used-ingredients", nil)
 	if err != nil {
@@ -388,7 +390,7 @@ func (r *Client) getIngredientSpoonacularRecipes(c *gin.Context, amount int, ret
 		Recipes: searchResponse.Recipes,
 	}
 
-	return r.fmtSpoonacularSearchRes(searchRes, retAmt)
+	return r.fmtSpoonacularSearchRes(searchRes)
 }
 
 func (r *Client) GetUsersRecipes(c *gin.Context) {

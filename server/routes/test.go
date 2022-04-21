@@ -2,7 +2,9 @@ package routes
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"server/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +15,32 @@ func (r *Client) Test(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	r.StubCollection.DeleteMany(ctx, bson.M{"name": "Carrot Soup 2"})
+	cur, err := r.StubCollection.Find(ctx, bson.D{})
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	foundRecipes := make([]models.RecipeStub, 0)
+
+	err = cur.All(ctx, &foundRecipes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	allKeys := make(map[string]bool)
+	for _, stub := range foundRecipes {
+		if _, value := allKeys[stub.RecipeName]; !value {
+			allKeys[stub.RecipeName] = true
+		} else {
+			fmt.Println("Deleted: ", stub.RecipeName)
+			r.StubCollection.DeleteOne(ctx, bson.M{"name": stub.RecipeName})
+		}
+	}
+
+	// r.StubCollection.DeleteMany(ctx, bson.M{"name": "Carrot Soup 2"})
 
 	c.JSON(http.StatusOK, "Hi :)")
 }

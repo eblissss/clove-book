@@ -13,11 +13,11 @@ test("loads and displays title", async () => {
 	);
 
 	await waitFor(() =>
-		screen.getByPlaceholderText("a lentil dish with plenty of greens...")
+		screen.getByPlaceholderText("A lentil dish with plenty of greens...")
 	);
 
 	expect(
-		screen.getByPlaceholderText("a lentil dish with plenty of greens...")
+		screen.getByPlaceholderText("A lentil dish with plenty of greens...")
 	).toBeInTheDocument();
 });
 

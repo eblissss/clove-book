@@ -204,7 +204,7 @@ func (r *Client) searchSpoonacularRecipes(c *gin.Context, query string, tags []s
 	}
 
 	req, err := http.NewRequest("GET", spoonacularBaseURL+"/recipes/complexSearch?query="+query+
-		"&number="+strconv.Itoa(amount)+diet+intolerances, nil)
+		"&number="+strconv.Itoa(amount)+diet+intolerances+"sort=random", nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Error creating spoonacular request"})
 		return []models.RecipeStub{}
@@ -302,11 +302,14 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 		foundRecipesInterface = append(foundRecipesInterface, stub)
 	}
 
-	foundRecipes, foundRecipesInterface = removeDuplicateStr(foundRecipes)
+	opts := options.Update().SetUpsert(true)
 
-	_, err = r.StubCollection.InsertMany(ctx, foundRecipesInterface)
-	if err != nil {
-		fmt.Println("Couldn't insert stubs, try again ", err)
+	foundRecipes, foundRecipesInterface = removeDuplicateStr(foundRecipes)
+	for _, value := range foundRecipes {
+		_, err = r.StubCollection.UpdateOne(ctx, bson.M{"spoonacularID": bson.M{"$set": value.SpoonacularID}}, value, opts)
+		if err != nil {
+			fmt.Println("Couldn't insert stub", err)
+		}
 	}
 
 	return foundRecipes

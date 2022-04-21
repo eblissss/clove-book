@@ -30,13 +30,15 @@ func (r *Client) Test(c *gin.Context) {
 		return
 	}
 
-	allKeys := make(map[string]bool)
+	allKeys := make(map[int64]bool)
 	for _, stub := range foundRecipes {
-		if _, value := allKeys[stub.RecipeName]; !value {
-			allKeys[stub.RecipeName] = true
+		if _, value := allKeys[stub.SpoonacularID]; !value {
+			allKeys[stub.SpoonacularID] = true
 		} else {
 			fmt.Println("Deleted: ", stub.RecipeName)
-			r.StubCollection.DeleteOne(ctx, bson.M{"name": stub.RecipeName})
+			if stub.SpoonacularID != -1 {
+				r.StubCollection.DeleteOne(ctx, bson.M{"spoonacularID": stub.SpoonacularID})
+			}
 		}
 	}
 

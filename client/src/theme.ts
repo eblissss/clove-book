@@ -159,6 +159,10 @@ const theme = (mode: PaletteMode) =>
 							],
 							// fontWeight: "bold",
 
+						"&:hover": {
+							backgroundColor: palette.primary.darker,
+							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
+							transform: "translateY(-2px)",
 							color: palette.primary.lightContrastText,
 						},
 					},

@@ -185,10 +185,10 @@ function NutritionList() {
 		<Box
 			component="div"
 			sx={{
-				backgroundColor: "primary.main",
+				backgroundColor: "primary.light",
 				p: "6px 10px",
 				m: "20px",
-				borderRadius: "8px",
+				borderRadius: "10px",
 				display: "flex",
 				flexDirection: "column",
 				alignItems: "left",

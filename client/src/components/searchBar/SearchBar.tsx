@@ -41,7 +41,7 @@ export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 				p: "2px 4px",
 				display: "flex",
 				alignItems: "center",
-				backgroundColor: "primary.dark",
+				backgroundColor: "secondary.dark",
 				...paperProps,
 			}}
 		>
@@ -54,10 +54,10 @@ export default function SearchBar({ searchFunc, paperProps }: searchBarProps) {
 				sx={{
 					ml: 1,
 					flex: 1,
-					color: "primary.light",
-					fontFamily: ["Helvetica Neue", "Sen"],
+					color: "secondary.contrastText",
+					fontFamily: ["Helvetica Neue", "Poppins", "Poppins"],
 				}}
-				placeholder="a lentil dish with plenty of greens..."
+				placeholder="A lentil dish with plenty of greens..."
 				inputProps={{ "aria-label": "search recipes" }}
 				onChange={countdownSearch}
 			/>

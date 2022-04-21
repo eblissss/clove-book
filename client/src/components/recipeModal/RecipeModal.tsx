@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
-import { palette } from "../../theme";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { closeModal, selectModal, setDeleted } from "./modalSlice";
 
@@ -107,14 +106,15 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 	interface NutritionProps {
 		nutrients: Nutrient[];
 	}
-
+	const boxShadowProps = "0px 3px 3px #D1D1C4";
 	class NutritionFacts extends React.Component<NutritionProps, {}> {
 		render() {
 			return (
 				<Box
 					component="div"
 					sx={{
-						backgroundColor: "primary.main",
+						backgroundColor: "primary.light",
+						boxShadow: boxShadowProps,
 						p: "16px",
 						mb: "8px",
 						borderRadius: "8px",
@@ -167,7 +167,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				width: "60%",
 				height: "80%",
 				maxHeight: "100%",
-				bgcolor: "primary.light",
+				bgcolor: "primary.main",
 				border: "2px solid #fff",
 				borderRadius: "20px",
 				boxShadow: 12,
@@ -186,7 +186,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 				<Box
 					component="div"
 					sx={{
-						backgroundColor: "primary.dark",
+						backgroundColor: "#202020",
 						top: 0,
 						//borderRadius: "20px 20px 0px 0px",
 						width: "100%",
@@ -230,11 +230,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						<Typography
 							variant="h3"
 							component="h3"
-							sx={{
-								//zIndex: "tooltip",
-								color: "primary.contrastText",
-								fontWeight: 700,
-							}}
+							className="Title"
 						>
 							{recipe.name}
 						</Typography>
@@ -246,7 +242,10 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 								color: "primary.contrastText",
 							}}
 						>
-							By {recipe.author} – Ready in {recipe.totalTime}m
+							{recipe.author === ""
+								? ""
+								: `By ${recipe.author} – `}{" "}
+							Ready in {recipe.totalTime}m
 						</Typography>
 					</Container>
 					<Container
@@ -336,7 +335,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						<Box
 							component="div"
 							sx={{
-								backgroundColor: "primary.main",
+								backgroundColor: "primary.light",
+								boxShadow: boxShadowProps,
 								p: "16px",
 								mb: "8px",
 								borderRadius: "8px",
@@ -357,7 +357,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 										component="h5"
 										color={
 											selectedIng.indexOf(i) > -1
-												? "primary.contrastText"
+												? "primary.dark"
 												: "primary.darkContrastText"
 										}
 										sx={{
@@ -396,7 +396,7 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 										{formatAmounts
 											? decimalToFraction(
 													ingredient.amount
-											  ).display
+											  )
 											: ingredient.amount}
 										{"\u00A0"}
 										{ingredient.unit}
@@ -416,40 +416,6 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 						</Box>
 
 						{/* TAGS */}
-						{recipe.tags?.length != 0 ? (
-							<Container
-								disableGutters
-								sx={{
-									backgroundColor: "primary.main",
-									p: "16px",
-									borderRadius: "8px",
-									width: "auto",
-								}}
-							>
-								<Typography
-									variant="h6"
-									component="h6"
-									fontWeight={700}
-								>
-									Tags
-								</Typography>
-								<Container
-									disableGutters
-									sx={{
-										display: "flex",
-										flexWrap: "wrap",
-										width: "auto",
-										// ml: "-10px",
-									}}
-								>
-									{recipe.tags?.map((tag, i) => (
-										<Tag name={tag} key={tag + i} />
-									))}
-								</Container>
-							</Container>
-						) : (
-							<></>
-						)}
 					</Container>
 					{/* INSTRUCTIONS */}
 					<Container
@@ -458,16 +424,18 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							display: "flex",
 							flex: 3,
 							flexDirection: "column",
+							width: "auto",
 							padding: "16px",
 							pl: "8px",
-							width: "auto",
+							height: "100%",
 						}}
 					>
 						{/* right panels */}
 						<Box
 							component="div"
 							sx={{
-								backgroundColor: "primary.main",
+								backgroundColor: "primary.light",
+								boxShadow: boxShadowProps,
 								p: "16px",
 								borderRadius: "8px",
 							}}
@@ -522,7 +490,8 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 							<Box
 								component="div"
 								sx={{
-									backgroundColor: "primary.main",
+									backgroundColor: "primary.light",
+									boxShadow: boxShadowProps,
 									p: "16px",
 									mt: "8px",
 									borderRadius: "8px",
@@ -545,10 +514,46 @@ function RecipeModalContent({ recipe, setOpenDeleteDialog }: contentProps) {
 											fontWeight: "bold",
 										}}
 									>
-										Go to Original Recipe
+										Open original recipe (leaves Clove)
 									</Link>
 								</Typography>
 							</Box>
+						) : (
+							<></>
+						)}
+						{recipe.tags?.length != 0 ? (
+							<Container
+								disableGutters
+								sx={{
+									backgroundColor: "primary.light",
+									boxShadow: boxShadowProps,
+									p: "16px",
+									mt: "8px",
+									borderRadius: "8px",
+									width: "100%",
+								}}
+							>
+								<Typography
+									variant="h6"
+									component="h6"
+									fontWeight={700}
+								>
+									Tags
+								</Typography>
+								<Container
+									disableGutters
+									sx={{
+										display: "flex",
+										flexWrap: "wrap",
+										width: "auto",
+										// ml: "-10px",
+									}}
+								>
+									{recipe.tags?.map((tag, i) => (
+										<Tag name={tag} key={tag + i} />
+									))}
+								</Container>
+							</Container>
 						) : (
 							<></>
 						)}

@@ -71,7 +71,6 @@ export default function Landing() {
 				<Box
 					component="div"
 					sx={{
-						//background: `linear-gradient(0deg, ${theme.palette.secondary.main} 50%, #00000000 100%)`,
 						borderRadius: "0px 0px 25px 25px",
 						alignSelf: "center",
 						width: "70%",
@@ -79,7 +78,6 @@ export default function Landing() {
 						align: "center",
 						px: "3rem",
 						py: "0.25rem",
-						//mt: "1rem",
 					}}
 				>
 					<Typography

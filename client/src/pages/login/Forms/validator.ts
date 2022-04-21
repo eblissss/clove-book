@@ -15,8 +15,7 @@ export const isUsername = (username: string): string => {
 	if (username.length === 0) {
 		return "Please enter a username";
 	}
-
-	if (!/\s/.test(username)) {
+	if (username.indexOf(" ") !== -1) {
 		return "Username cannot contain spaces.";
 	}
 	if (username.length < 5) {

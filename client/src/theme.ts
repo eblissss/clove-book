@@ -1,22 +1,23 @@
-import { createTheme, responsiveFontSizes } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
+import React from "react";
+import { alpha, createTheme, responsiveFontSizes } from "@mui/material/styles";
 import WebFont from "webfontloader";
+import { PaletteMode } from "@mui/material";
 
 WebFont.load({
 	google: {
-		families: ["Overlock", "Prociono", "Sen", "Libre Baskerville"],
+		families: [
+			"Overlock",
+			"Sen",
+			"Libre Baskerville",
+			"DM Serif Text",
+			"Fugaz One",
+			"Sorts Mill Goudy",
+			"Poppins",
+		],
 	},
 });
 
 declare module "@mui/material/styles" {
-	interface Palette {
-		tertiary: Palette["primary"];
-	}
-
-	interface PaletteOptions {
-		tertiary: PaletteOptions["primary"];
-	}
-
 	interface PaletteColor {
 		darkContrastText?: string;
 	}
@@ -41,27 +42,29 @@ Light Background Clove: (orange) #E5932A
 
 
 */
+
+function randomColor() {
+	return "#" + Math.floor(Math.random() * 0xffffff).toString(16);
+}
+
 export const palette = {
 	primary: {
-		main: "#DBD7CA",
+		main: "#E2DFD4",
 		light: "#FAF4EB",
-		dark: "#82916B",
-		darker: "#566253",
+		dark: "#73825D",
+		darker: "#435643",
 		// On light backgrounds, use lightContrastText, otherwise use contrastText
 		lightContrastText: "#303020",
 		contrastText: "#FAF4EB",
 	},
 	secondary: {
 		main: "#E5932A", // Green
-		dark: "#80431A",
+		dark: "#bb6d28",
 		yellow: "#FACF50",
+		lightYellow: "#ffe186",
 		moss: "#82916B",
 		lightContrastText: "#302430",
 		contrastText: "#ffffff",
-	},
-	tertiary: {
-		main: "#5C6573",
-		contrastText: "#fff",
 	},
 	error: {
 		main: "#EE733C",
@@ -70,248 +73,343 @@ export const palette = {
 	tonalOffset: 0.2,
 };
 
-const theme = createTheme({
-	palette: {
-		...palette,
+export const darkPalette = {
+	primary: {
+		main: randomColor(),
+		light: randomColor(),
+		dark: randomColor(),
+		darker: randomColor(),
+		// On light backgrounds, use lightContrastText, otherwise use contrastText
+		lightContrastText: randomColor(),
+		contrastText: randomColor(),
 	},
-	components: {
-		MuiListItem: {
-			styleOverrides: {
-				root: {
-					"& .MuiListItemButton-root": {
-						padding: "0 0.4rem",
-					},
-				},
-			},
+	secondary: {
+		main: randomColor(), // Green
+		dark: randomColor(),
+		yellow: randomColor(),
+		moss: randomColor(),
+		lightContrastText: randomColor(),
+		contrastText: randomColor(),
+	},
+	error: {
+		main: randomColor(),
+	},
+	contrastThreshold: 3,
+	tonalOffset: 0.2,
+};
+
+const getDesignToken = (mode: PaletteMode) =>
+	mode === "light" ? palette : darkPalette;
+
+const theme = (mode: PaletteMode) =>
+	createTheme({
+		palette: {
+			...getDesignToken(mode),
 		},
-		MuiTypography: {
-			styleOverrides: {
-				root: {
-					fontFamily: ["sans-serif", "Sen"],
-					position: "relative",
-					overflowWrap: "break-word",
-					hyphens: "auto",
-				},
-			},
-		},
-		MuiIconButton: {
-			styleOverrides: {
-				root: {
-					position: "relative",
-					zIndex: "tooltip",
-					"&.Menu": {
-						// height: "64px",
-						// width: "64px",
-						borderRadius: "0px",
-						border: "unset",
-						margin: "0px",
-						"& svg": {
-							fontSize: "2.5rem",
-						},
-						"&:hover, &.Mui-focusVisible": {
-							backgroundColor: "transparent",
+		components: {
+			MuiListItem: {
+				styleOverrides: {
+					root: {
+						"& .MuiListItemButton-root": {
+							padding: "0 0.4rem",
 						},
 					},
 				},
 			},
-		},
-		MuiCheckbox: {
-			styleOverrides: {
-				root: {
-					"&.Mui-checked": {
-						color: palette.primary.lightContrastText,
+			MuiContainer: {
+				styleOverrides: {
+					root: {
+						"&.AlphaDark": {
+							backgroundColor: alpha(palette.primary.dark, 0.7),
+						},
 					},
 				},
 			},
-		},
-		MuiButton: {
-			styleOverrides: {
-				root: {
-					fontFamily: ["sans-serif", "Sen"],
-					fontWeight: "bold",
-					"&.Logout": {
-						"&:hover": {
-							backgroundColor: palette.secondary.moss,
+			MuiCardContent: {
+				styleOverrides: {
+					root: {
+						"&:last-child": {
+							paddingBottom: "10px",
 						},
 					},
-					"&.OnLight": {
-						backgroundColor: palette.primary.dark,
-						color: palette.primary.contrastText,
-						textAlign: "center",
-						borderRadius: "100px",
-						margin: "10px auto",
-						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
+				},
+			},
+			MuiTypography: {
+				styleOverrides: {
+					root: {
+						fontFamily: ["sans-serif", "Poppins", "Poppins"],
+						position: "relative",
+						overflowWrap: "break-word",
+						hyphens: "auto",
+						"&.Title": {
+							fontFamily: [
+								"sans-serif",
+								"Poppins",
+								"DM Serif Text",
+							],
+							// fontWeight: "bold",
+
+							color: palette.primary.contrastText,
+						},
+						"&.BigTitle": {
+							fontFamily: [
+								"sans-serif",
+								"Poppins",
+								"DM Serif Text",
+							],
+							// fontWeight: "bold",
 
 						"&:hover": {
 							backgroundColor: palette.primary.darker,
 							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
 							transform: "translateY(-2px)",
-						},
-					},
-					"&.Classic": {
-						backgroundColor: palette.secondary.main,
-						borderRadius: "17px",
-						color: palette.secondary.lightContrastText,
-						fontSize: "1.3rem",
-						textAlign: "center",
-						transition: "transform 150ms, box-shadow 150ms",
-						"&:hover": {
-							backgroundColor: palette.secondary.moss,
-							color: palette.secondary.yellow,
-							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
-							transform: "translateY(-2px)",
-						},
-					},
-					"&.Submit": {
-						borderRadius: "50px",
-						margin: "10px auto",
-						backgroundColor: palette.secondary.main,
-						boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
-						color: palette.secondary.contrastText,
-						fontFamily: [
-							"-apple-system",
-							'"Segoe UI"',
-							"Akzidenz Grotesk BQ Medium",
-							"sans-serif",
-							"Sen",
-						],
-						fontSize: "16px",
-						padding: "10px 25px",
-						transition: "transform 150ms, box-shadow 150ms",
-						"&:hover": {
-							backgroundColor: palette.secondary.dark,
-							color: palette.secondary.yellow,
-							boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
-							transform: "translateY(-2px)",
+							color: palette.primary.lightContrastText,
 						},
 					},
 				},
 			},
-		},
-		MuiTextField: {
-			styleOverrides: {
-				root: {
-					width: "100%",
-					"& .MuiInputBase-multiline": {
-						padding: "10px 12px",
-						borderRadius: "15px",
-						backgroundColor: palette.primary.dark,
-						"&.Mui-focused": {
-							backgroundColor: palette.primary.dark,
-						},
-						"& .MuiInputBase-inputMultiline": {
-							fontSize: 16,
-							color: palette.primary.contrastText,
-						},
-						"&.MuiFilledInput-underline:before": {
-							borderBottom: `0px solid ${palette.primary.main}`,
-						},
-						"&.MuiFilledInput-underline:hover:before": {
-							borderBottom: `0px solid ${palette.primary.dark}`,
-						},
-						"&.MuiFilledInput-underline:after": {
-							borderBottom: `0px solid ${palette.primary.dark}`,
-						},
-					},
-					"&.blockLabels": {
-						fontSize: 28,
-						height: "auto",
-						paddingTop: 3,
-					},
-					"&.recipeInput": {
-						border: `0px solid`,
-						borderRadius: "8px",
-						backgroundColor: palette.primary.dark,
-						boxSizing: "border-box",
-						margin: "5px",
-						mx: "5px",
-						"& .MuiInputBase-root": {
-							"& input": {
-								color: palette.primary.contrastText,
-								height: "0px",
-								fontFamily: ["Sen"],
-								fontSize: "18px",
-								fontWeight: 700,
+			MuiIconButton: {
+				styleOverrides: {
+					root: {
+						position: "relative",
+						zIndex: "tooltip",
+						"&.Menu": {
+							// height: "64px",
+							// width: "64px",
+							borderRadius: "0px",
+							border: "unset",
+							margin: "0px",
+							"& svg": {
+								fontSize: "2.5rem",
 							},
-							"& textarea": {
-								color: palette.primary.contrastText,
-								height: "0px",
-								fontFamily: ["Sen"],
-								fontSize: "18px",
-								fontWeight: 700,
+							"&:hover, &.Mui-focusVisible": {
+								backgroundColor: "transparent",
 							},
-							"& fieldset": {
-								border: "none",
-								borderRadius: "8px",
-								paddingLeft: "0.5rem",
-								margin: "-0.05rem",
-							},
-							"&:hover fieldset": {
-								border: `1px solid ${palette.primary.dark}`,
-								borderWidth: "0.15rem",
-							},
-							"&.Mui-focused fieldset": {
-								border: `1px solid ${palette.primary.light}`,
-								borderWidth: "0.15rem",
-							},
-						},
-					},
-					"&.Round": {
-						border: "0px solid",
-						borderColor: palette.primary.main,
-						boxSizing: "border-box",
-						margin: "5px",
-						mx: "5px",
-						"& .MuiOutlinedInput-root": {
-							required: "true",
-							backgroundColor: "#ffffff",
-							borderRadius: "10px",
-							"& input": {
-								fontFamily: ["sans-serif", "Sen"],
-							},
-							"& fieldset": {
-								color: "#ffffff",
-								border: "none",
-								borderRadius: "100px",
-								paddingLeft: "0.5rem",
-								margin: "10px",
-							},
-							"&:hover fieldset": {
-								border: "1px solid",
-								borderWidth: "0.15rem",
-							},
-							"&:Mui-focused fieldset": {
-								border: "1px solid",
-							},
-						},
-						"& label": {
-							fontFamily: ["sans-serif", "Sen"],
-						},
-						"& p.Mui-error": {
-							fontSize: "12px",
 						},
 					},
 				},
 			},
-		},
-		MuiFormHelperText: {
-			styleOverrides: {
-				root: {
-					textTransform: "initial",
-					fontSize: "1rem",
-				},
-			},
-		},
-		MuiSvgIcon: {
-			styleOverrides: {
-				root: {
-					"&.DarkOnHover:hover": {
-						color: palette.primary.darker,
+			MuiCheckbox: {
+				styleOverrides: {
+					root: {
+						"&.Mui-checked": {
+							color: getDesignToken(mode).primary
+								.lightContrastText,
+						},
 					},
 				},
 			},
-		},
-	},
-});
+			MuiButton: {
+				styleOverrides: {
+					root: {
+						fontFamily: ["sans-serif", "Poppins"],
+						fontWeight: "bold",
+						"&.Logout": {
+							"&:hover": {
+								backgroundColor:
+									getDesignToken(mode).secondary.main,
+							},
+						},
+						"&.OnLight": {
+							backgroundColor: getDesignToken(mode).primary.dark,
+							color: getDesignToken(mode).primary.contrastText,
+							textAlign: "center",
+							borderRadius: "100px",
+							margin: "10px auto",
+							boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
 
-export default responsiveFontSizes(theme);
+							"&:hover": {
+								backgroundColor:
+									getDesignToken(mode).primary.main,
+								boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
+								transform: "translateY(-2px)",
+							},
+						},
+						"&.Classic": {
+							backgroundColor:
+								getDesignToken(mode).secondary.main,
+							borderRadius: "17px",
+							color: getDesignToken(mode).secondary
+								.lightContrastText,
+							fontSize: "1.3rem",
+							textAlign: "center",
+							transition: "transform 150ms, box-shadow 150ms",
+							"&:hover": {
+								backgroundColor:
+									getDesignToken(mode).secondary.moss,
+								color: getDesignToken(mode).secondary.yellow,
+								boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
+								transform: "translateY(-2px)",
+							},
+						},
+						"&.Submit": {
+							borderRadius: "50px",
+							margin: "10px auto",
+							backgroundColor:
+								getDesignToken(mode).secondary.main,
+							boxShadow: "rgba(0, 0, 0, 0.1) 0 2px 4px 0",
+							color: getDesignToken(mode).secondary.contrastText,
+							fontFamily: [
+								"-apple-system",
+								'"Segoe UI"',
+								"Akzidenz Grotesk BQ Medium",
+								"sans-serif",
+								"Sen",
+							],
+							fontSize: "16px",
+							padding: "10px 25px",
+							transition: "transform 150ms, box-shadow 150ms",
+							"&:hover": {
+								backgroundColor:
+									getDesignToken(mode).secondary.dark,
+								color: getDesignToken(mode).secondary.yellow,
+								boxShadow: "rgba(0, 0, 0, 0.15) 0 3px 9px 0",
+								transform: "translateY(-2px)",
+							},
+						},
+					},
+				},
+			},
+			MuiTextField: {
+				styleOverrides: {
+					root: {
+						width: "100%",
+						"& .MuiInputBase-multiline": {
+							padding: "10px 12px",
+							borderRadius: "15px",
+							backgroundColor: getDesignToken(mode).primary.dark,
+							"&.Mui-focused": {
+								backgroundColor:
+									getDesignToken(mode).primary.dark,
+							},
+							"& .MuiInputBase-inputMultiline": {
+								fontSize: 16,
+								color: getDesignToken(mode).primary
+									.contrastText,
+							},
+							"&.MuiFilledInput-underline:before": {
+								borderBottom: `0px solid ${
+									getDesignToken(mode).primary.main
+								}`,
+							},
+							"&.MuiFilledInput-underline:hover:before": {
+								borderBottom: `0px solid ${
+									getDesignToken(mode).primary.dark
+								}`,
+							},
+							"&.MuiFilledInput-underline:after": {
+								borderBottom: `0px solid ${
+									getDesignToken(mode).primary.dark
+								}`,
+							},
+						},
+						"&.blockLabels": {
+							fontSize: 28,
+							height: "auto",
+							paddingTop: 3,
+						},
+						"&.recipeInput": {
+							border: `0px solid`,
+							borderRadius: "8px",
+							backgroundColor: getDesignToken(mode).primary.dark,
+							boxSizing: "border-box",
+							margin: "5px",
+							mx: "5px",
+							"& .MuiInputBase-root": {
+								"& input": {
+									color: getDesignToken(mode).primary
+										.contrastText,
+									height: "0px",
+									fontFamily: ["Sen"],
+									fontSize: "18px",
+									fontWeight: 700,
+								},
+								"& textarea": {
+									color: getDesignToken(mode).primary
+										.contrastText,
+									height: "0px",
+									fontFamily: ["Sen"],
+									fontSize: "18px",
+									fontWeight: 700,
+								},
+								"& fieldset": {
+									border: "none",
+									borderRadius: "8px",
+									paddingLeft: "0.5rem",
+									margin: "-0.05rem",
+								},
+								"&:hover fieldset": {
+									border: `1px solid ${
+										getDesignToken(mode).primary.dark
+									}`,
+									borderWidth: "0.15rem",
+								},
+								"&.Mui-focused fieldset": {
+									border: `1px solid ${
+										getDesignToken(mode).primary.light
+									}`,
+									borderWidth: "0.15rem",
+								},
+							},
+						},
+						"&.Round": {
+							border: "0px solid",
+							borderColor: getDesignToken(mode).primary.main,
+							boxSizing: "border-box",
+							margin: "5px",
+							mx: "5px",
+							"& .MuiOutlinedInput-root": {
+								required: "true",
+								backgroundColor: "#ffffff",
+								borderRadius: "10px",
+								"& input": {
+									fontFamily: ["sans-serif", "Poppins"],
+								},
+								"& fieldset": {
+									color: "#ffffff",
+									border: "none",
+									borderRadius: "100px",
+									paddingLeft: "0.5rem",
+									margin: "10px",
+								},
+								"&:hover fieldset": {
+									border: "1px solid",
+									borderWidth: "0.15rem",
+								},
+								"&:Mui-focused fieldset": {
+									border: "1px solid",
+								},
+							},
+							"& label": {
+								fontFamily: ["sans-serif", "Poppins"],
+							},
+							"& p.Mui-error": {
+								fontSize: "12px",
+							},
+						},
+					},
+				},
+			},
+			MuiFormHelperText: {
+				styleOverrides: {
+					root: {
+						textTransform: "initial",
+						fontSize: "1rem",
+					},
+				},
+			},
+			MuiSvgIcon: {
+				styleOverrides: {
+					root: {
+						"&.DarkOnHover:hover": {
+							color: getDesignToken(mode).primary.darker,
+						},
+					},
+				},
+			},
+		},
+	});
+
+const getTheme = (mode: PaletteMode) => responsiveFontSizes(theme(mode));
+
+export default getTheme;

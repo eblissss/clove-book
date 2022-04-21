@@ -1,5 +1,5 @@
 import { Box, Divider, Stack } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { SimpleRecipe } from "../../api/models";
 import { RecipeCard } from "../recipeCard/RecipeCard";
 import Masonry from "@mui/lab/Masonry";
@@ -19,6 +19,14 @@ function RecipeGrid({ recipes, columns }: RecipeGridProps) {
 	// }
 
 	// window.onresize = updateColumns;
+
+	useEffect(() => {
+		recipes.forEach((recipe) => {
+			const img = (new Image().src = recipe.imageURL
+				? recipe.imageURL
+				: "https://picsum.photos/400");
+		});
+	}, []);
 
 	return (
 		<Box component="div" sx={{ marginRight: "-1.35em" }}>

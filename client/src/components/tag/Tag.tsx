@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
 import React from "react";
-
 interface tagProps {
 	onClick?: React.MouseEventHandler<HTMLDivElement>;
 	name: string;
@@ -14,10 +13,13 @@ function Tag({ onClick, name, props }: tagProps) {
 			component="div"
 			sx={{
 				display: "flex",
-				color: "secondary.lightContrastText",
-				backgroundColor: "secondary.main",
-				height: "30px",
+				width: "auto",
+				fontFamily: ["sans-serif", "Poppins"],
+				color: "secondary.lightYellow",
+				backgroundColor: "secondary.dark",
 				borderRadius: "5px",
+				height: "30px",
+
 				p: "6px",
 				m: "6px",
 				ml: "0px",
@@ -26,7 +28,7 @@ function Tag({ onClick, name, props }: tagProps) {
 			}}
 			onClick={onClick}
 		>
-			{name}
+			{name.replace(/\s/g, "\u00A0")}
 		</Box>
 	);
 }

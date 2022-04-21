@@ -21,7 +21,7 @@ function IngredientPanel({ searchFunc, boxProps }: PanelProps) {
 		<Box
 			component="div"
 			sx={{
-				backgroundColor: "primary.main",
+				backgroundColor: "primary.light",
 				borderRadius: "15px",
 				textAlign: "center",
 				p: "15px 28px",
@@ -34,9 +34,10 @@ function IngredientPanel({ searchFunc, boxProps }: PanelProps) {
 				component="h3"
 				sx={{
 					pb: "10px",
+					whiteSpace: "break-spaces",
 				}}
 			>
-				Search by ingredients
+				Search by {"\n"}ingredients
 			</Typography>
 			<TextField
 				multiline

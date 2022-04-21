@@ -260,6 +260,22 @@ func (r *Client) getRandomSpoonacularRecipes(c *gin.Context, amount int) []model
 	return r.fmtSpoonacularSearchRes(searchRes)
 }
 
+func removeDuplicateStr(stubSlice []models.RecipeStub) ([]models.RecipeStub, []interface{}) {
+	allKeys := make(map[int64]bool)
+
+	foundRecipes := []models.RecipeStub{}
+	var foundRecipesInterface []interface{}
+
+	for _, stub := range stubSlice {
+		if _, value := allKeys[stub.SpoonacularID]; !value {
+			allKeys[stub.SpoonacularID] = true
+			foundRecipes = append(foundRecipes, stub)
+			foundRecipesInterface = append(foundRecipesInterface, stub)
+		}
+	}
+	return foundRecipes, foundRecipesInterface
+}
+
 // Format a spoonacular search result into stubs
 func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchResponse) []models.RecipeStub {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -285,6 +301,8 @@ func (r *Client) fmtSpoonacularSearchRes(searchRes models.SpoonacularSearchRespo
 		foundRecipes = append(foundRecipes, stub)
 		foundRecipesInterface = append(foundRecipesInterface, stub)
 	}
+
+	foundRecipes, foundRecipesInterface = removeDuplicateStr(foundRecipes)
 
 	_, err = r.StubCollection.InsertMany(ctx, foundRecipesInterface)
 	if err != nil {
@@ -487,40 +505,11 @@ func (r *Client) getSpoonacularRecipe(c *gin.Context, id string) {
 }
 
 func (r *Client) GetPopularRecipes(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
-
-	popularIds := [20]string{"624900e1c116048b1d3750b0", "624905de96a29b2293938153", "62490c15b9e2b95d03d100aa", "624a0cbd8dd7ab1c8e9711b8",
+	popularIds := [20]string{"625f19d1dd6f84ff164ecf47", "624f4f33f4b2bf0444631528", "637766", "632928",
 		"0", "0", "0", "0", "0", "0",
 		"0", "0", "0", "0", "0", "0", "0", "0", "0", "0"}
 
-	objectIds := make([]primitive.ObjectID, len(popularIds))
-	for i := range popularIds {
-		id, err := primitive.ObjectIDFromHex(popularIds[i])
-		if err == nil {
-			objectIds = append(objectIds, id)
-		}
-	}
-
-	// Find instead of findOne
-	cur, err := r.CookbookCollection.Find(ctx,
-		bson.M{"cookbookID": bson.M{"$in": objectIds}},
-	)
-
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-
-	foundRecipes := make([]models.RecipeStub, 0)
-
-	err = cur.All(ctx, &foundRecipes)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, foundRecipes)
+	r.GetManyRecipes(c, popularIds[:], "")
 }
 
 func (r *Client) getCookbookRecipe(ctx context.Context, c *gin.Context, id string) {
@@ -733,7 +722,7 @@ func (r *Client) ViewFavorites(c *gin.Context) {
 
 	if res.Err() != nil {
 		if res.Err() == mongo.ErrNoDocuments {
-			c.Status(http.StatusNotFound)
+			c.JSON(http.StatusOK, []string{})
 			return
 		} else {
 			c.Status(http.StatusInternalServerError)

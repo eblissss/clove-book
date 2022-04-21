@@ -140,7 +140,7 @@ function Home() {
 		<Box
 			component="div"
 			sx={{
-				backgroundColor: "primary.light",
+				backgroundColor: "primary.main",
 			}}
 		>
 			<RecipeModal />
@@ -157,7 +157,7 @@ function Home() {
 					<Typography
 						variant="h3"
 						component="h3"
-						sx={{ fontFamily: ["serif", "Libre Baskerville"] }}
+						className="BigTitle"
 					>
 						What are you looking for?
 					</Typography>
@@ -171,7 +171,7 @@ function Home() {
 						<Typography
 							variant="h3"
 							component="h3"
-							sx={{ fontFamily: ["serif", "Libre Baskerville"] }}
+							className="Title"
 						>
 							Explore New Recipes
 						</Typography>
@@ -199,7 +199,7 @@ function Home() {
 							p: "15px 28px",
 							pb: "28px",
 							borderRadius: "15px",
-							backgroundColor: "primary.main",
+							backgroundColor: "primary.light",
 							maxWidth: "300px",
 						}}
 					>

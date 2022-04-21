@@ -211,7 +211,7 @@ function IngredientList() {
 		<Box
 			component="div"
 			sx={{
-				backgroundColor: "primary.main",
+				backgroundColor: "primary.light",
 				p: "6px 10px",
 				m: "20px",
 				borderRadius: "6px",

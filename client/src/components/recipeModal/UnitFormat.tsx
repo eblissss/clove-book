@@ -1,28 +1,55 @@
-const gcd = function (a: number, b: number): number {
-	return b ? gcd(b, a % b) : a;
-};
+/*
+Description: Convert a decimal number into a fraction
+Author: Michaël Niessen (© 2018)
+Website: http://AssemblySys.com
 
-export const decimalToFraction = function (_decimal: number) {
-	if (_decimal == Math.floor(_decimal)) {
-		return {
-			display: _decimal,
-		};
-	} else {
-		var top = _decimal.toString().includes(".")
-			? _decimal.toString().replace(/\d+[.]/, "")
-			: "0";
-		var bottom = Math.pow(10, top.replace("-", "").length);
-		if (_decimal >= 1) {
-			top = (+top + Math.floor(_decimal) * bottom).toString();
-		} else if (_decimal <= -1) {
-			top = (+top + Math.ceil(_decimal) * bottom).toString();
-		}
+If you find this script useful, you can show your
+appreciation by getting Michaël a cup of coffee ;)
+https://ko-fi.com/assemblysys
 
-		var x = Math.abs(gcd(parseInt(top), bottom));
-		return {
-			top: parseInt(top) / x,
-			bottom: bottom / x,
-			display: x / x + "/" + bottom / x,
-		};
+As long as this notice (including author name and details) is included and
+UNALTERED, this code can be used and distributed freely.
+*/
+
+export function decimalToFraction(value: number, donly = true) {
+	var tolerance = 1.0e-6; // from how many decimals the number is rounded
+	var h1 = 1;
+	var h2 = 0;
+	var k1 = 0;
+	var k2 = 1;
+	var negative = false;
+	var i;
+
+	if (Math.floor(value) === value) {
+		// if value is an integer, stop the script
+		return value;
+	} else if (value < 0) {
+		negative = true;
+		value = -value;
 	}
-};
+
+	if (donly) {
+		i = Math.floor(value);
+		value -= i;
+	}
+
+	var b = value;
+
+	do {
+		var a = Math.floor(b);
+		console.log(a);
+		var aux = h1;
+		h1 = a * h1 + h2;
+		h2 = aux;
+		aux = k1;
+		k1 = a * k1 + k2;
+		k2 = aux;
+		b = 1 / (b - a);
+	} while (Math.abs(value - h1 / k1) > value * tolerance);
+
+	return (
+		(negative ? "-" : "") +
+		(donly && i != 0 ? i + " " : "") +
+		(h1 == 0 ? "" : h1 + "/" + k1)
+	);
+}

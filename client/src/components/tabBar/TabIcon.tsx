@@ -6,7 +6,7 @@ function TabIcon(props: SvgIconProps) {
 		<SvgIcon
 			viewBox="0 0 439 106"
 			sx={{
-				color: "primary.light",
+				color: "primary.main",
 				position: "absolute",
 				width: "100%",
 				height: "100%",

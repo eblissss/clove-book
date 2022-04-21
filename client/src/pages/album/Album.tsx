@@ -63,7 +63,7 @@ function Saved() {
 		<Box
 			component="div"
 			sx={{
-				backgroundColor: "primary.light",
+				backgroundColor: "primary.main",
 			}}
 		>
 			<RecipeModal />

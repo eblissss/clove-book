@@ -100,7 +100,7 @@ export function TabBar(props: tabProps) {
 					width: "100px",
 					height: "70%",
 					mr: "12px",
-					backgroundColor: "secondary.dark",
+					backgroundColor: "secondary.main",
 					borderRadius: "17px",
 					color: "secondary.contrastText",
 					fontSize: "1.1rem",

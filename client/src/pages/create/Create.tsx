@@ -168,7 +168,7 @@ function Create() {
 		<Box
 			component="div"
 			sx={{
-				backgroundColor: "primary.light",
+				backgroundColor: "primary.main",
 			}}
 		>
 			{openSuccess ? <CreateSuccess /> : <></>}
@@ -202,10 +202,10 @@ function Create() {
 				<Box
 					component="div"
 					sx={{
-						backgroundColor: "primary.main",
+						backgroundColor: "primary.light",
 						p: "6px 10px",
 						m: "20px",
-						borderRadius: "6px",
+						borderRadius: "10px",
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
@@ -233,10 +233,10 @@ function Create() {
 				<Box
 					component="div"
 					sx={{
-						backgroundColor: "primary.main",
+						backgroundColor: "primary.light",
 						p: "6px 10px",
 						m: "20px",
-						borderRadius: "6px",
+						borderRadius: "10px",
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
@@ -262,10 +262,10 @@ function Create() {
 				<Box
 					component="div"
 					sx={{
-						backgroundColor: "primary.main",
+						backgroundColor: "primary.light",
 						p: "6px 10px",
 						m: "20px",
-						borderRadius: "6px",
+						borderRadius: "10px",
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
@@ -325,10 +325,10 @@ function Create() {
 				<Box
 					component="div"
 					sx={{
-						backgroundColor: "primary.main",
+						backgroundColor: "primary.light",
 						p: "6px 10px",
 						m: "20px",
-						borderRadius: "8px",
+						borderRadius: "10px",
 						display: "flex",
 						flexDirection: "column",
 						width: "100%",

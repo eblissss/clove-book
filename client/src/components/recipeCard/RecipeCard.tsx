@@ -15,7 +15,6 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { openModal, setModal } from "../recipeModal/modalSlice";
 import { addSearchTag } from "../searchBar/searchSlice";
 import Tag from "../tag/Tag";
-import { palette } from "../../theme";
 import { selectFavoriteByID, updateFavorite } from "../userFavs/favSlice";
 import {
 	FavoriteBorder as Unfavorited,
@@ -63,8 +62,8 @@ export function RecipeCard(props: SimpleRecipe) {
 				maxWidth: "100%",
 				transition: ".2s ease-out",
 				"&:hover": {
-					boxShadow: "0 3px 10px rgba(0,0,0,.4)",
-					transform: "translate3d(0,-2px,0)",
+					boxShadow: "0 4px 10px rgba(50,100,1,0.2)",
+					transform: "translate3d(0,-3px,0)",
 				},
 			}}
 			onClick={updateSelectedRecipe}
@@ -126,16 +125,17 @@ export function RecipeCard(props: SimpleRecipe) {
 					gutterBottom
 					variant="h5"
 					component="h5"
+					className="Title"
 					sx={{
-						fontFamily: ["serif", "Libre Baskerville"],
-						color: "primary.contrastText",
 						justifyContent: "center",
 					}}
 				>
 					{props.name}
 				</Typography>
-				<Box
+				<Container
+					disableGutters
 					component="div"
+					className="AlphaDark"
 					sx={{
 						position: "absolute",
 						left: "0px",
@@ -145,13 +145,12 @@ export function RecipeCard(props: SimpleRecipe) {
 						justifyContent: "center",
 						alignContent: "center",
 						borderRadius: "0 10px 0 0",
-						backgroundColor: alpha(palette.primary.dark, 0.7),
 					}}
 				>
 					<Typography
 						gutterBottom
-						variant="h5"
-						component="h5"
+						variant="h6"
+						component="h6"
 						sx={{
 							color: "primary.contrastText",
 							textAlign: "center",
@@ -160,7 +159,7 @@ export function RecipeCard(props: SimpleRecipe) {
 					>
 						{props.totalTime}m
 					</Typography>
-				</Box>
+				</Container>
 
 				<Box
 					component="div"

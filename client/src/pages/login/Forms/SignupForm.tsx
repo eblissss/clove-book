@@ -203,6 +203,7 @@ export function SignupForm({ userInfo, setUseValid }: signupProps) {
 								Have a Account?
 							</Typography>
 							<Button
+								className="OnLight"
 								variant="contained"
 								fullWidth
 								sx={{

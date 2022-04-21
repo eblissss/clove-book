@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 
 import Landing from "../landing/Landing";
@@ -16,26 +16,48 @@ import { useAppDispatch } from "../../app/hooks";
 import { setUserID } from "../user/userSlice";
 import { setInitialFavorites } from "../../components/userFavs/favSlice";
 import { doRefresh, getFavoriteIDs } from "../../api/requests";
+import { CssBaseline, PaletteMode, ThemeProvider } from "@mui/material";
+import getTheme from "../../theme";
+import ColorToggle from "../../components/colorToggle/ColorToggle";
 
 function App() {
+	const [mode, setMode] = useState<PaletteMode>("light");
+	const colorMode = useMemo(
+		() => ({
+			toggleColorMode: () => {
+				setMode((prevMode: PaletteMode) =>
+					prevMode === "light" ? "dark" : "light"
+				);
+			},
+		}),
+		[]
+	);
+
+	const theme: any = useMemo(() => getTheme(mode), [mode]);
+
 	return (
-		<BrowserRouter>
-			<LoggedIn />
-			<ErrorPopup />
-			{/* A <Routes> looks through its children <Route>s and
+		<ThemeProvider theme={theme}>
+			{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+			<CssBaseline />
+			<BrowserRouter>
+				<LoggedIn />
+				<ErrorPopup />
+				<ColorToggle mode={mode} toggle={colorMode.toggleColorMode} />
+				{/* A <Routes> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-			<Routes>
-				<Route path="/example" element={<Example />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/home" element={<Home />} />
-				<Route path="/saved" element={<Saved />} />
-				<Route path="/album" element={<Album />} />
-				<Route path="/create" element={<Create />} />
-				<Route path="/user" element={<User />} />
-				<Route path="/reset" element={<Reset />} />
-				<Route path="/" element={<Landing />} />
-			</Routes>
-		</BrowserRouter>
+				<Routes>
+					<Route path="/example" element={<Example />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/home" element={<Home />} />
+					<Route path="/saved" element={<Saved />} />
+					<Route path="/album" element={<Album />} />
+					<Route path="/create" element={<Create />} />
+					<Route path="/user" element={<User />} />
+					<Route path="/reset" element={<Reset />} />
+					<Route path="/" element={<Landing />} />
+				</Routes>
+			</BrowserRouter>
+		</ThemeProvider>
 	);
 }
 

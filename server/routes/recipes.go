@@ -783,8 +783,8 @@ func (r *Client) GetManyRecipes(c *gin.Context, ids []string, query string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cbIds := make([]primitive.ObjectID, len(ids))
-	spIds := make([]int64, len(ids))
+	cbIds := make([]primitive.ObjectID, 0)
+	spIds := make([]int64, 0)
 	for i := range ids {
 		id, err := primitive.ObjectIDFromHex(ids[i])
 		if err == nil {
@@ -793,6 +793,7 @@ func (r *Client) GetManyRecipes(c *gin.Context, ids []string, query string) {
 			idInt, err := strconv.Atoi(ids[i])
 			if err != nil {
 				fmt.Println("yeah atoi failed lol")
+				continue
 			}
 			spIds = append(spIds, int64(idInt))
 		}
